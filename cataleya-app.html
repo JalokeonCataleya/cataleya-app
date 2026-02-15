@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚓ Cataleya - Gestione Barca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ocean-deep: #0a2342;
+            --ocean-medium: #1e4d7b;
+            --ocean-light: #2e6ba5;
+            --wave-foam: #e8f4f8;
+            --sand: #f5e6d3;
+            --coral: #ff6b6b;
+            --seaweed: #2d5f3f;
+            --gold: #d4af37;
+            --text-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --priority-p0: #ff0000;
+            --priority-p1: #ff6b6b;
+            --priority-p2: #ffa500;
+            --priority-p3: #90ee90;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-medium) 50%, var(--ocean-light) 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Effetto onde animate */
+        body::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,60 Q300,0 600,60 T1200,60 L1200,120 L0,120 Z" fill="%23ffffff" fill-opacity="0.05"/></svg>');
+            background-size: 1200px 120px;
+            animation: wave 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes wave {
+            0% { background-position: 0 0; }
+            100% { background-position: 1200px 0; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            border-bottom: 2px solid var(--gold);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, var(--wave-foam), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            display: inline-flex;
+        }
+
+        .sync-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #90ee90;
+            animation: pulse 2s infinite;
+        }
+
+        .sync-indicator.syncing {
+            background: #ffa500;
+        }
+
+        .sync-indicator.error {
+            background: #ff6b6b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeIn 1s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--ocean-deep);
+            box-shadow: 0 5px 20px rgba(212,175,55,0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            color: var(--text-dark);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-left: 5px solid var(--gold);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--ocean-light);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--ocean-deep);
+            letter-spacing: 2px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--ocean-deep);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: var(--ocean-medium);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--ocean-deep);
+        }
+
+        .btn-primary:hover {
+            background: #c5a028;
+        }
+
+        .btn-danger {
+            background: var(--coral);
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--ocean-deep);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--ocean-light);
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--ocean-deep), var(--ocean-medium));
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 2px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+
+        .item-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .item {
+            background: var(--wave-foam);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--ocean-deep);
+            display: grid;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .item:hover {
+            background: #d4e9f2;
+            transform: translateX(5px);
+        }
+
+        .item.priority-P0 { border-left-color: var(--priority-p0); }
+        .item.priority-P1 { border-left-color: var(--priority-p1); }
+        .item.priority-P2 { border-left-color: var(--priority-p2); }
+        .item.priority-P3 { border-left-color: var(--priority-p3); }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--ocean-deep);
+            flex: 1;
+        }
+
+        .item-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-completata {
+            background: var(--seaweed);
+            color: white;
+        }
+
+        .badge-in-corso {
+            background: var(--coral);
+            color: white;
+        }
+
+        .badge-programmata {
+            background: var(--gold);
+            color: var(--ocean-deep);
+        }
+
+        .item-detail {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin: 5px 0;
+        }
+
+        .item-detail strong {
+            color: var(--ocean-deep);
+        }
+
+        .item-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--ocean-light);
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--ocean-deep);
+            letter-spacing: 2px;
+        }
+
+        .voice-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--coral);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .voice-btn.recording {
+            background: var(--seaweed);
+            animation: pulse-record 1.5s infinite;
+        }
+
+        @keyframes pulse-record {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--ocean-medium);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .google-sheet-setup {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .google-sheet-setup h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+        }
+
+        .google-sheet-setup p {
+            color: #856404;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .google-sheet-setup code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(10, 35, 66, 0.1);
+            border: 2px solid var(--ocean-light);
+            color: var(--ocean-deep);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--ocean-light);
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: var(--ocean-deep);
+            color: white;
+            border-color: var(--ocean-deep);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚓ CATALEYA</h1>
+            <p class="subtitle">Gestione Completa della Tua Barca</p>
+            <div class="sync-status">
+                <div class="sync-indicator" id="sync-indicator"></div>
+                <span id="sync-text">Pronto</span>
+            </div>
+        </div>
+
+        <!-- Setup Google Sheets -->
+        <div class="google-sheet-setup" id="setup-box">
+            <h3>🔐 Configurazione Google Sheets</h3>
+            <p><strong>Per connettere l'app al tuo Google Sheet:</strong></p>
+            <ol style="margin-left: 20px; line-height: 1.8;">
+                <li>Apri il tuo Google Sheet</li>
+                <li>Vai su <strong>Estensioni → Apps Script</strong></li>
+                <li>Copia e incolla il codice che ti fornirò dopo</li>
+                <li>Pubblica come <strong>Web App</strong></li>
+                <li>Copia l'URL generato e incollalo qui sotto</li>
+            </ol>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>URL Web App di Google Sheets</label>
+                <input type="text" id="google-sheet-url" placeholder="https://script.google.com/macros/s/...">
+                <button class="btn btn-primary" onclick="saveGoogleSheetUrl()" style="margin-top: 10px;">Salva Configurazione</button>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                <em>💡 Non preoccuparti! Ti guiderò passo-passo nella configurazione dopo aver salvato l'URL.</em>
+            </p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('diario-uscite')">🌊 Diario Uscite</button>
+            <button class="tab-btn" onclick="switchTab('lavori')">🔧 Lavori & Manutenzione</button>
+            <button class="tab-btn" onclick="switchTab('programmati')">📅 Programmati</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-uscite">0</div>
+                    <div class="stat-label">Uscite Totali</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-ore-motore">0</div>
+                    <div class="stat-label">Ore Motore</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-lavori-completati">0</div>
+                    <div class="stat-label">Lavori Completati</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-lavori-programmati">0</div>
+                    <div class="stat-label">Da Programmare</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">⚠️ Manutenzioni Prioritarie</h2>
+                </div>
+                <div id="manutenzioni-prioritarie"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🌊 Ultime Uscite</h2>
+                </div>
+                <div id="ultime-uscite"></div>
+            </div>
+        </div>
+
+        <!-- DIARIO USCITE -->
+        <div id="diario-uscite" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Diario Uscite</h2>
+                    <button class="btn btn-primary" onclick="openModal('modal-uscita')">+ Nuova Uscita</button>
+                </div>
+                <div id="lista-uscite" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- LAVORI & MANUTENZIONE -->
+        <div id="lavori" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Lavori & Manutenzione</h2>
+                    <button class="btn btn-primary" onclick="openModal('modal-lavoro')">+ Nuovo Lavoro</button>
+                </div>
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all" onclick="filterLavori('all')">Tutti</button>
+                    <button class="filter-btn" data-filter="Completata" onclick="filterLavori('Completata')">Completati</button>
+                    <button class="filter-btn" data-filter="In corso" onclick="filterLavori('In corso')">In Corso</button>
+                    <button class="filter-btn" data-filter="P0" onclick="filterLavori('P0')">P0 - Urgente</button>
+                    <button class="filter-btn" data-filter="P1" onclick="filterLavori('P1')">P1 - Alta</button>
+                    <button class="filter-btn" data-filter="P2" onclick="filterLavori('P2')">P2 - Media</button>
+                    <button class="filter-btn" data-filter="P3" onclick="filterLavori('P3')">P3 - Bassa</button>
+                </div>
+
+                <div id="lista-lavori" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- LAVORI PROGRAMMATI -->
+        <div id="programmati" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Manutenzioni Programmate</h2>
+                    <button class="btn btn-primary" onclick="openModal('modal-programmato')">+ Programma Manutenzione</button>
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all" onclick="filterProgrammati('all')">Tutti</button>
+                    <button class="filter-btn" data-filter="P0" onclick="filterProgrammati('P0')">P0</button>
+                    <button class="filter-btn" data-filter="P1" onclick="filterProgrammati('P1')">P1</button>
+                    <button class="filter-btn" data-filter="P2" onclick="filterProgrammati('P2')">P2</button>
+                    <button class="filter-btn" data-filter="P3" onclick="filterProgrammati('P3')">P3</button>
+                </div>
+
+                <div id="lista-programmati" class="item-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUOVA USCITA -->
+    <div id="modal-uscita" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 Nuova Uscita</h3>
+            </div>
+            <form onsubmit="salvaUscita(event)">
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="uscita-data" required>
+                </div>
+                <div class="form-group">
+                    <label>Vento</label>
+                    <input type="text" id="uscita-vento" placeholder="es: 4/5 kn SE">
+                </div>
+                <div class="form-group">
+                    <label>Mare</label>
+                    <input type="text" id="uscita-mare" placeholder="es: 40 cm onda S">
+                </div>
+                <div class="form-group">
+                    <label>Velocità Cataleya</label>
+                    <input type="text" id="uscita-velocita" placeholder="es: 4 kn">
+                </div>
+                <div class="form-group">
+                    <label>Ore Motore (questa uscita)</label>
+                    <input type="number" step="0.1" id="uscita-ore" placeholder="es: 2.5">
+                </div>
+                <div class="form-group">
+                    <label>Note / Descrizione</label>
+                    <textarea id="uscita-note" placeholder="Racconta l'uscita..."></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="voice-btn" id="voice-btn-uscita" onclick="toggleVoiceInput('uscita-note', 'voice-btn-uscita')">
+                        🎤 <span>Registra Vocale</span>
+                    </button>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">💾 Salva</button>
+                    <button type="button" class="btn" onclick="closeModal('modal-uscita')">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL NUOVO LAVORO -->
+    <div id="modal-lavoro" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🔧 Nuovo Lavoro/Manutenzione</h3>
+            </div>
+            <form onsubmit="salvaLavoro(event)">
+                <div class="form-group">
+                    <label>Attività</label>
+                    <input type="text" id="lavoro-attivita" required placeholder="Descrizione dell'attività">
+                </div>
+                <div class="form-group">
+                    <label>Priorità</label>
+                    <select id="lavoro-priorita" required>
+                        <option value="">Seleziona...</option>
+                        <option value="P0">P0 - Urgente</option>
+                        <option value="P1">P1 - Alta</option>
+                        <option value="P2">P2 - Media</option>
+                        <option value="P3">P3 - Bassa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stato</label>
+                    <select id="lavoro-stato" required>
+                        <option value="">Seleziona...</option>
+                        <option value="In corso">In corso</option>
+                        <option value="Completata">Completata</option>
+                        <option value="Programmata">Programmata</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data Inizio</label>
+                    <input type="date" id="lavoro-data-inizio">
+                </div>
+                <div class="form-group">
+                    <label>Data Fine</label>
+                    <input type="date" id="lavoro-data-fine">
+                </div>
+                <div class="form-group">
+                    <label>Ore Motore (se applicabile)</label>
+                    <input type="text" id="lavoro-ore-motore" placeholder="es: 50h">
+                </div>
+                <div class="form-group">
+                    <label>Fornitore</label>
+                    <input type="text" id="lavoro-fornitore" placeholder="Nome fornitore o persona">
+                </div>
+                <div class="form-group">
+                    <label>Deliverable</label>
+                    <input type="text" id="lavoro-deliverable" placeholder="Risultato atteso">
+                </div>
+                <div class="form-group">
+                    <label>Note</label>
+                    <textarea id="lavoro-note" placeholder="Note dettagliate..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tempo Impiegato</label>
+                    <input type="text" id="lavoro-tempo" placeholder="es: 2h, 30m">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">💾 Salva</button>
+                    <button type="button" class="btn" onclick="closeModal('modal-lavoro')">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL MANUTENZIONE PROGRAMMATA -->
+    <div id="modal-programmato" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📅 Programma Manutenzione</h3>
+            </div>
+            <form onsubmit="salvaProgrammato(event)">
+                <div class="form-group">
+                    <label>Attività</label>
+                    <input type="text" id="prog-attivita" required placeholder="Descrizione manutenzione">
+                </div>
+                <div class="form-group">
+                    <label>Priorità</label>
+                    <select id="prog-priorita" required>
+                        <option value="">Seleziona...</option>
+                        <option value="P0">P0 - Urgente</option>
+                        <option value="P1">P1 - Alta</option>
+                        <option value="P2">P2 - Media</option>
+                        <option value="P3">P3 - Bassa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ore Motore Previste</label>
+                    <input type="text" id="prog-ore-motore" placeholder="es: 100h">
+                </div>
+                <div class="form-group">
+                    <label>Data Prevista</label>
+                    <input type="date" id="prog-data-inizio">
+                </div>
+                <div class="form-group">
+                    <label>Note</label>
+                    <textarea id="prog-note" placeholder="Dettagli della manutenzione programmata..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">💾 Salva</button>
+                    <button type="button" class="btn" onclick="closeModal('modal-programmato')">Annulla</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configurazione
+        let GOOGLE_SHEET_URL = localStorage.getItem('google_sheet_url') || '';
+        let appData = {
+            uscite: [],
+            lavori: [],
+            programmati: []
+        };
+        
+        let currentFilter = 'all';
+        let currentFilterProgrammati = 'all';
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            if (GOOGLE_SHEET_URL) {
+                document.getElementById('setup-box').style.display = 'none';
+                caricaDatiDaGoogleSheet();
+            } else {
+                document.getElementById('google-sheet-url').value = GOOGLE_SHEET_URL;
+            }
+            impostaDataOggi();
+        });
+
+        function saveGoogleSheetUrl() {
+            const url = document.getElementById('google-sheet-url').value.trim();
+            if (!url) {
+                alert('Inserisci un URL valido!');
+                return;
+            }
+            
+            GOOGLE_SHEET_URL = url;
+            localStorage.setItem('google_sheet_url', url);
+            document.getElementById('setup-box').style.display = 'none';
+            
+            alert('✅ Configurazione salvata! Ora l\'app si sincronizzerà con il tuo Google Sheet.');
+            caricaDatiDaGoogleSheet();
+        }
+
+        function impostaDataOggi() {
+            const oggi = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                if (!input.value) input.value = oggi;
+            });
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.querySelector(`#${modalId} form`).reset();
+            impostaDataOggi();
+        }
+
+        // Voice Input
+        let recognition;
+        let currentVoiceTextarea = null;
+        let currentVoiceButton = null;
+
+        function toggleVoiceInput(textareaId, buttonId) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Il tuo browser non supporta il riconoscimento vocale. Prova con Chrome o Edge.');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            currentVoiceTextarea = document.getElementById(textareaId);
+            currentVoiceButton = document.getElementById(buttonId);
+            
+            if (!recognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'it-IT';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                recognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    currentVoiceTextarea.value = transcript;
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Errore riconoscimento vocale:', event.error);
+                    stopVoiceRecording();
+                };
+
+                recognition.onend = function() {
+                    stopVoiceRecording();
+                };
+            }
+
+            if (!currentVoiceButton.classList.contains('recording')) {
+                recognition.start();
+                currentVoiceButton.classList.add('recording');
+                currentVoiceButton.querySelector('span').textContent = 'Registrando...';
+            } else {
+                stopVoiceRecording();
+            }
+        }
+
+        function stopVoiceRecording() {
+            if (recognition) {
+                recognition.stop();
+            }
+            if (currentVoiceButton) {
+                currentVoiceButton.classList.remove('recording');
+                currentVoiceButton.querySelector('span').textContent = 'Registra Vocale';
+            }
+        }
+
+        // Funzioni per salvare i dati
+        function salvaUscita(event) {
+            event.preventDefault();
+            
+            const uscita = {
+                data: document.getElementById('uscita-data').value,
+                vento: document.getElementById('uscita-vento').value,
+                mare: document.getElementById('uscita-mare').value,
+                velocita: document.getElementById('uscita-velocita').value,
+                ore_motore: document.getElementById('uscita-ore').value,
+                note: document.getElementById('uscita-note').value
+            };
+
+            inviaAGoogleSheet('Diario Uscite', uscita);
+            closeModal('modal-uscita');
+        }
+
+        function salvaLavoro(event) {
+            event.preventDefault();
+            
+            const lavoro = {
+                attivita: document.getElementById('lavoro-attivita').value,
+                priorita: document.getElementById('lavoro-priorita').value,
+                ore_motore: document.getElementById('lavoro-ore-motore').value,
+                stato: document.getElementById('lavoro-stato').value,
+                data_inizio: document.getElementById('lavoro-data-inizio').value,
+                data_fine: document.getElementById('lavoro-data-fine').value,
+                fornitore: document.getElementById('lavoro-fornitore').value,
+                deliverable: document.getElementById('lavoro-deliverable').value,
+                note: document.getElementById('lavoro-note').value,
+                tempo: document.getElementById('lavoro-tempo').value
+            };
+
+            inviaAGoogleSheet('Lavori & Manutenzione', lavoro);
+            closeModal('modal-lavoro');
+        }
+
+        function salvaProgrammato(event) {
+            event.preventDefault();
+            
+            const programmato = {
+                attivita: document.getElementById('prog-attivita').value,
+                priorita: document.getElementById('prog-priorita').value,
+                ore_motore: document.getElementById('prog-ore-motore').value,
+                stato: 'Programmata',
+                data_inizio: document.getElementById('prog-data-inizio').value,
+                data_fine: '',
+                fornitore: '',
+                deliverable: '',
+                note: document.getElementById('prog-note').value,
+                tempo: ''
+            };
+
+            inviaAGoogleSheet('Manutenzione programmata', programmato);
+            closeModal('modal-programmato');
+        }
+
+        // Comunicazione con Google Sheets
+        function setSyncStatus(status, text) {
+            const indicator = document.getElementById('sync-indicator');
+            const syncText = document.getElementById('sync-text');
+            
+            indicator.className = 'sync-indicator ' + status;
+            syncText.textContent = text;
+        }
+
+        async function caricaDatiDaGoogleSheet() {
+            if (!GOOGLE_SHEET_URL) return;
+
+            setSyncStatus('syncing', 'Sincronizzando...');
+
+            try {
+                const response = await fetch(GOOGLE_SHEET_URL + '?action=read');
+                const data = await response.json();
+                
+                appData.uscite = data['Diario Uscite'] || [];
+                appData.lavori = data['Lavori & Manutenzione'] || [];
+                appData.programmati = data['Manutenzione programmata'] || [];
+
+                aggiornaUI();
+                setSyncStatus('', 'Sincronizzato ✓');
+            } catch (error) {
+                console.error('Errore caricamento dati:', error);
+                setSyncStatus('error', 'Errore sincronizzazione');
+                // Usa dati locali se disponibili
+                caricaDatiLocali();
+            }
+        }
+
+        async function inviaAGoogleSheet(foglio, dati) {
+            if (!GOOGLE_SHEET_URL) {
+                alert('Configura prima l\'URL di Google Sheets!');
+                return;
+            }
+
+            setSyncStatus('syncing', 'Salvando...');
+
+            try {
+                // Usa FormData invece di JSON per compatibilità con Google Apps Script
+                const formData = new FormData();
+                formData.append('action', 'write');
+                formData.append('sheet', foglio);
+                formData.append('data', JSON.stringify(dati));
+
+                const response = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'follow'
+                });
+
+                const result = await response.json();
+                
+                console.log('Risposta server:', result);
+                
+                if (result.status === 'success') {
+                    setSyncStatus('', 'Salvato ✓');
+                    setTimeout(() => caricaDatiDaGoogleSheet(), 1000);
+                } else {
+                    throw new Error(result.message || 'Errore nel salvataggio');
+                }
+            } catch (error) {
+                console.error('Errore invio dati:', error);
+                setSyncStatus('error', 'Errore salvataggio');
+                alert('Errore nel salvataggio. I dati sono stati salvati localmente e verranno sincronizzati quando possibile.');
+                salvaDatiLocali(foglio, dati);
+            }
+        }
+
+        function salvaDatiLocali(foglio, dati) {
+            // Salva localmente come backup
+            const key = 'backup_' + foglio.replace(/\s+/g, '_').toLowerCase();
+            let backup = JSON.parse(localStorage.getItem(key) || '[]');
+            backup.push(dati);
+            localStorage.setItem(key, JSON.stringify(backup));
+        }
+
+        function caricaDatiLocali() {
+            // Carica dati dai backup locali
+            appData.uscite = JSON.parse(localStorage.getItem('backup_diario_uscite') || '[]');
+            appData.lavori = JSON.parse(localStorage.getItem('backup_lavori_&_manutenzione') || '[]');
+            appData.programmati = JSON.parse(localStorage.getItem('backup_manutenzione_programmata') || '[]');
+            aggiornaUI();
+        }
+
+        // Aggiornamento UI
+        function aggiornaUI() {
+            aggiornaStats();
+            mostraUltimaUscite();
+            mostraManutenzioniPrioritarie();
+            mostraListaUscite();
+            mostraListaLavori();
+            mostraListaProgrammati();
+        }
+
+        function aggiornaStats() {
+            document.getElementById('stat-uscite').textContent = appData.uscite.length;
+            
+            const oreMotoreTotali = appData.uscite.reduce((sum, u) => {
+                const ore = parseFloat(u['ore motore totali']) || 0;
+                return Math.max(sum, ore);
+            }, 0);
+            document.getElementById('stat-ore-motore').textContent = Math.round(oreMotoreTotali);
+            
+            const completati = appData.lavori.filter(l => l.Stato === 'Completata').length;
+            document.getElementById('stat-lavori-completati').textContent = completati;
+            
+            document.getElementById('stat-lavori-programmati').textContent = appData.programmati.length;
+        }
+
+        function mostraUltimaUscite() {
+            const container = document.getElementById('ultime-uscite');
+            const ultime = appData.uscite.slice(-5).reverse();
+            
+            if (ultime.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌊</div><p>Nessuna uscita registrata</p></div>';
+                return;
+            }
+
+            container.innerHTML = ultime.map(u => `
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title">${formatDate(u['se '])}</div>
+                        <div class="item-badge" style="background: var(--ocean-light); color: white;">${u['ore motore'] || '0'}h</div>
+                    </div>
+                    ${u.vento ? `<div class="item-detail"><strong>💨 Vento:</strong> ${u.vento}</div>` : ''}
+                    ${u.mare ? `<div class="item-detail"><strong>🌊 Mare:</strong> ${u.mare}</div>` : ''}
+                    ${u['velocità Cataleya'] ? `<div class="item-detail"><strong>⛵ Velocità:</strong> ${u['velocità Cataleya']}</div>` : ''}
+                    ${u.note ? `<div class="item-detail" style="margin-top: 10px;">${u.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function mostraManutenzioniPrioritarie() {
+            const container = document.getElementById('manutenzioni-prioritarie');
+            const prioritarie = [...appData.lavori, ...appData.programmati]
+                .filter(m => m.Stato !== 'Completata' && (m.Priorità === 'P0' || m.Priorità === 'P1'))
+                .sort((a, b) => a.Priorità.localeCompare(b.Priorità))
+                .slice(0, 5);
+            
+            if (prioritarie.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p style="color: var(--seaweed);">✅ Nessuna manutenzione prioritaria in sospeso</p></div>';
+                return;
+            }
+
+            container.innerHTML = prioritarie.map(m => `
+                <div class="item priority-${m.Priorità}">
+                    <div class="item-header">
+                        <div class="item-title">${m.Attività}</div>
+                        <div class="item-badge badge-${m.Stato === 'Completata' ? 'completata' : m.Stato === 'In corso' ? 'in-corso' : 'programmata'}">
+                            ${m.Stato}
+                        </div>
+                    </div>
+                    <div class="item-detail"><strong>Priorità:</strong> ${m.Priorità}</div>
+                    ${m['Ore motore'] ? `<div class="item-detail"><strong>Ore motore:</strong> ${m['Ore motore']}</div>` : ''}
+                    ${m['Data di inizio'] ? `<div class="item-detail"><strong>Data:</strong> ${formatDate(m['Data di inizio'])}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function mostraListaUscite() {
+            const container = document.getElementById('lista-uscite');
+            const uscite = [...appData.uscite].reverse();
+            
+            if (uscite.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌊</div><p>Nessuna uscita registrata</p></div>';
+                return;
+            }
+
+            container.innerHTML = uscite.map((u, index) => `
+                <div class="item">
+                    <div class="item-header">
+                        <div class="item-title">${formatDate(u['se '])}</div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="item-badge" style="background: var(--ocean-deep); color: white;">
+                                ${u['ore motore'] || '0'}h motore
+                            </div>
+                            <div class="item-badge" style="background: var(--gold); color: var(--ocean-deep);">
+                                Tot: ${u['ore motore totali'] || '0'}h
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        ${u.vento ? `<div class="item-detail"><strong>💨 Vento:</strong> ${u.vento}</div>` : ''}
+                        ${u.mare ? `<div class="item-detail"><strong>🌊 Mare:</strong> ${u.mare}</div>` : ''}
+                        ${u['velocità Cataleya'] ? `<div class="item-detail"><strong>⛵ Velocità:</strong> ${u['velocità Cataleya']}</div>` : ''}
+                    </div>
+                    ${u.note ? `<div class="item-detail" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); font-style: italic;">"${u.note}"</div>` : ''}
+                    <div class="item-actions">
+                        <button class="btn btn-danger btn-small" onclick="eliminaUscita('${u['se ']}')">🗑️ Elimina</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function mostraListaLavori() {
+            const container = document.getElementById('lista-lavori');
+            let lavori = [...appData.lavori];
+            
+            if (currentFilter !== 'all') {
+                if (['P0', 'P1', 'P2', 'P3'].includes(currentFilter)) {
+                    lavori = lavori.filter(l => l.Priorità === currentFilter);
+                } else {
+                    lavori = lavori.filter(l => l.Stato === currentFilter);
+                }
+            }
+            
+            lavori = lavori.reverse();
+            
+            if (lavori.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔧</div><p>Nessun lavoro trovato</p></div>';
+                return;
+            }
+
+            container.innerHTML = lavori.map(l => `
+                <div class="item priority-${l.Priorità}">
+                    <div class="item-header">
+                        <div class="item-title">${l.Attività}</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div class="item-badge" style="background: ${getPriorityColor(l.Priorità)}; color: white;">
+                                ${l.Priorità}
+                            </div>
+                            <div class="item-badge badge-${l.Stato === 'Completata' ? 'completata' : l.Stato === 'In corso' ? 'in-corso' : 'programmata'}">
+                                ${l.Stato}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                        ${l['Data di inizio'] ? `<div class="item-detail"><strong>📅 Inizio:</strong> ${formatDate(l['Data di inizio'])}</div>` : ''}
+                        ${l['Data di fine'] ? `<div class="item-detail"><strong>✅ Fine:</strong> ${formatDate(l['Data di fine'])}</div>` : ''}
+                        ${l['Ore motore'] ? `<div class="item-detail"><strong>⚙️ Ore motore:</strong> ${l['Ore motore']}</div>` : ''}
+                        ${l['Tempo tot impiegato'] ? `<div class="item-detail"><strong>⏱️ Tempo:</strong> ${l['Tempo tot impiegato']}</div>` : ''}
+                    </div>
+                    ${l.Fornitore ? `<div class="item-detail"><strong>👤 Fornitore:</strong> ${l.Fornitore}</div>` : ''}
+                    ${l.Deliverable ? `<div class="item-detail"><strong>📦 Deliverable:</strong> ${l.Deliverable}</div>` : ''}
+                    ${l.Note ? `<div class="item-detail" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.1);"><strong>📝 Note:</strong> ${l.Note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function mostraListaProgrammati() {
+            const container = document.getElementById('lista-programmati');
+            let programmati = [...appData.programmati];
+            
+            if (currentFilterProgrammati !== 'all') {
+                programmati = programmati.filter(p => p.Priorità === currentFilterProgrammati);
+            }
+            
+            programmati = programmati.sort((a, b) => a.Priorità.localeCompare(b.Priorità));
+            
+            if (programmati.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>Nessuna manutenzione programmata</p></div>';
+                return;
+            }
+
+            container.innerHTML = programmati.map(p => `
+                <div class="item priority-${p.Priorità}">
+                    <div class="item-header">
+                        <div class="item-title">${p.Attività}</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div class="item-badge" style="background: ${getPriorityColor(p.Priorità)}; color: white;">
+                                ${p.Priorità}
+                            </div>
+                            <div class="item-badge badge-programmata">
+                                ${p.Stato || 'Programmata'}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        ${p['Data di inizio'] ? `<div class="item-detail"><strong>📅 Data prevista:</strong> ${formatDate(p['Data di inizio'])}</div>` : ''}
+                        ${p['Ore motore'] ? `<div class="item-detail"><strong>⚙️ Ore motore:</strong> ${p['Ore motore']}</div>` : ''}
+                    </div>
+                    ${p.Note ? `<div class="item-detail" style="margin-top: 10px;"><strong>📝 Note:</strong> ${p.Note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function filterLavori(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('#lavori .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            mostraListaLavori();
+        }
+
+        function filterProgrammati(filter) {
+            currentFilterProgrammati = filter;
+            document.querySelectorAll('#programmati .filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            mostraListaProgrammati();
+        }
+
+        // Funzione per eliminare un'uscita
+        async function eliminaUscita(dataUscita) {
+            if (!confirm('Sei sicuro di voler eliminare questa uscita?\n\nATTENZIONE: Questa azione eliminerà la riga dal Google Sheet e non può essere annullata!')) {
+                return;
+            }
+
+            alert('⚠️ IMPORTANTE!\n\nPer eliminare questa uscita:\n\n1. Apri il tuo Google Sheet\n2. Vai sul foglio "Diario Uscite"\n3. Trova la riga con data: ' + formatDate(dataUscita) + '\n4. Click destro sulla riga → "Elimina riga"\n5. Torna qui e ricarica la pagina (F5)\n\nL\'eliminazione diretta dall\'app richiede autorizzazioni aggiuntive di Google, quindi per ora va fatta manualmente dal Google Sheet.');
+            
+            // Apri il Google Sheet in una nuova scheda
+            window.open('https://docs.google.com/spreadsheets/d/1aiqmxdUkYTa-EqY6IcQHkQTfPdaFpWThj03Sze3MiWs/edit', '_blank');
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function getPriorityColor(priority) {
+            const colors = {
+                'P0': '#ff0000',
+                'P1': '#ff6b6b',
+                'P2': '#ffa500',
+                'P3': '#90ee90'
+            };
+            return colors[priority] || '#666';
+        }
+    </script>
+</body>
+</html>
