@@ -831,6 +831,206 @@
         .gap-1 { gap: var(--spacing-sm); }
         .gap-2 { gap: var(--spacing-lg); }
         .gap-3 { gap: var(--spacing-xl); }
+
+        /* ==================== DASHBOARD MOBILE-FIRST (v2) ==================== */
+        #page-dashboard {
+            --sem-red: #ff3b30;
+            --sem-yellow: #ffb800;
+            --sem-green: #34c759;
+            --dash-card-radius: 16px;
+            --dash-card-radius-sm: 10px;
+        }
+        #page-dashboard .dash-wrap {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        #page-dashboard .dash-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--dash-card-radius);
+            padding: 18px;
+            backdrop-filter: blur(12px);
+        }
+        /* Hero */
+        #page-dashboard .dash-hero {
+            background:
+                linear-gradient(135deg, rgba(244, 213, 141, 0.12), rgba(78, 205, 196, 0.05)),
+                var(--bg-secondary);
+            border: 1px solid rgba(244, 213, 141, 0.2);
+            padding: 22px;
+            border-radius: var(--dash-card-radius);
+        }
+        #page-dashboard .dash-hero-greet {
+            font-family: var(--font-display);
+            font-size: 34px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        #page-dashboard .dash-hero-date {
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        #page-dashboard .dash-hero-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        #page-dashboard .dash-stat {
+            border-left: 2px solid var(--accent-gold);
+            padding-left: 10px;
+        }
+        #page-dashboard .dash-stat.aqua { border-color: var(--accent-aqua); }
+        #page-dashboard .dash-stat-label {
+            font-size: 10px;
+            letter-spacing: 1.2px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        #page-dashboard .dash-stat-value {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 700;
+        }
+        #page-dashboard .dash-stat-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        /* Section header */
+        #page-dashboard .dash-section-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 0 4px;
+            margin-bottom: -4px;
+        }
+        #page-dashboard .dash-section-title {
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        #page-dashboard .dash-section-link {
+            font-size: 12px;
+            color: var(--accent-aqua);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        /* Scadenze semaforo */
+        #page-dashboard .dash-scadenze { display: flex; flex-direction: column; gap: 10px; }
+        #page-dashboard .dash-scadenza {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-left-width: 4px;
+            border-radius: var(--dash-card-radius-sm);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        #page-dashboard .dash-scadenza.red    { border-left-color: var(--sem-red); }
+        #page-dashboard .dash-scadenza.yellow { border-left-color: var(--sem-yellow); }
+        #page-dashboard .dash-scadenza.green  { border-left-color: var(--sem-green); }
+        #page-dashboard .dash-sem-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px currentColor;
+        }
+        #page-dashboard .dash-sem-dot.red    { background: var(--sem-red);    color: var(--sem-red); }
+        #page-dashboard .dash-sem-dot.yellow { background: var(--sem-yellow); color: var(--sem-yellow); }
+        #page-dashboard .dash-sem-dot.green  { background: var(--sem-green);  color: var(--sem-green); }
+        #page-dashboard .dash-scadenza-body { flex: 1; min-width: 0; }
+        #page-dashboard .dash-scadenza-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #page-dashboard .dash-scadenza-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+        #page-dashboard .dash-scadenza-arrow { color: var(--text-tertiary); font-size: 20px; }
+        /* Quick actions */
+        #page-dashboard .dash-qa {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        #page-dashboard .dash-qa-btn {
+            background: linear-gradient(135deg, rgba(244, 213, 141, 0.15), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(244, 213, 141, 0.3);
+            color: var(--text-primary);
+            padding: 16px 12px;
+            border-radius: var(--dash-card-radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-family: var(--font-primary);
+            transition: transform 0.15s;
+        }
+        #page-dashboard .dash-qa-btn:active { transform: scale(0.97); }
+        #page-dashboard .dash-qa-btn.secondary {
+            background: var(--bg-card);
+            border-color: rgba(255,255,255,0.08);
+        }
+        #page-dashboard .dash-qa-icon { font-size: 26px; }
+        /* Meteo */
+        #page-dashboard .dash-meteo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        #page-dashboard .dash-meteo-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        #page-dashboard .dash-meteo-icon { font-size: 28px; }
+        #page-dashboard .dash-meteo-label {
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+        #page-dashboard .dash-meteo-value {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+        #page-dashboard .dash-meteo-value.aqua { color: var(--accent-aqua); }
+        /* Proverbio */
+        #page-dashboard .dash-quote {
+            text-align: center;
+            padding: 18px 20px;
+            font-style: italic;
+            color: var(--accent-aqua);
+            font-size: 14px;
+            line-height: 1.5;
+            border: 1px dashed rgba(78, 205, 196, 0.25);
+            border-radius: var(--dash-card-radius-sm);
+        }
+        #page-dashboard .dash-quote::before { content: '« '; opacity: 0.6; }
+        #page-dashboard .dash-quote::after  { content: ' »'; opacity: 0.6; }
+        /* ==================== FINE DASHBOARD v2 ==================== */
+
     </style>
 </head>
 <body>
@@ -876,386 +1076,139 @@
         </div>
     </div>
 
-    <!-- ==================== DASHBOARD PAGE ==================== -->
+    <!-- ==================== DASHBOARD PAGE (v2 - mobile first) ==================== -->
     <div id="page-dashboard" class="page active">
-        <div class="container" style="margin-top: calc(var(--nav-height) + var(--spacing-xl));">
-            <div class="card" style="text-align: center; margin-bottom: var(--spacing-xl);">
-                <h1 class="bebas" style="font-size: 64px; margin-bottom: var(--spacing-md);">
-                    Benvenuto, Capitano!
-                </h1>
-                <p class="text-secondary" style="font-size: 16px; margin-bottom: var(--spacing-sm);">
-                    Ore motore: <span class="space-grotesk" style="color: var(--accent-gold); font-weight: 700;">208.5h</span> | Ultima uscita: 08 Gennaio 2026
-                </p>
-                <p id="marine-quote" style="font-style: italic; color: var(--accent-aqua); font-size: 15px; margin-top: var(--spacing-lg); max-width: 600px; margin-left: auto; margin-right: auto;">
-                    "Quando il vento dalla montagna va al mare, prendi la rete e vai a pescare"
-                </p>
-            </div>
+        <div style="margin-top: calc(var(--nav-height) + var(--spacing-md));">
+            <div class="dash-wrap">
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-xl); margin-bottom: var(--spacing-2xl);">
-                <div class="card" style="text-align: center;">
-                    <i data-lucide="gauge" style="width: 48px; height: 48px; color: var(--accent-gold); margin-bottom: var(--spacing-md);"></i>
-                    <div class="label" style="font-size: 12px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: var(--spacing-xs);">Ore Motore</div>
-                    <div class="value space-grotesk" style="font-size: 48px; font-weight: 700; color: var(--accent-gold);">208.5h</div>
+                <!-- Hero -->
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet" id="dash-greet">Buongiorno, Capitano</h1>
+                    <div class="dash-hero-date" id="dash-date">—</div>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Ore Motore</div>
+                            <div class="dash-stat-value space-grotesk" id="dash-ore-motore">—</div>
+                            <div class="dash-stat-sub" id="dash-ore-delta">caricamento…</div>
+                        </div>
+                        <div class="dash-stat aqua">
+                            <div class="dash-stat-label">Ultima Uscita</div>
+                            <div class="dash-stat-value space-grotesk" id="dash-last-trip">—</div>
+                            <div class="dash-stat-sub" id="dash-last-trip-sub">caricamento…</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick actions -->
+                <section class="dash-qa">
+                    <button class="dash-qa-btn" onclick="window.location.hash='trips'">
+                        <span class="dash-qa-icon">🌊</span>
+                        Nuova Uscita
+                    </button>
+                    <button class="dash-qa-btn secondary" onclick="window.location.hash='maintenance'">
+                        <span class="dash-qa-icon">🔧</span>
+                        Registra Intervento
+                    </button>
+                </section>
+
+                <!-- Scadenze motore -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">⚠️ Prossime Scadenze Motore</span>
+                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); document.querySelector('[data-page=engine]').click();">vedi tutte →</a>
                 </div>
 
-                <div class="card" style="text-align: center;">
-                    <i data-lucide="wrench" style="width: 48px; height: 48px; color: var(--accent-coral); margin-bottom: var(--spacing-md);"></i>
-                    <div class="label" style="font-size: 12px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: var(--spacing-xs);">Lavori in Corso</div>
-                    <div class="value space-grotesk" style="font-size: 48px; font-weight: 700; color: var(--accent-coral);">12</div>
+                <section class="dash-scadenze" id="dash-scadenze-motore">
+                    <div class="dash-scadenza yellow">
+                        <div class="dash-sem-dot yellow"></div>
+                        <div class="dash-scadenza-body">
+                            <div class="dash-scadenza-title">Cambio olio motore</div>
+                            <div class="dash-scadenza-meta">🟡 27.3h rimanenti · alle 250h</div>
+                        </div>
+                        <span class="dash-scadenza-arrow">›</span>
+                    </div>
+                    <div class="dash-scadenza yellow">
+                        <div class="dash-sem-dot yellow"></div>
+                        <div class="dash-scadenza-body">
+                            <div class="dash-scadenza-title">Sostituzione filtro olio</div>
+                            <div class="dash-scadenza-meta">🟡 27.3h rimanenti · alle 250h</div>
+                        </div>
+                        <span class="dash-scadenza-arrow">›</span>
+                    </div>
+                    <div class="dash-scadenza green">
+                        <div class="dash-sem-dot green"></div>
+                        <div class="dash-scadenza-body">
+                            <div class="dash-scadenza-title">Controllo olio & refrigerante</div>
+                            <div class="dash-scadenza-meta">🟢 ciclo 10h · ultimo 3.1h fa (30 mar)</div>
+                        </div>
+                        <span class="dash-scadenza-arrow">›</span>
+                    </div>
+                    <div class="dash-scadenza green">
+                        <div class="dash-sem-dot green"></div>
+                        <div class="dash-scadenza-body">
+                            <div class="dash-scadenza-title">Cambio olio sail drive</div>
+                            <div class="dash-scadenza-meta">🟢 277.3h rimanenti · alle 500h</div>
+                        </div>
+                        <span class="dash-scadenza-arrow">›</span>
+                    </div>
+                </section>
+
+                <!-- Scadenze burocratiche -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">📋 Scadenze Burocratiche</span>
+                    <a href="#" class="dash-section-link">da inserire →</a>
+                </div>
+                <section class="dash-card" style="text-align: center; color: var(--text-tertiary); font-size: 13px; font-style: italic;">
+                    Assicurazione · Licenza di navigazione · Dichiarazione di potenza · Tassa stazionamento
+                    <div style="margin-top: 8px; font-size: 11px;">— date da configurare —</div>
+                </section>
+
+                <!-- Meteo / Sole Genova -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">☀️ Oggi a Genova</span>
+                </div>
+                <section class="dash-card dash-meteo">
+                    <div class="dash-meteo-block">
+                        <span class="dash-meteo-icon">🌅</span>
+                        <div>
+                            <div class="dash-meteo-label">Alba</div>
+                            <div class="dash-meteo-value" id="sunrise-time">—</div>
+                        </div>
+                    </div>
+                    <div class="dash-meteo-block">
+                        <span class="dash-meteo-icon">🌇</span>
+                        <div>
+                            <div class="dash-meteo-label">Tramonto</div>
+                            <div class="dash-meteo-value aqua" id="sunset-time">—</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Proverbio -->
+                <div class="dash-quote" id="marine-quote">
+                    Navigare è necessario, vivere non è necessario
                 </div>
 
-                <div class="card" style="text-align: center;">
-                    <i data-lucide="anchor" style="width: 48px; height: 48px; color: var(--accent-aqua); margin-bottom: var(--spacing-md);"></i>
-                    <div class="label" style="font-size: 12px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: var(--spacing-xs);">Uscite Totali</div>
-                    <div class="value space-grotesk" style="font-size: 48px; font-weight: 700; color: var(--accent-aqua);">25</div>
-                </div>
+                <!-- Script di aggiornamento data e saluto hero -->
+                <script>
+                    (function () {
+                        var d = new Date();
+                        var giorni = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+                        var mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+                        var elDate = document.getElementById('dash-date');
+                        if (elDate) elDate.textContent = giorni[d.getDay()] + ' · ' + d.getDate() + ' ' + mesi[d.getMonth()] + ' ' + d.getFullYear();
 
-                <div class="card" style="text-align: center;">
-                    <i data-lucide="sunrise" style="width: 48px; height: 48px; color: var(--warning); margin-bottom: var(--spacing-md);"></i>
-                    <div class="label" style="font-size: 12px; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: var(--spacing-xs);">Alba • Tramonto</div>
-                    <div id="sun-times" class="value space-grotesk" style="font-size: 24px; font-weight: 700; color: var(--warning);">
-                        <span id="sunrise-time">07:21</span> • <span id="sunset-time">17:56</span>
-                    </div>
-                    <div id="sun-date" class="tiny text-secondary" style="margin-top: var(--spacing-xs); font-weight: 500;">Lun, 17 Feb 2026</div>
-                    <div id="sun-location" class="tiny text-tertiary" style="margin-top: 2px;">Genova</div>
-                </div>
-            </div>
+                        // Saluto dinamico in base all'ora
+                        var h = d.getHours();
+                        var saluto;
+                        if (h >= 5 && h < 12)       saluto = 'Buongiorno, Capitano';
+                        else if (h >= 12 && h < 18) saluto = 'Buon pomeriggio, Capitano';
+                        else if (h >= 18 && h < 22) saluto = 'Buonasera, Capitano';
+                        else                         saluto = 'Buonanotte, Capitano';
+                        var elGreet = document.getElementById('dash-greet');
+                        if (elGreet) elGreet.textContent = saluto;
+                    })();
+                </script>
 
-            <div class="card" style="margin-bottom: var(--spacing-2xl);">
-                <h3 style="margin-bottom: var(--spacing-xl);">⚠️ Manutenzioni in Scadenza</h3>
-                
-                <div style="margin-bottom: var(--spacing-xl);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                        <span style="font-weight: 600;">Cambio Olio Motore</span>
-                        <span class="remaining-text p0">42h rimanenti / 250h</span>
-                    </div>
-                    <div class="progress-wrapper">
-                        <div class="progress-bar-bg">
-                            <div class="progress-fill p0-gradient" data-width="83"></div>
-                        </div>
-                        <span class="progress-pct">83%</span>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: var(--spacing-xl);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                        <span style="font-weight: 600;">Filtro Olio</span>
-                        <span class="remaining-text p0">42h rimanenti / 250h</span>
-                    </div>
-                    <div class="progress-wrapper">
-                        <div class="progress-bar-bg">
-                            <div class="progress-fill p0-gradient" data-width="83"></div>
-                        </div>
-                        <span class="progress-pct">83%</span>
-                    </div>
-                </div>
-
-                <div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                        <span style="font-weight: 600;">Controllo Olio</span>
-                        <span class="remaining-text p3">1.5h rimanenti / 10h</span>
-                    </div>
-                    <div class="progress-wrapper">
-                        <div class="progress-bar-bg">
-                            <div class="progress-fill p3-gradient" data-width="85"></div>
-                        </div>
-                        <span class="progress-pct">85%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NUOVO: Panoramica Completa Manutenzioni -->
-            <div class="card">
-                <h3 style="margin-bottom: var(--spacing-lg);">📋 Panoramica Completa Manutenzioni</h3>
-                <p class="text-secondary small" style="margin-bottom: var(--spacing-xl);">Tutte le manutenzioni dal manuale VETUS M4.56</p>
-                
-                <div style="max-height: 600px; overflow-y: auto; padding-right: var(--spacing-md);">
-                    
-                    <!-- OGNI 10H -->
-                    <div style="margin-bottom: var(--spacing-2xl);">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <span class="badge p3">OGNI 10H</span>
-                            <h4 class="text-secondary">Controlli Giornalieri</h4>
-                        </div>
-                        
-                        <div style="display: grid; gap: var(--spacing-lg);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Controllo Livello Olio</span>
-                                    <span class="tiny text-tertiary">1.5h / 10h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="85"></div>
-                                    </div>
-                                    <span class="progress-pct">85%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Controllo Refrigerante</span>
-                                    <span class="tiny text-tertiary">1.5h / 10h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="85"></div>
-                                    </div>
-                                    <span class="progress-pct">85%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Filtro Acqua Mare</span>
-                                    <span class="tiny text-tertiary">1.5h / 10h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="85"></div>
-                                    </div>
-                                    <span class="progress-pct">85%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- OGNI 100H -->
-                    <div style="margin-bottom: var(--spacing-2xl);">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <span class="badge p2">OGNI 100H</span>
-                            <h4 class="text-secondary">Manutenzione Ordinaria</h4>
-                        </div>
-                        
-                        <div style="display: grid; gap: var(--spacing-lg);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Drenaggio Filtro Gasolio</span>
-                                    <span class="tiny text-tertiary">-8.5h / 100h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p0-gradient" data-width="108"></div>
-                                    </div>
-                                    <span class="progress-pct">108%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Controllo Batteria</span>
-                                    <span class="tiny text-tertiary">-8.5h / 100h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p0-gradient" data-width="108"></div>
-                                    </div>
-                                    <span class="progress-pct">108%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Olio Riduttore</span>
-                                    <span class="tiny text-tertiary">-8.5h / 100h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p0-gradient" data-width="108"></div>
-                                    </div>
-                                    <span class="progress-pct">108%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- OGNI 250H -->
-                    <div style="margin-bottom: var(--spacing-2xl);">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <span class="badge p0">OGNI 250H ⚠️</span>
-                            <h4 class="text-secondary">Sostituzione Fluidi</h4>
-                        </div>
-                        
-                        <div style="display: grid; gap: var(--spacing-lg);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Cambio Olio Motore</span>
-                                    <span class="tiny text-tertiary">41.5h / 250h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p0-gradient" data-width="83"></div>
-                                    </div>
-                                    <span class="progress-pct">83%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Filtro Olio</span>
-                                    <span class="tiny text-tertiary">41.5h / 250h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p0-gradient" data-width="83"></div>
-                                    </div>
-                                    <span class="progress-pct">83%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- OGNI 500H -->
-                    <div style="margin-bottom: var(--spacing-2xl);">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <span class="badge p1">OGNI 500H</span>
-                            <h4 class="text-secondary">Manutenzione Estesa</h4>
-                        </div>
-                        
-                        <div style="display: grid; gap: var(--spacing-lg);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Filtro Gasolio</span>
-                                    <span class="tiny text-tertiary">291.5h / 500h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="42"></div>
-                                    </div>
-                                    <span class="progress-pct">42%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Pompa Carburante</span>
-                                    <span class="tiny text-tertiary">291.5h / 500h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="42"></div>
-                                    </div>
-                                    <span class="progress-pct">42%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Olio Riduttore</span>
-                                    <span class="tiny text-tertiary">291.5h / 500h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="42"></div>
-                                    </div>
-                                    <span class="progress-pct">42%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Gioco Valvole</span>
-                                    <span class="tiny text-tertiary">291.5h / 500h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="42"></div>
-                                    </div>
-                                    <span class="progress-pct">42%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Cinghia Alternatore</span>
-                                    <span class="tiny text-tertiary">291.5h / 500h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="42"></div>
-                                    </div>
-                                    <span class="progress-pct">42%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- OGNI 1000H -->
-                    <div>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <span class="badge p3">OGNI 1000H</span>
-                            <h4 class="text-secondary">Manutenzione Maggiore</h4>
-                        </div>
-                        
-                        <div style="display: grid; gap: var(--spacing-lg);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Girante Pompa Acqua</span>
-                                    <span class="tiny text-tertiary">791.5h / 1000h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="21"></div>
-                                    </div>
-                                    <span class="progress-pct">21%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Liquido Refrigerante</span>
-                                    <span class="tiny text-tertiary">791.5h / 1000h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="21"></div>
-                                    </div>
-                                    <span class="progress-pct">21%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Filtro Aria</span>
-                                    <span class="tiny text-tertiary">791.5h / 1000h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="21"></div>
-                                    </div>
-                                    <span class="progress-pct">21%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Motorino Avviamento</span>
-                                    <span class="tiny text-tertiary">791.5h / 1000h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="21"></div>
-                                    </div>
-                                    <span class="progress-pct">21%</span>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
-                                    <span class="small">Alternatore</span>
-                                    <span class="tiny text-tertiary">791.5h / 1000h</span>
-                                </div>
-                                <div class="progress-wrapper">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-fill p3-gradient" data-width="21"></div>
-                                    </div>
-                                    <span class="progress-pct">21%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
@@ -1288,11 +1241,11 @@
                 <div class="engine-stats">
                     <div class="stat-pill">
                         <span class="label">ORE TOTALI</span>
-                        <span class="value space-grotesk" id="current-engine-hours">208.5h</span>
+                        <span class="value space-grotesk ore-motore-display" id="current-engine-hours">— h</span>
                     </div>
-                    <div class="stat-pill urgent">
+                    <div class="stat-pill urgent" id="engine-next-pill">
                         <span class="label">PROSSIMA SCADENZA</span>
-                        <span class="value">Olio (42h)</span>
+                        <span class="value" id="engine-next-value">—</span>
                     </div>
                 </div>
             </header>
@@ -1987,9 +1940,9 @@
             }
         }
 
-        // State
+        // State (verrà sovrascritto al primo fetch da Google Sheet)
         const engineState = {
-            currentHours: 208.5,
+            currentHours: 0,
             thresholdUrgent: 10,
             thresholdWarning: 25
         };
@@ -2219,20 +2172,36 @@
 
         async function caricaDatiDaSheets() {
             const url = getScriptUrl();
-            if (!url) return;
+            if (!url) {
+                console.warn('[Cataleya] URL Apps Script non configurato — apri Impostazioni e incolla l\'URL /exec');
+                setSyncStatus('error');
+                return;
+            }
 
             setSyncStatus('syncing');
             try {
-                const res = await fetch(url + '?action=read');
+                // Cache busting: senza ? _ = timestamp il browser può servire la vecchia risposta
+                const cacheBust = '&_=' + Date.now();
+                const res = await fetch(url + '?action=read' + cacheBust);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
+                console.log('[Cataleya] dati ricevuti:', {
+                    ore_motore: data.ore_motore,
+                    diario_count: (data.diario || []).length,
+                    lavori_count: (data.lavori || []).length,
+                    manprog_count: (data.manutenzione_programmata || []).length,
+                    storico_count: (data.storico_manutenzioni || []).length
+                });
 
-                // Aggiorna ore motore
-                if (data.ore_motore !== undefined) {
-                    engineState.currentHours = parseFloat(data.ore_motore) || engineState.currentHours;
-                    document.querySelectorAll('.ore-motore-display').forEach(el => {
-                        el.textContent = engineState.currentHours + 'h';
-                    });
+                // Aggiorna ore motore (engineState + tutti gli elementi con classe ore-motore-display)
+                if (data.ore_motore !== undefined && data.ore_motore !== null) {
+                    const ore = parseFloat(data.ore_motore);
+                    if (!isNaN(ore) && ore > 0) {
+                        engineState.currentHours = ore;
+                        document.querySelectorAll('.ore-motore-display').forEach(el => {
+                            el.textContent = ore.toFixed(1) + ' h';
+                        });
+                    }
                 }
 
                 // Aggiorna stat cards con dati reali
@@ -2246,13 +2215,52 @@
                     if (elLavori) elLavori.textContent = aperti;
                 }
 
-                // Aggiorna UI manutenzioni
+                // Aggiorna UI manutenzioni (pagina Motore - task card)
                 updateMaintenanceUI();
 
+                // Aggiorna la Dashboard mobile con dati vivi
+                // Niente try/catch silenzioso: se crepa lo vediamo nella console
+                renderDashboardLive(data);
+
+                // Aggiorna la pill "Prossima scadenza" della pagina Motore
+                renderEngineNextDeadline(data);
+
                 setSyncStatus('synced');
+                console.log('[Cataleya] sync OK — ore motore correnti:', engineState.currentHours);
             } catch (err) {
-                console.warn('Errore sync Sheets:', err.message);
+                console.error('[Cataleya] Errore sync Sheets:', err);
                 setSyncStatus('error');
+            }
+        }
+
+        // ── Pill "Prossima scadenza" pagina Motore ───────────────
+        // Trova la scadenza VETUS più urgente e la scrive nella stat-pill
+        function renderEngineNextDeadline(data) {
+            const valueEl = document.getElementById('engine-next-value');
+            const pillEl  = document.getElementById('engine-next-pill');
+            if (!valueEl || !pillEl || typeof VETUS_SCHEDULE === 'undefined') return;
+
+            const oreCorrenti = parseFloat(data && data.ore_motore) || engineState.currentHours || 0;
+            let bestLabel = '—', bestRemaining = Infinity, bestCls = 'urgent';
+
+            VETUS_SCHEDULE.forEach(sched => {
+                const last = findLastMaintenance(data, sched.matcher);
+                let remaining;
+                if (!last) {
+                    remaining = -9999; // mai fatto = max urgenza
+                } else {
+                    remaining = sched.intervalH - (oreCorrenti - last.ore);
+                }
+                if (remaining < bestRemaining) {
+                    bestRemaining = remaining;
+                    bestLabel = sched.label.replace(/^Cambio /, '').replace(/^Controllo /, '');
+                }
+            });
+
+            if (bestRemaining <= 0) {
+                valueEl.textContent = bestLabel + ' (scaduto)';
+            } else {
+                valueEl.textContent = bestLabel + ' (' + bestRemaining.toFixed(1) + 'h)';
             }
         }
 
@@ -2292,6 +2300,209 @@
                 alert(`✅ Manutenzione registrata localmente!\n"${taskName}" completata a ${engineState.currentHours}h.\n\nConfigura Google Sheets (⚙️) per salvare online.`);
             }
             updateMaintenanceUI();
+        }
+
+        // ────────────────────────────────────────────────────────────
+        // RENDER DASHBOARD LIVE — popola la nuova Dashboard mobile-first
+        // con dati vivi letti dal Google Sheet (via Apps Script).
+        // ────────────────────────────────────────────────────────────
+
+        // Cicli manutenzione VETUS M4.56 — modifica qui i pattern e gli
+        // intervalli se vuoi aggiungere altre scadenze monitorate.
+        const VETUS_SCHEDULE = [
+            { label: 'Cambio olio motore + filtro',  intervalH: 100, matcher: /(cambio.*olio.*motor|primo.*tagliand|tagliando.*motor)/i, hint: 'include sostituzione filtro olio e gasolio' },
+            { label: 'Cambio olio sail drive',       intervalH: 250, matcher: /(cambio|sostituzion).*(sail.?drive|trasmiss|invertitore)/i, hint: 'rabbocchi non contano come cambio' },
+            { label: 'Controllo olio & refrigerante', intervalH: 10,  matcher: /controllo.*(olio|refrigerant)/i,             hint: 'check rapido prima di ogni uscita' }
+        ];
+
+        // Normalizza ore motore: accetta "128,6 h", "50h", 128.6, "128.6", ecc.
+        function normalizeOre(val) {
+            if (val == null || val === '') return NaN;
+            const cleaned = String(val).replace(/h/gi, '').replace(',', '.').trim();
+            const n = parseFloat(cleaned);
+            return isNaN(n) ? NaN : n;
+        }
+
+        function parseDateIT(str) {
+            if (!str) return null;
+            // Formato Apps Script: dd/MM/yyyy
+            const m = String(str).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (m) return new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10));
+            // Fallback ISO
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function findDateKey(row) {
+            if (!row || typeof row !== 'object') return null;
+            const keys = Object.keys(row).filter(k => k !== '_rowIndex');
+            // priorità: chiavi che contengono "data" o sono "se"/"se "
+            return keys.find(k => /^se\s*$/i.test(k.trim()))
+                || keys.find(k => /data/i.test(k))
+                || keys[0];
+        }
+
+        // Cerca l'ultima manutenzione che fa match con il pattern, guardando
+        // in TUTTI i fogli: Storico Manutenzioni, Manutenzione programmata
+        // (solo Completata), Lavori & Manutenzione (solo Completata).
+        function findLastMaintenance(data, matcher) {
+            const candidates = [];
+
+            // Sorgente 1: Storico Manutenzioni
+            (data && data.storico_manutenzioni || []).forEach(r => {
+                if (r && r['Manutenzione'] && matcher.test(String(r['Manutenzione']))) {
+                    candidates.push({
+                        row: r,
+                        name: r['Manutenzione'],
+                        date: parseDateIT(r['Data']),
+                        ore:  normalizeOre(r['Ore Motore']),
+                        source: 'storico'
+                    });
+                }
+            });
+
+            // Sorgente 2: Manutenzione programmata (solo righe completate)
+            (data && data.manutenzione_programmata || []).forEach(r => {
+                if (r && r['Attività'] && /complet/i.test(String(r['Stato'] || '')) && matcher.test(String(r['Attività']))) {
+                    candidates.push({
+                        row: r,
+                        name: r['Attività'],
+                        date: parseDateIT(r['Data di fine'] || r['Data di inizio']),
+                        ore:  normalizeOre(r['Ore motore']),
+                        source: 'manprog'
+                    });
+                }
+            });
+
+            // Sorgente 3: Lavori & Manutenzione (solo righe completate)
+            (data && data.lavori || []).forEach(r => {
+                if (r && r['Attività'] && /complet/i.test(String(r['Stato'] || '')) && matcher.test(String(r['Attività']))) {
+                    candidates.push({
+                        row: r,
+                        name: r['Attività'],
+                        date: parseDateIT(r['Data di fine'] || r['Data di inizio']),
+                        ore:  normalizeOre(r['Ore motore']),
+                        source: 'lavori'
+                    });
+                }
+            });
+
+            const valid = candidates
+                .filter(x => x.date && !isNaN(x.ore) && x.ore > 0)
+                .sort((a,b) => b.date - a.date);
+            return valid.length ? valid[0] : null;
+        }
+
+        function semaforoFromRemaining(remaining, interval) {
+            // Semaforo relativo: rosso = ≥90% del ciclo consumato (o scaduto);
+            // giallo = ≥70%; verde altrimenti. Per cicli >= 50h aggiungo anche
+            // la soglia assoluta di 10h rimanenti come trigger rosso (urgenza
+            // operativa: serve tempo per organizzare l'intervento).
+            if (remaining <= 0) return { cls: 'red',    dot: '🔴' };
+            const pct = (interval - remaining) / interval * 100;
+            if (pct >= 90)                       return { cls: 'red',    dot: '🔴' };
+            if (interval >= 50 && remaining <= 10) return { cls: 'red',  dot: '🔴' };
+            if (pct >= 70)                       return { cls: 'yellow', dot: '🟡' };
+            return { cls: 'green', dot: '🟢' };
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        function buildScadenzaCard(label, statusClass, metaText) {
+            return `
+                <div class="dash-scadenza ${statusClass}">
+                    <div class="dash-sem-dot ${statusClass}"></div>
+                    <div class="dash-scadenza-body">
+                        <div class="dash-scadenza-title">${escapeHtml(label)}</div>
+                        <div class="dash-scadenza-meta">${metaText}</div>
+                    </div>
+                    <span class="dash-scadenza-arrow">›</span>
+                </div>
+            `;
+        }
+
+        function renderDashboardLive(data) {
+            const oreCorrenti = parseFloat(data && data.ore_motore) || 0;
+
+            // ─── Hero: ore motore correnti ───
+            const elOre = document.getElementById('dash-ore-motore');
+            if (elOre) elOre.textContent = oreCorrenti.toFixed(1) + ' h';
+
+            // ─── Hero: ultima uscita dal Diario ───
+            let lastTripDate = null, lastTripDelta = NaN, lastTripMiglia = NaN;
+            if (Array.isArray(data.diario) && data.diario.length) {
+                const last = data.diario[data.diario.length - 1];
+                const dataKey = findDateKey(last);
+                lastTripDate   = parseDateIT(last[dataKey]);
+                lastTripDelta  = parseFloat(last['ore motore']);
+                lastTripMiglia = parseFloat(last['Miglia percorse']);
+            }
+
+            const elDelta = document.getElementById('dash-ore-delta');
+            if (elDelta) {
+                if (!isNaN(lastTripDelta) && lastTripDelta > 0) {
+                    elDelta.textContent = '+' + lastTripDelta + 'h dall\'ultima uscita';
+                } else {
+                    elDelta.textContent = 'totale a oggi';
+                }
+            }
+
+            const elLast    = document.getElementById('dash-last-trip');
+            const elLastSub = document.getElementById('dash-last-trip-sub');
+            if (lastTripDate && elLast) {
+                const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+                elLast.textContent = lastTripDate.getDate() + ' ' + mesi[lastTripDate.getMonth()];
+
+                const diffGiorni = Math.floor((Date.now() - lastTripDate.getTime()) / 86400000);
+                const subParts = [];
+                if (diffGiorni <= 0)      subParts.push('oggi');
+                else if (diffGiorni === 1) subParts.push('ieri');
+                else                       subParts.push(diffGiorni + ' giorni fa');
+                if (!isNaN(lastTripMiglia) && lastTripMiglia > 0) {
+                    subParts.push(lastTripMiglia + ' Nm');
+                }
+                if (elLastSub) elLastSub.textContent = subParts.join(' · ');
+            } else if (elLast) {
+                elLast.textContent = '—';
+                if (elLastSub) elLastSub.textContent = 'nessuna uscita registrata';
+            }
+
+            // ─── Scadenze motore (rebuild completo) ───
+            const container = document.getElementById('dash-scadenze-motore');
+            if (!container) return;
+            container.innerHTML = '';
+
+            VETUS_SCHEDULE.forEach(sched => {
+                const last = findLastMaintenance(data, sched.matcher);
+                let cardHtml;
+                if (!last) {
+                    cardHtml = buildScadenzaCard(
+                        sched.label,
+                        'red',
+                        `🔴 mai registrato · ciclo ${sched.intervalH}h <span style="opacity:.6">— ${escapeHtml(sched.hint)}</span>`
+                    );
+                } else {
+                    const usedSince = oreCorrenti - last.ore;
+                    const remaining = sched.intervalH - usedSince;
+                    const sem       = semaforoFromRemaining(remaining, sched.intervalH);
+                    const dataStr   = last.row['Data'] || '';
+                    let meta;
+                    if (sched.intervalH <= 10) {
+                        // Per le scadenze brevi mostra ore trascorse anziché rimanenti
+                        meta = remaining > 0
+                            ? `${sem.dot} ${usedSince.toFixed(1)}h fa (${dataStr}) · ciclo ${sched.intervalH}h`
+                            : `${sem.dot} scaduto da ${Math.abs(remaining).toFixed(1)}h`;
+                    } else {
+                        meta = remaining > 0
+                            ? `${sem.dot} ${remaining.toFixed(1)}h rimanenti · ciclo ${sched.intervalH}h <span style="opacity:.55">(ultimo: ${dataStr} a ${last.ore}h)</span>`
+                            : `${sem.dot} scaduto da ${Math.abs(remaining).toFixed(1)}h <span style="opacity:.55">(ultimo: ${dataStr} a ${last.ore}h)</span>`;
+                    }
+                    cardHtml = buildScadenzaCard(sched.label, sem.cls, meta);
+                }
+                container.insertAdjacentHTML('beforeend', cardHtml);
+            });
         }
 
         // Avvio sincronizzazione al caricamento
