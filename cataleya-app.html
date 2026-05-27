@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.27-2330">
+<html lang="it" data-app-version="v2026.05.27-2337">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1197,7 +1197,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.27-2330
+                    app v2026.05.27-2337
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2450,8 +2450,10 @@
                 }
             });
 
+            // Filtra: vogliamo solo righe con DATA valida e ORE valide (anche 0!).
+            // IMPORTANTE: ore = 0 sono valide (es. motore nuovo installato a 0h)
             const valid = candidates
-                .filter(x => x.date && !isNaN(x.ore) && x.ore > 0)
+                .filter(x => x.date && !isNaN(x.ore) && x.ore >= 0)
                 .sort((a,b) => b.date - a.date);
             return valid.length ? valid[0] : null;
         }
