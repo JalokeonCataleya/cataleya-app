@@ -2173,13 +2173,77 @@
             }
         }
 
-        // Memorizza l'ultima firma dati ricevuti per detectare se Google ci ha servito una risposta cached
-        let _lastDataSignature = null;
+        // ── STRATEGIA DEFINITIVA ANTI-CACHE GOOGLE APPS SCRIPT ────────
+        // Apps Script può cachare le risposte Web App per ~60 secondi.
+        // Soluzione: DOUBLE-FETCH automatico.
+        //  1) Primo fetch: applica subito quel che torna (zero attesa per l'utente)
+        //  2) Wait 2.5 secondi
+        //  3) Secondo fetch con nonce diverso: se il dato è cambiato, aggiorna la UI
+        // Il pallino diventa verde solo al termine del secondo fetch.
+
+        // Esegue UNA singola chiamata al Web App con cache busting
+        async function _singleFetch(url, label) {
+            const nonce = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+            const cacheBust = '&_=' + Date.now() + '&n=' + nonce;
+            const res = await fetch(url + '?action=read' + cacheBust, {
+                method: 'GET',
+                cache: 'no-store'
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            console.log('[Cataleya] fetch ' + label + ':', {
+                ore_motore: data.ore_motore,
+                diario_count: (data.diario || []).length,
+                lavori_count: (data.lavori || []).length,
+                manprog_count: (data.manutenzione_programmata || []).length,
+                storico_count: (data.storico_manutenzioni || []).length
+            });
+            return data;
+        }
+
+        // Calcola una "firma" del payload per detectare se due fetch hanno restituito dati identici
+        function _signatureOf(data) {
+            return JSON.stringify({
+                o: data && data.ore_motore,
+                d: (data && data.diario || []).length,
+                l: (data && data.lavori || []).length,
+                m: (data && data.manutenzione_programmata || []).length,
+                s: (data && data.storico_manutenzioni || []).length
+            });
+        }
+
+        // Applica i dati ricevuti a tutti gli elementi della UI (Dashboard + Engine page)
+        function _applicaDati(data) {
+            // Ore motore (engineState + tutti gli elementi con classe ore-motore-display)
+            if (data.ore_motore !== undefined && data.ore_motore !== null) {
+                const ore = parseFloat(data.ore_motore);
+                if (!isNaN(ore) && ore > 0) {
+                    engineState.currentHours = ore;
+                    document.querySelectorAll('.ore-motore-display').forEach(el => {
+                        el.textContent = ore.toFixed(1) + ' h';
+                    });
+                }
+            }
+            // Stat cards
+            if (data.diario) {
+                const elUscite = document.querySelector('.stat-uscite');
+                if (elUscite) elUscite.textContent = data.diario.length;
+            }
+            if (data.lavori) {
+                const aperti = data.lavori.filter(l => l['Stato'] !== 'Completata').length;
+                const elLavori = document.querySelector('.stat-lavori');
+                if (elLavori) elLavori.textContent = aperti;
+            }
+            // UI manutenzioni (pagina Motore)
+            updateMaintenanceUI();
+            // Dashboard mobile
+            renderDashboardLive(data);
+            // Pill "Prossima scadenza" pagina Motore
+            renderEngineNextDeadline(data);
+        }
 
         async function caricaDatiDaSheets(opts) {
             opts = opts || {};
-            const isRetry = opts.retry === true;
-            const isManual = opts.manual === true;
             const url = getScriptUrl();
             if (!url) {
                 console.warn('[Cataleya] URL Apps Script non configurato — apri Impostazioni e incolla l\'URL /exec');
@@ -2189,91 +2253,37 @@
 
             setSyncStatus('syncing');
             try {
-                // Cache busting senza scatenare CORS preflight:
-                //  - timestamp + random nonce in query (per cache server-side e browser)
-                //  - cache: 'no-store' (browser non riusa la risposta)
-                //  - NIENTE headers custom (Apps Script non gestisce CORS preflight)
-                const nonce = Math.random().toString(36).slice(2);
-                const cacheBust = '&_=' + Date.now() + '&n=' + nonce;
-                const res = await fetch(url + '?action=read' + cacheBust, {
-                    method: 'GET',
-                    cache: 'no-store'
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
+                // PRIMO FETCH — applichiamo subito quel che torna
+                const data1 = await _singleFetch(url, '1°');
+                _applicaDati(data1);
+                const sig1 = _signatureOf(data1);
 
-                // Calcolo firma dati per detectare se Google ha servito una risposta cached identica
-                const sig = JSON.stringify({
-                    o: data.ore_motore,
-                    d: (data.diario || []).length,
-                    l: (data.lavori || []).length,
-                    m: (data.manutenzione_programmata || []).length,
-                    s: (data.storico_manutenzioni || []).length
-                });
-                const stessoDiPrima = (_lastDataSignature !== null && _lastDataSignature === sig);
-                _lastDataSignature = sig;
+                // SECONDO FETCH dopo 2.5 secondi — bypassa cache server Google (~60s)
+                // ma con nonce diverso ci permette di intercettare un dato più fresh
+                // se nel frattempo è stata fatta una scrittura sul foglio
+                await new Promise(r => setTimeout(r, 2500));
+                const data2 = await _singleFetch(url, '2°');
+                const sig2 = _signatureOf(data2);
 
-                console.log('[Cataleya] dati ricevuti' + (isRetry ? ' (RETRY)' : '') + (isManual ? ' (MANUALE)' : '') + ':', {
-                    ore_motore: data.ore_motore,
-                    diario_count: (data.diario || []).length,
-                    lavori_count: (data.lavori || []).length,
-                    manprog_count: (data.manutenzione_programmata || []).length,
-                    storico_count: (data.storico_manutenzioni || []).length,
-                    stesso_di_prima: stessoDiPrima
-                });
-
-                // Aggiorna ore motore (engineState + tutti gli elementi con classe ore-motore-display)
-                if (data.ore_motore !== undefined && data.ore_motore !== null) {
-                    const ore = parseFloat(data.ore_motore);
-                    if (!isNaN(ore) && ore > 0) {
-                        engineState.currentHours = ore;
-                        document.querySelectorAll('.ore-motore-display').forEach(el => {
-                            el.textContent = ore.toFixed(1) + ' h';
-                        });
-                    }
+                if (sig1 !== sig2) {
+                    console.log('[Cataleya] 2° fetch più fresco → aggiorno UI');
+                    _applicaDati(data2);
+                } else {
+                    console.log('[Cataleya] 2° fetch identico al 1° → niente da aggiornare');
                 }
-
-                // Aggiorna stat cards con dati reali
-                if (data.diario) {
-                    const elUscite = document.querySelector('.stat-uscite');
-                    if (elUscite) elUscite.textContent = data.diario.length;
-                }
-                if (data.lavori) {
-                    const aperti = data.lavori.filter(l => l['Stato'] !== 'Completata').length;
-                    const elLavori = document.querySelector('.stat-lavori');
-                    if (elLavori) elLavori.textContent = aperti;
-                }
-
-                // Aggiorna UI manutenzioni (pagina Motore - task card)
-                updateMaintenanceUI();
-
-                // Aggiorna la Dashboard mobile con dati vivi
-                // Niente try/catch silenzioso: se crepa lo vediamo nella console
-                renderDashboardLive(data);
-
-                // Aggiorna la pill "Prossima scadenza" della pagina Motore
-                renderEngineNextDeadline(data);
 
                 setSyncStatus('synced');
-                console.log('[Cataleya] sync OK — ore motore correnti:', engineState.currentHours);
-
-                // Se l'utente ha appena premuto refresh manuale e Google ci ha servito
-                // lo stesso identico dato, riproviamo dopo 3 secondi (Apps Script cache ~60s
-                // ma con nonce diverso a volte la 2a chiamata bypassa)
-                if (isManual && stessoDiPrima && !isRetry) {
-                    console.log('[Cataleya] sembra cache server — retry tra 3 secondi');
-                    setTimeout(() => caricaDatiDaSheets({ retry: true, manual: true }), 3000);
-                }
+                console.log('[Cataleya] double-fetch completato — ore motore correnti:', engineState.currentHours);
             } catch (err) {
                 console.error('[Cataleya] Errore sync Sheets:', err);
                 setSyncStatus('error');
             }
         }
 
-        // Pulsante refresh manuale (chiamato dal click su 🔄)
+        // Pulsante refresh manuale (click su 🔄 nella navbar)
+        // Forza un double-fetch immediato
         function refreshDati() {
             console.log('[Cataleya] refresh manuale richiesto');
-            _lastDataSignature = null; // forziamo a riconoscere il dato come "primo arrivo"
             caricaDatiDaSheets({ manual: true });
         }
 
