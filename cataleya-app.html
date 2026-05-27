@@ -1046,6 +1046,9 @@
         </div>
         <div class="nav-actions">
             <div class="sync-status" id="sync-status" title="Sincronizzato"></div>
+            <button class="btn-icon" title="Ricarica dati dal Google Sheet" onclick="refreshDati()" id="btn-refresh">
+                <i data-lucide="refresh-cw"></i>
+            </button>
             <button class="btn-icon" title="Impostazioni" onclick="openSettings()">
                 <i data-lucide="settings"></i>
             </button>
@@ -2170,7 +2173,13 @@
             }
         }
 
-        async function caricaDatiDaSheets() {
+        // Memorizza l'ultima firma dati ricevuti per detectare se Google ci ha servito una risposta cached
+        let _lastDataSignature = null;
+
+        async function caricaDatiDaSheets(opts) {
+            opts = opts || {};
+            const isRetry = opts.retry === true;
+            const isManual = opts.manual === true;
             const url = getScriptUrl();
             if (!url) {
                 console.warn('[Cataleya] URL Apps Script non configurato — apri Impostazioni e incolla l\'URL /exec');
@@ -2180,17 +2189,41 @@
 
             setSyncStatus('syncing');
             try {
-                // Cache busting: senza ? _ = timestamp il browser può servire la vecchia risposta
-                const cacheBust = '&_=' + Date.now();
-                const res = await fetch(url + '?action=read' + cacheBust);
+                // Cache busting AGGRESSIVO:
+                //  - timestamp + random nonce in query (per server-side Apps Script e browser)
+                //  - cache: 'no-store' (browser non riusa la risposta)
+                //  - Pragma / Cache-Control (proxy intermedi)
+                const nonce = Math.random().toString(36).slice(2);
+                const cacheBust = '&_=' + Date.now() + '&n=' + nonce;
+                const res = await fetch(url + '?action=read' + cacheBust, {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Pragma': 'no-cache',
+                        'Cache-Control': 'no-cache, no-store, must-revalidate'
+                    }
+                });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
-                console.log('[Cataleya] dati ricevuti:', {
+
+                // Calcolo firma dati per detectare se Google ha servito una risposta cached identica
+                const sig = JSON.stringify({
+                    o: data.ore_motore,
+                    d: (data.diario || []).length,
+                    l: (data.lavori || []).length,
+                    m: (data.manutenzione_programmata || []).length,
+                    s: (data.storico_manutenzioni || []).length
+                });
+                const stessoDiPrima = (_lastDataSignature !== null && _lastDataSignature === sig);
+                _lastDataSignature = sig;
+
+                console.log('[Cataleya] dati ricevuti' + (isRetry ? ' (RETRY)' : '') + (isManual ? ' (MANUALE)' : '') + ':', {
                     ore_motore: data.ore_motore,
                     diario_count: (data.diario || []).length,
                     lavori_count: (data.lavori || []).length,
                     manprog_count: (data.manutenzione_programmata || []).length,
-                    storico_count: (data.storico_manutenzioni || []).length
+                    storico_count: (data.storico_manutenzioni || []).length,
+                    stesso_di_prima: stessoDiPrima
                 });
 
                 // Aggiorna ore motore (engineState + tutti gli elementi con classe ore-motore-display)
@@ -2227,10 +2260,25 @@
 
                 setSyncStatus('synced');
                 console.log('[Cataleya] sync OK — ore motore correnti:', engineState.currentHours);
+
+                // Se l'utente ha appena premuto refresh manuale e Google ci ha servito
+                // lo stesso identico dato, riproviamo dopo 3 secondi (Apps Script cache ~60s
+                // ma con nonce diverso a volte la 2a chiamata bypassa)
+                if (isManual && stessoDiPrima && !isRetry) {
+                    console.log('[Cataleya] sembra cache server — retry tra 3 secondi');
+                    setTimeout(() => caricaDatiDaSheets({ retry: true, manual: true }), 3000);
+                }
             } catch (err) {
                 console.error('[Cataleya] Errore sync Sheets:', err);
                 setSyncStatus('error');
             }
+        }
+
+        // Pulsante refresh manuale (chiamato dal click su 🔄)
+        function refreshDati() {
+            console.log('[Cataleya] refresh manuale richiesto');
+            _lastDataSignature = null; // forziamo a riconoscere il dato come "primo arrivo"
+            caricaDatiDaSheets({ manual: true });
         }
 
         // ── Pill "Prossima scadenza" pagina Motore ───────────────
