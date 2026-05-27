@@ -2189,19 +2189,15 @@
 
             setSyncStatus('syncing');
             try {
-                // Cache busting AGGRESSIVO:
-                //  - timestamp + random nonce in query (per server-side Apps Script e browser)
+                // Cache busting senza scatenare CORS preflight:
+                //  - timestamp + random nonce in query (per cache server-side e browser)
                 //  - cache: 'no-store' (browser non riusa la risposta)
-                //  - Pragma / Cache-Control (proxy intermedi)
+                //  - NIENTE headers custom (Apps Script non gestisce CORS preflight)
                 const nonce = Math.random().toString(36).slice(2);
                 const cacheBust = '&_=' + Date.now() + '&n=' + nonce;
                 const res = await fetch(url + '?action=read' + cacheBust, {
                     method: 'GET',
-                    cache: 'no-store',
-                    headers: {
-                        'Pragma': 'no-cache',
-                        'Cache-Control': 'no-cache, no-store, must-revalidate'
-                    }
+                    cache: 'no-store'
                 });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
