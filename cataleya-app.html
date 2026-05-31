@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1540">
+<html lang="it" data-app-version="v2026.05.31-1550">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1281,7 +1281,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1540
+                    app v2026.05.31-1550
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2503,7 +2503,7 @@
                 .replace(/"/g,'&quot;');
         }
 
-        // Dashboard live — aggiorna hero stats e data odierna
+        // Dashboard live — aggiorna hero stats, ultima uscita e scadenze motore
         function renderDashboardLive(data) {
             // Saluto in base all'ora
             const ora = new Date().getHours();
@@ -2512,10 +2512,10 @@
             if (elGreet) elGreet.textContent = saluto + ', Capitano';
 
             // Data odierna
-            const mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+            const mesiL = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
             const oggi = new Date();
             const elDate = document.getElementById('dash-date');
-            if (elDate) elDate.textContent = oggi.getDate() + ' ' + mesi[oggi.getMonth()] + ' ' + oggi.getFullYear();
+            if (elDate) elDate.textContent = oggi.getDate() + ' ' + mesiL[oggi.getMonth()] + ' ' + oggi.getFullYear();
 
             // Ore motore hero
             const ore = parseFloat(data && data.ore_motore) || 0;
@@ -2527,19 +2527,60 @@
                 const last = data.diario[data.diario.length - 1];
                 const d = parseDateIT(last[findDateKey(last)]);
                 if (d) {
+                    const mesiS = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
                     const elLast = document.getElementById('dash-last-trip');
-                    if (elLast) elLast.textContent = d.getDate() + ' ' + ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'][d.getMonth()];
+                    if (elLast) elLast.textContent = d.getDate() + ' ' + mesiS[d.getMonth()];
                     const diffG = Math.floor((Date.now() - d.getTime()) / 86400000);
                     const elSub = document.getElementById('dash-last-trip-sub');
                     if (elSub) elSub.textContent = diffG <= 0 ? 'oggi' : diffG === 1 ? 'ieri' : diffG + ' giorni fa';
                 }
                 const elDelta = document.getElementById('dash-ore-delta');
-                const oreUscita = parseFloat(last['Ore motore'] || last['ore motore'] || 0);
-                if (elDelta && oreUscita > 0) elDelta.textContent = '+' + oreUscita + 'h dall\'ultima uscita';
+                const oreU = parseFloat(last['ore motore'] || last['Ore motore'] || 0);
+                if (elDelta && oreU > 0) elDelta.textContent = '+' + oreU + "h dall'ultima uscita";
             }
+
+            // Scadenze motore — legge le task-card live dalla pagina Motore
+            const container = document.getElementById('dash-scadenze-motore');
+            if (!container) return;
+
+            const oreCorrente = engineState.currentHours || ore;
+            const tasks = Array.from(document.querySelectorAll('.task-card'));
+            if (!tasks.length) return;
+
+            // Calcola remaining per ogni task
+            const items = tasks.map(t => {
+                const interval  = parseInt(t.dataset.interval) || 0;
+                const lastDone  = parseFloat(t.dataset.last) || 0;
+                const nome      = (t.querySelector('h4') || {}).textContent || '?';
+                const remaining = interval - (oreCorrente - lastDone);
+                return { nome, interval, remaining };
+            }).sort((a, b) => a.remaining - b.remaining); // urgenti prima
+
+            // Mostra le prime 4
+            container.innerHTML = items.slice(0, 4).map(item => {
+                let cls, dot, meta;
+                if (item.remaining <= 0) {
+                    cls = 'red';   dot = '🔴';
+                    meta = dot + ' scaduto da ' + Math.abs(item.remaining).toFixed(1) + 'h · ciclo ' + item.interval + 'h';
+                } else if (item.remaining <= engineState.thresholdUrgent) {
+                    cls = 'red';   dot = '🔴';
+                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
+                } else if (item.remaining <= engineState.thresholdWarning) {
+                    cls = 'yellow'; dot = '🟡';
+                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
+                } else {
+                    cls = 'green';  dot = '🟢';
+                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · ciclo ' + item.interval + 'h';
+                }
+                return '<div class="dash-scadenza ' + cls + '">' +
+                    '<div class="dash-sem-dot ' + cls + '"></div>' +
+                    '<div class="dash-scadenza-body">' +
+                    '<div class="dash-scadenza-title">' + escapeHtml(item.nome) + '</div>' +
+                    '<div class="dash-scadenza-meta">' + meta + '</div>' +
+                    '</div><span class="dash-scadenza-arrow">›</span></div>';
+            }).join('');
         }
 
-        // Pill "Prossima scadenza" pagina Motore
         function renderEngineNextDeadline(data) {
             // placeholder — la pagina Motore ha già i dati hardcoded nel DOM
         }
