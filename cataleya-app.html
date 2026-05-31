@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1600">
+<html lang="it" data-app-version="v2026.05.31-1610">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1281,7 +1281,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1600
+                    app v2026.05.31-1610
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2402,6 +2402,10 @@
             }
             // UI manutenzioni (pagina Motore)
             updateMaintenanceUI();
+            // Aggiorna data-last da storico GAS se disponibile
+            if (data.storico_manutenzioni && data.storico_manutenzioni.length) {
+                updateTaskCardsFromStorico(data.storico_manutenzioni);
+            }
             // Dashboard mobile
             renderDashboardLive(data);
             // Pill "Prossima scadenza" pagina Motore
@@ -2501,6 +2505,64 @@
                 .replace(/</g,'&lt;')
                 .replace(/>/g,'&gt;')
                 .replace(/"/g,'&quot;');
+        }
+
+
+        // Aggiorna data-last di ogni task-card usando lo storico manutenzioni dal GAS
+        // Cerca l'intervento più recente (ore motore più alte) per ogni task
+        function updateTaskCardsFromStorico(storico) {
+            if (!Array.isArray(storico) || !storico.length) return;
+
+            // Trova il campo "ore motore" e "voce" nel primo record (nomi flessibili)
+            const sample = storico[0];
+            const oreKey  = Object.keys(sample).find(k => /ore.?motore|ore_motore/i.test(k)) || 'Ore motore';
+            const voceKey = Object.keys(sample).find(k => /voce|tipo|intervento|descrizione|manutenzione/i.test(k)) || 'Voce';
+
+            // Mappa: parole chiave univoche per ogni task-card h4
+            const MATCH_MAP = [
+                { keywords: ['cambio olio', 'olio motore'],    exclude: ['riduttore','filtro'], selector: 'Cambio Olio Motore' },
+                { keywords: ['filtro olio'],                    exclude: [],                     selector: 'Sostituzione Filtro Olio' },
+                { keywords: ['refrigerante', 'liquido refriger'],exclude: [],                   selector: 'Controllo Livello Refrigerante' },
+                { keywords: ['filtro acqua', 'acqua mare'],     exclude: ['gasolio'],            selector: 'Controllo Filtro Acqua Mare' },
+                { keywords: ['olio', 'livello olio'],           exclude: ['cambio','riduttore','filtro'], selector: 'Controllo Livello Olio Motore' },
+                { keywords: ['gasolio', 'filtro gasolio'],      exclude: [],                     selector: 'Drenaggio Acqua Filtro Gasolio' },
+                { keywords: ['batteria'],                       exclude: [],                     selector: 'Controllo Batteria e Collegamenti' },
+                { keywords: ['riduttore', 'olio riduttore'],    exclude: [],                     selector: 'Controllo Livello Olio Riduttore' },
+                { keywords: ['girante', 'pompa acqua'],         exclude: [],                     selector: 'Ispezione Girante Pompa Acqua Mare' },
+                { keywords: ['cinghia', 'alternatore'],         exclude: [],                     selector: 'Controllo Cinghia Alternatore' },
+                { keywords: ['valvole'],                        exclude: [],                     selector: 'Controllo Gioco Valvole' },
+                { keywords: ['filtro gasolio', 'filtro carburante'], exclude: [],               selector: 'Sostituzione Filtro Gasolio' },
+            ];
+
+            MATCH_MAP.forEach(rule => {
+                // Trova i record storici che corrispondono a questa regola
+                const matching = storico.filter(r => {
+                    const voce = String(r[voceKey] || '').toLowerCase();
+                    const hasKeyword = rule.keywords.some(kw => voce.includes(kw));
+                    const hasExclude = rule.exclude.some(ex => voce.includes(ex));
+                    return hasKeyword && !hasExclude;
+                });
+                if (!matching.length) return;
+
+                // Prendi il record con ore motore più alte (il più recente)
+                const best = matching.reduce((max, r) => {
+                    const h = parseFloat(r[oreKey]) || 0;
+                    return h > (parseFloat(max[oreKey]) || 0) ? r : max;
+                });
+                const lastHours = parseFloat(best[oreKey]);
+                if (!lastHours || isNaN(lastHours)) return;
+
+                // Aggiorna il task-card corrispondente
+                document.querySelectorAll('.task-card').forEach(card => {
+                    const h4 = card.querySelector('h4');
+                    if (h4 && h4.textContent.trim() === rule.selector) {
+                        card.dataset.last = lastHours.toFixed(1);
+                    }
+                });
+            });
+
+            // Ricalcola la UI con i nuovi valori
+            updateMaintenanceUI();
         }
 
         // Dashboard live — aggiorna hero stats, ultima uscita e scadenze motore
