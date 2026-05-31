@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1520">
+<html lang="it" data-app-version="v2026.05.31-1525">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1276,7 +1276,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1520
+                    app v2026.05.31-1525
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2460,7 +2460,9 @@
             // formato dd/MM/yyyy
             const m1 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
             if (m1) return new Date(+m1[3], +m1[2]-1, +m1[1]);
-            // formato yyyy-MM-dd
+            // formato yyyy-MM-ddTHH:mm:ss.sssZ (ISO con timezone — usa new Date per rispettare UTC+2)
+            if (str.includes('T')) { const d = new Date(str); return isNaN(d) ? null : d; }
+            // formato yyyy-MM-dd (senza orario)
             const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
             if (m2) return new Date(+m2[1], +m2[2]-1, +m2[3]);
             // prova Date nativa
