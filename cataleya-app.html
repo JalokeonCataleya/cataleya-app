@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1530">
+<html lang="it" data-app-version="v2026.05.31-1540">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -637,7 +637,8 @@
         .trip-date-mon { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; }
         .trip-date-year { font-size: 10px; color: var(--text-tertiary); }
         .trip-body { flex: 1; min-width: 0; }
-        .trip-title { font-weight: 600; font-size: 14px; }
+        .trip-title { font-weight: 600; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .trip-card.expanded .trip-title { display: block; overflow: visible; -webkit-line-clamp: unset; }
         .trip-card { cursor: pointer; }
         .trip-extra { display: none; margin-top: 8px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.07); padding-top: 8px; line-height: 1.8; }
         .trip-card.expanded .trip-extra { display: block; }
@@ -1280,7 +1281,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1530
+                    app v2026.05.31-1540
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2622,9 +2623,8 @@ renderTripsList();
 
                 const label = note || (miglia > 0 ? miglia + ' Nm' : 'Uscita in mare');
 
-                // Dettagli estesi per sezione espandibile
+                // Dettagli estesi per sezione espandibile (nota NON ripetuta, è già nel titolo)
                 const extras = [];
-                if (note) extras.push('📝 ' + escapeHtml(note));
                 if (miglia > 0) extras.push('⚓ Miglia: ' + miglia + ' Nm');
                 if (oreM > 0)   extras.push('⚙️ Ore motore: ' + oreM + 'h');
                 if (vento)      extras.push('💨 Vento: ' + escapeHtml(vento) + 'kn' + (vDir ? ' ' + escapeHtml(vDir) : ''));
