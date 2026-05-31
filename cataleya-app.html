@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1630">
+<html lang="it" data-app-version="v2026.05.31-1640">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1331,7 +1331,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1630
+                    app v2026.05.31-1640
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2922,7 +2922,7 @@ renderTripsList();
                     setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
                     alert('Uscita salvata!');
                 } else {
-                    throw new Error(json.error || 'Errore sconosciuto');
+                    throw new Error('GAS risponde: ' + JSON.stringify(json));
                 }
             } catch (err) {
                 btn.disabled = false;
