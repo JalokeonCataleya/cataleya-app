@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1525">
+<html lang="it" data-app-version="v2026.05.31-1530">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -637,7 +637,11 @@
         .trip-date-mon { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; }
         .trip-date-year { font-size: 10px; color: var(--text-tertiary); }
         .trip-body { flex: 1; min-width: 0; }
-        .trip-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trip-title { font-weight: 600; font-size: 14px; }
+        .trip-card { cursor: pointer; }
+        .trip-extra { display: none; margin-top: 8px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.07); padding-top: 8px; line-height: 1.8; }
+        .trip-card.expanded .trip-extra { display: block; }
+        .trip-card.expanded { background: rgba(78,205,196,0.08); border-color: rgba(78,205,196,0.2); }
         .trip-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
         .trip-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
         .trip-pill {
@@ -1276,7 +1280,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1525
+                    app v2026.05.31-1530
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2618,7 +2622,20 @@ renderTripsList();
 
                 const label = note || (miglia > 0 ? miglia + ' Nm' : 'Uscita in mare');
 
-                return `<div class="trip-card">
+                // Dettagli estesi per sezione espandibile
+                const extras = [];
+                if (note) extras.push('📝 ' + escapeHtml(note));
+                if (miglia > 0) extras.push('⚓ Miglia: ' + miglia + ' Nm');
+                if (oreM > 0)   extras.push('⚙️ Ore motore: ' + oreM + 'h');
+                if (vento)      extras.push('💨 Vento: ' + escapeHtml(vento) + 'kn' + (vDir ? ' ' + escapeHtml(vDir) : ''));
+                if (mare)       extras.push('🌊 Mare: ' + escapeHtml(mare) + 'cm');
+                if (giorni > 1) extras.push('📅 Durata: ' + giorni + ' giorni');
+                const velRaw = r['velocità Cataleya'] || r['Velocità max kn'] || r['velocita'] || '';
+                if (velRaw) extras.push('🚀 Velocità max: ' + escapeHtml(String(velRaw)) + ' kn');
+                const persone = r['Persone'] || r['persone'] || '';
+                if (persone) extras.push('👥 Persone: ' + persone);
+
+                return `<div class="trip-card" onclick="this.classList.toggle('expanded')">
                     <div class="trip-date-block">
                         <div class="trip-date-day">${day}</div>
                         <div class="trip-date-mon">${mon}</div>
@@ -2627,6 +2644,7 @@ renderTripsList();
                     <div class="trip-body">
                         <div class="trip-title">${escapeHtml(label)}</div>
                         <div class="trip-pills">${pills.join('')}</div>
+                        ${extras.length ? `<div class="trip-extra">${extras.join('<br>')}</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
