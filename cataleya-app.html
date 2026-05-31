@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1610">
+<html lang="it" data-app-version="v2026.05.31-1630">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -699,6 +699,56 @@
         .stato-Bloccata   { background: rgba(149,165,166,0.2); color: #95a5a6; }
         .stato-Annullata  { background: rgba(255,255,255,0.05); color: var(--text-tertiary); text-decoration: line-through; }
 
+
+        /* ==================== MODALE NUOVA USCITA ==================== */
+        .uscita-overlay {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            align-items: flex-end; justify-content: center;
+        }
+        .uscita-overlay.open { display: flex; }
+        .uscita-modal {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            padding: var(--spacing-xl);
+            width: 100%; max-width: 560px;
+            max-height: 90vh; overflow-y: auto;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .uscita-modal h3 { font-family: var(--font-display); font-size: 24px; letter-spacing: 2px; margin-bottom: var(--spacing-xl); color: var(--accent-aqua); }
+        .uscita-field { margin-bottom: var(--spacing-lg); }
+        .uscita-field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 6px; }
+        .uscita-field input, .uscita-field textarea, .uscita-field select {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: var(--border-radius-sm);
+            color: var(--text-primary); font-family: var(--font-primary); font-size: 15px;
+            padding: 10px 14px; outline: none; transition: var(--transition);
+        }
+        .uscita-field input:focus, .uscita-field textarea:focus, .uscita-field select:focus {
+            border-color: var(--accent-aqua); background: rgba(78,205,196,0.05);
+        }
+        .uscita-field input[readonly] { opacity: 0.5; cursor: not-allowed; }
+        .uscita-field textarea { min-height: 80px; resize: vertical; }
+        .uscita-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
+        .uscita-actions { display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); }
+        .btn-uscita-save {
+            flex: 1; padding: 14px; border-radius: var(--border-radius-sm);
+            background: var(--accent-aqua); color: #1a1d29;
+            font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+            font-family: var(--font-primary); transition: var(--transition);
+        }
+        .btn-uscita-save:hover { filter: brightness(1.1); }
+        .btn-uscita-save:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-uscita-cancel {
+            padding: 14px 20px; border-radius: var(--border-radius-sm);
+            background: transparent; color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+            font-family: var(--font-primary); font-size: 15px; transition: var(--transition);
+        }
+        .uscita-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+
         /* ==================== ENGINE PAGE ==================== */
         .engine-container {
             padding: calc(var(--nav-height) + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
@@ -1192,7 +1242,7 @@
 
                 <!-- Quick actions -->
                 <section class="dash-qa">
-                    <button class="dash-qa-btn" onclick="window.location.hash='trips'">
+                    <button class="dash-qa-btn" onclick="openNuovaUscita()">
                         <span class="dash-qa-icon">🌊</span>
                         Nuova Uscita
                     </button>
@@ -1281,7 +1331,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1610
+                    app v2026.05.31-1630
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2791,7 +2841,172 @@ renderTripsList();
             });
             renderLavoriList();
         }
+
+        // ── Modale Nuova Uscita ───────────────────────────────────
+
+        function openNuovaUscita() {
+            const oggi = new Date();
+            const yyyy = oggi.getFullYear();
+            const mm   = String(oggi.getMonth()+1).padStart(2,'0');
+            const dd   = String(oggi.getDate()).padStart(2,'0');
+            document.getElementById('uscita-data').value = yyyy + '-' + mm + '-' + dd;
+            document.getElementById('uscita-ore').value = '';
+            document.getElementById('uscita-ore-tot').value = engineState.currentHours > 0
+                ? engineState.currentHours.toFixed(1) : '';
+            document.getElementById('uscita-miglia').value    = '';
+            document.getElementById('uscita-vento-kn').value  = '';
+            document.getElementById('uscita-vento-dir').value = '';
+            document.getElementById('uscita-mare').value      = '';
+            document.getElementById('uscita-velocita').value  = '';
+            document.getElementById('uscita-note').value      = '';
+            document.getElementById('uscita-error').style.display = 'none';
+            document.getElementById('btn-uscita-save').disabled = false;
+            document.getElementById('btn-uscita-save').textContent = '\u2693 Salva Uscita';
+            document.getElementById('uscita-overlay').classList.add('open');
+        }
+
+        function closeNuovaUscita() {
+            document.getElementById('uscita-overlay').classList.remove('open');
+        }
+
+        function aggiornaOreTot() {
+            const ore    = parseFloat(document.getElementById('uscita-ore').value) || 0;
+            const attual = engineState.currentHours || 0;
+            document.getElementById('uscita-ore-tot').value = (attual + ore).toFixed(1);
+        }
+
+        async function salvaUscita() {
+            const data    = document.getElementById('uscita-data').value;
+            const ore     = parseFloat(document.getElementById('uscita-ore').value);
+            const oreTot  = parseFloat(document.getElementById('uscita-ore-tot').value);
+            const miglia  = document.getElementById('uscita-miglia').value;
+            const ventoKn = document.getElementById('uscita-vento-kn').value;
+            const ventoDir= document.getElementById('uscita-vento-dir').value;
+            const mare    = document.getElementById('uscita-mare').value;
+            const veloc   = document.getElementById('uscita-velocita').value;
+            const note    = document.getElementById('uscita-note').value.trim();
+
+            const errEl = document.getElementById('uscita-error');
+            if (!data) { errEl.textContent = 'Inserisci la data.'; errEl.style.display='block'; return; }
+            if (isNaN(ore) || ore < 0) { errEl.textContent = 'Inserisci le ore motore (0 se a vela).'; errEl.style.display='block'; return; }
+            errEl.style.display = 'none';
+
+            const url = getScriptUrl();
+            if (!url) { alert('URL del Google Script non configurato. Apri Impostazioni.'); return; }
+
+            const btn = document.getElementById('btn-uscita-save');
+            btn.disabled = true;
+            btn.textContent = 'Salvataggio...';
+
+            try {
+                const params = new URLSearchParams({
+                    action:    'appendUscita',
+                    data:      data,
+                    ore:       ore.toFixed(1),
+                    ore_tot:   oreTot.toFixed(1),
+                    miglia:    miglia || '',
+                    vento_kn:  ventoKn || '',
+                    vento_dir: ventoDir || '',
+                    mare:      mare || '',
+                    velocita:  veloc || '',
+                    note:      note || ''
+                });
+                const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
+                const json = await res.json();
+
+                if (json.ok) {
+                    closeNuovaUscita();
+                    if (oreTot > engineState.currentHours) {
+                        engineState.currentHours = oreTot;
+                    }
+                    setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
+                    alert('Uscita salvata!');
+                } else {
+                    throw new Error(json.error || 'Errore sconosciuto');
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = '\u2693 Salva Uscita';
+                errEl.textContent = 'Errore: ' + err.message;
+                errEl.style.display = 'block';
+            }
+        }
+
 </script>
+
+    <!-- ==================== MODALE NUOVA USCITA ==================== -->
+    <div class="uscita-overlay" id="uscita-overlay" onclick="if(event.target===this)closeNuovaUscita()">
+        <div class="uscita-modal">
+            <h3>⚓ Nuova Uscita</h3>
+
+            <div class="uscita-row">
+                <div class="uscita-field">
+                    <label>Data *</label>
+                    <input type="date" id="uscita-data">
+                </div>
+                <div class="uscita-field">
+                    <label>Ore motore uscita *</label>
+                    <input type="number" id="uscita-ore" min="0" max="24" step="0.1" placeholder="es. 1.5"
+                           oninput="aggiornaOreTot()">
+                    <div class="uscita-hint">Solo le ore usate in questa uscita</div>
+                </div>
+            </div>
+
+            <div class="uscita-row">
+                <div class="uscita-field">
+                    <label>Ore motore totali</label>
+                    <input type="number" id="uscita-ore-tot" step="0.1" readonly>
+                    <div class="uscita-hint">Calcolato automaticamente</div>
+                </div>
+                <div class="uscita-field">
+                    <label>Miglia percorse</label>
+                    <input type="number" id="uscita-miglia" min="0" step="0.5" placeholder="es. 12">
+                </div>
+            </div>
+
+            <div class="uscita-row">
+                <div class="uscita-field">
+                    <label>Vento (nodi)</label>
+                    <input type="number" id="uscita-vento-kn" min="0" max="60" step="1" placeholder="es. 12">
+                </div>
+                <div class="uscita-field">
+                    <label>Direzione vento</label>
+                    <select id="uscita-vento-dir">
+                        <option value="">—</option>
+                        <option>N</option><option>NE</option><option>E</option>
+                        <option>SE</option><option>S</option><option>SO</option>
+                        <option>O</option><option>NO</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="uscita-row">
+                <div class="uscita-field">
+                    <label>Mare (cm onda)</label>
+                    <input type="number" id="uscita-mare" min="0" step="5" placeholder="es. 30">
+                </div>
+                <div class="uscita-field">
+                    <label>Velocità max (kn)</label>
+                    <input type="number" id="uscita-velocita" min="0" step="0.1" placeholder="es. 6.5">
+                </div>
+            </div>
+
+            <div class="uscita-field">
+                <label>Note</label>
+                <textarea id="uscita-note" placeholder="Com'è andata? Dove sei andato?"></textarea>
+            </div>
+
+            <div id="uscita-error" style="color:var(--accent-coral);font-size:13px;margin-bottom:8px;display:none;"></div>
+
+            <div class="uscita-actions">
+                <button class="btn-uscita-cancel" onclick="closeNuovaUscita()">Annulla</button>
+                <button class="btn-uscita-save" id="btn-uscita-save" onclick="salvaUscita()">
+                    ⚓ Salva Uscita
+                </button>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>
