@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.27-2337">
+<html lang="it" data-app-version="v2026.05.31-1432">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -615,6 +615,85 @@
             padding: 0 var(--spacing-xl) var(--spacing-xl);
         }
 
+        /* ==================== TRIPS PAGE ==================== */
+        .trip-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            transition: var(--transition);
+        }
+        .trip-card:hover { background: rgba(78,205,196,0.08); border-color: rgba(78,205,196,0.2); }
+        .trip-date-block {
+            min-width: 52px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .trip-date-day { font-family: var(--font-display); font-size: 28px; line-height: 1; color: var(--accent-aqua); }
+        .trip-date-mon { font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 1px; }
+        .trip-date-year { font-size: 10px; color: var(--text-tertiary); }
+        .trip-body { flex: 1; min-width: 0; }
+        .trip-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trip-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .trip-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .trip-pill {
+            font-size: 11px; padding: 2px 8px;
+            border-radius: var(--border-radius-pill);
+            background: rgba(255,255,255,0.06);
+            color: var(--text-secondary);
+        }
+        .trip-pill.aqua { background: rgba(78,205,196,0.15); color: var(--accent-aqua); }
+        .trip-pill.gold { background: rgba(244,213,141,0.15); color: var(--accent-gold); }
+
+        /* ==================== MAINTENANCE PAGE ==================== */
+        .lavori-fbtn {
+            padding: 6px 14px;
+            border-radius: var(--border-radius-pill);
+            border: 1px solid rgba(255,255,255,0.12);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .lavori-fbtn:hover { border-color: var(--accent-aqua); color: var(--accent-aqua); }
+        .lavori-fbtn.active { background: var(--accent-aqua); color: #1a1d29; border-color: var(--accent-aqua); font-weight: 600; }
+        .lavoro-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+            transition: var(--transition);
+        }
+        .lavoro-card:hover { background: rgba(255,255,255,0.04); }
+        .lavoro-head { display: flex; align-items: flex-start; gap: var(--spacing-sm); }
+        .lavoro-title { font-weight: 600; font-size: 14px; flex: 1; }
+        .lavoro-meta { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .pri-badge {
+            font-size: 11px; font-weight: 700; padding: 2px 7px;
+            border-radius: 4px; flex-shrink: 0;
+        }
+        .pri-P0 { background: rgba(255,59,48,0.2); color: var(--p0); }
+        .pri-P1 { background: rgba(255,107,107,0.2); color: var(--p1); }
+        .pri-P2 { background: rgba(255,165,0,0.2); color: var(--p2); }
+        .pri-P3 { background: rgba(78,205,196,0.2); color: var(--p3); }
+        .stato-badge {
+            font-size: 11px; padding: 2px 8px;
+            border-radius: var(--border-radius-pill);
+            flex-shrink: 0;
+        }
+        .stato-Da.fare    { background: rgba(231,76,60,0.2); color: #e74c3c; }
+        .stato-In.corso   { background: rgba(243,156,18,0.2); color: var(--warning); }
+        .stato-Completata { background: rgba(46,204,113,0.2); color: var(--success); }
+        .stato-Bloccata   { background: rgba(149,165,166,0.2); color: #95a5a6; }
+        .stato-Annullata  { background: rgba(255,255,255,0.05); color: var(--text-tertiary); text-decoration: line-through; }
+
         /* ==================== ENGINE PAGE ==================== */
         .engine-container {
             padding: calc(var(--nav-height) + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
@@ -1197,7 +1276,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.27-2337
+                    app v2026.05.31-1432
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -1757,17 +1836,85 @@
 
     <!-- ==================== TRIPS PAGE ==================== -->
     <div id="page-trips" class="page">
-        <div class="container" style="margin-top: calc(var(--nav-height) + var(--spacing-xl));">
-            <h2 style="margin-bottom: var(--spacing-xl);">🌊 Diario Uscite</h2>
-            <p class="text-secondary">Pagina in costruzione...</p>
+        <div style="margin-top: calc(var(--nav-height) + var(--spacing-md));">
+            <div class="dash-wrap">
+
+                <!-- Hero stats -->
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet bebas">🌊 Diario Uscite</h1>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Uscite Totali</div>
+                            <div class="dash-stat-value space-grotesk" id="trips-count">—</div>
+                            <div class="dash-stat-sub" id="trips-years">—</div>
+                        </div>
+                        <div class="dash-stat aqua">
+                            <div class="dash-stat-label">Miglia Totali</div>
+                            <div class="dash-stat-value space-grotesk" id="trips-miles">—</div>
+                            <div class="dash-stat-sub" id="trips-avg-miles">—</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filtro anno -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">📅 Storico uscite</span>
+                    <div id="trips-year-filter" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+                </div>
+
+                <!-- Lista uscite -->
+                <section id="trips-list">
+                    <div style="text-align:center; color:var(--text-tertiary); padding:32px; font-style:italic;">
+                        caricamento…
+                    </div>
+                </section>
+
+            </div>
         </div>
     </div>
 
     <!-- ==================== MAINTENANCE PAGE ==================== -->
     <div id="page-maintenance" class="page">
-        <div class="container" style="margin-top: calc(var(--nav-height) + var(--spacing-xl));">
-            <h2 style="margin-bottom: var(--spacing-xl);">🔧 Lavori & Manutenzione</h2>
-            <p class="text-secondary">Pagina in costruzione...</p>
+        <div style="margin-top: calc(var(--nav-height) + var(--spacing-md));">
+            <div class="dash-wrap">
+
+                <!-- Hero stats -->
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet bebas">🔧 Lavori & Manutenzione</h1>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat" style="--accent: var(--accent-coral)">
+                            <div class="dash-stat-label">Da Fare / In Corso</div>
+                            <div class="dash-stat-value space-grotesk" id="lavori-aperti">—</div>
+                            <div class="dash-stat-sub" id="lavori-p0-count">—</div>
+                        </div>
+                        <div class="dash-stat aqua">
+                            <div class="dash-stat-label">Completati</div>
+                            <div class="dash-stat-value space-grotesk" id="lavori-completati">—</div>
+                            <div class="dash-stat-sub" id="lavori-costo-totale">—</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filtri stato -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">📋 Lista lavori</span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;" id="lavori-filter-bar">
+                    <button onclick="filterLavori('all')"        data-f="all"        class="lavori-fbtn active">Tutti</button>
+                    <button onclick="filterLavori('Da fare')"    data-f="Da fare"    class="lavori-fbtn">Da fare</button>
+                    <button onclick="filterLavori('In corso')"   data-f="In corso"   class="lavori-fbtn">In corso</button>
+                    <button onclick="filterLavori('Completata')" data-f="Completata" class="lavori-fbtn">Completati</button>
+                    <button onclick="filterLavori('Bloccata')"   data-f="Bloccata"   class="lavori-fbtn">Bloccati</button>
+                </div>
+
+                <!-- Lista -->
+                <section id="lavori-list">
+                    <div style="text-align:center; color:var(--text-tertiary); padding:32px; font-style:italic;">
+                        caricamento…
+                    </div>
+                </section>
+
+            </div>
         </div>
     </div>
 
@@ -2249,6 +2396,9 @@
             renderDashboardLive(data);
             // Pill "Prossima scadenza" pagina Motore
             renderEngineNextDeadline(data);
+            // Pagine Uscite e Manutenzione
+            renderTripsPage(data);
+            renderMaintenancePage(data);
         }
 
         async function caricaDatiDaSheets(opts) {
@@ -2296,284 +2446,262 @@
             caricaDatiDaSheets({ manual: true });
         }
 
-        // ── Pill "Prossima scadenza" pagina Motore ───────────────
-        // Trova la scadenza VETUS più urgente e la scrive nella stat-pill
-        function renderEngineNextDeadline(data) {
-            const valueEl = document.getElementById('engine-next-value');
-            const pillEl  = document.getElementById('engine-next-pill');
-            if (!valueEl || !pillEl || typeof VETUS_SCHEDULE === 'undefined') return;
+        // ── Helper functions (usate da più pagine) ────────────────
 
-            const oreCorrenti = parseFloat(data && data.ore_motore) || engineState.currentHours || 0;
-            let bestLabel = '—', bestRemaining = Infinity, bestCls = 'urgent';
-
-            VETUS_SCHEDULE.forEach(sched => {
-                const last = findLastMaintenance(data, sched.matcher);
-                let remaining;
-                if (!last) {
-                    remaining = -9999; // mai fatto = max urgenza
-                } else {
-                    remaining = sched.intervalH - (oreCorrenti - last.ore);
-                }
-                if (remaining < bestRemaining) {
-                    bestRemaining = remaining;
-                    bestLabel = sched.label.replace(/^Cambio /, '').replace(/^Controllo /, '');
-                }
-            });
-
-            if (bestRemaining <= 0) {
-                valueEl.textContent = bestLabel + ' (scaduto)';
-            } else {
-                valueEl.textContent = bestLabel + ' (' + bestRemaining.toFixed(1) + 'h)';
-            }
-        }
-
-        // ── SALVA MANUTENZIONE COMPLETATA SU SHEETS ──────────────
-        async function completeTaskAndSave(taskName) {
-            if (!confirm(`Confermi di aver completato:\n"${taskName}"?\n\nVerrà registrato a ${engineState.currentHours}h.`)) return;
-
-            const url = getScriptUrl();
-            const payload = {
-                action: 'complete_maintenance',
-                data: {
-                    nome: taskName,
-                    ore_effettuata: engineState.currentHours,
-                    data_completamento: new Date().toLocaleDateString('it-IT')
-                }
-            };
-
-            if (url) {
-                setSyncStatus('syncing');
-                try {
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
-                    const data = await res.json();
-                    if (data.status === 'success') {
-                        setSyncStatus('synced');
-                        alert('✅ ' + data.message);
-                    } else {
-                        throw new Error(data.message);
-                    }
-                } catch (err) {
-                    setSyncStatus('error');
-                    alert('⚠️ Salvato localmente. Errore sync: ' + err.message);
-                }
-            } else {
-                alert(`✅ Manutenzione registrata localmente!\n"${taskName}" completata a ${engineState.currentHours}h.\n\nConfigura Google Sheets (⚙️) per salvare online.`);
-            }
-            updateMaintenanceUI();
-        }
-
-        // ────────────────────────────────────────────────────────────
-        // RENDER DASHBOARD LIVE — popola la nuova Dashboard mobile-first
-        // con dati vivi letti dal Google Sheet (via Apps Script).
-        // ────────────────────────────────────────────────────────────
-
-        // Cicli manutenzione VETUS M4.56 — modifica qui i pattern e gli
-        // intervalli se vuoi aggiungere altre scadenze monitorate.
-        const VETUS_SCHEDULE = [
-            { label: 'Cambio olio motore + filtro',  intervalH: 100, matcher: /(cambio.*olio.*motor|primo.*tagliand|tagliando.*motor)/i, hint: 'include sostituzione filtro olio e gasolio' },
-            { label: 'Cambio olio sail drive',       intervalH: 250, matcher: /(cambio|sostituzion).*(sail.?drive|trasmiss|invertitore)/i, hint: 'rabbocchi non contano come cambio' },
-            { label: 'Controllo olio & refrigerante', intervalH: 10,  matcher: /controllo.*(olio|refrigerant)/i,             hint: 'check rapido prima di ogni uscita' }
-        ];
-
-        // Normalizza ore motore: accetta "128,6 h", "50h", 128.6, "128.6", ecc.
-        function normalizeOre(val) {
-            if (val == null || val === '') return NaN;
-            const cleaned = String(val).replace(/h/gi, '').replace(',', '.').trim();
-            const n = parseFloat(cleaned);
-            return isNaN(n) ? NaN : n;
-        }
-
+        // Converte "31/05/2026" o "2026-05-31" in Date
         function parseDateIT(str) {
             if (!str) return null;
-            // Formato Apps Script: dd/MM/yyyy
-            const m = String(str).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-            if (m) return new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10));
-            // Fallback ISO
+            str = String(str).trim();
+            // formato dd/MM/yyyy
+            const m1 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (m1) return new Date(+m1[3], +m1[2]-1, +m1[1]);
+            // formato yyyy-MM-dd
+            const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (m2) return new Date(+m2[1], +m2[2]-1, +m2[3]);
+            // prova Date nativa
             const d = new Date(str);
-            return isNaN(d.getTime()) ? null : d;
+            return isNaN(d) ? null : d;
         }
 
+        // Trova la chiave "data" in un oggetto riga (Data, data, DATE, ecc.)
         function findDateKey(row) {
-            if (!row || typeof row !== 'object') return null;
-            const keys = Object.keys(row).filter(k => k !== '_rowIndex');
-            // priorità: chiavi che contengono "data" o sono "se"/"se "
-            return keys.find(k => /^se\s*$/i.test(k.trim()))
-                || keys.find(k => /data/i.test(k))
-                || keys[0];
+            if (!row) return 'Data';
+            for (const k of Object.keys(row)) {
+                if (k.toLowerCase() === 'data') return k;
+            }
+            return Object.keys(row)[0];
         }
 
-        // Cerca l'ultima manutenzione che fa match con il pattern, guardando
-        // in TUTTI i fogli: Storico Manutenzioni, Manutenzione programmata
-        // (solo Completata), Lavori & Manutenzione (solo Completata).
-        function findLastMaintenance(data, matcher) {
-            const candidates = [];
-
-            // Sorgente 1: Storico Manutenzioni
-            (data && data.storico_manutenzioni || []).forEach(r => {
-                if (r && r['Manutenzione'] && matcher.test(String(r['Manutenzione']))) {
-                    candidates.push({
-                        row: r,
-                        name: r['Manutenzione'],
-                        date: parseDateIT(r['Data']),
-                        ore:  normalizeOre(r['Ore Motore']),
-                        source: 'storico'
-                    });
-                }
-            });
-
-            // Sorgente 2: Manutenzione programmata (solo righe completate)
-            (data && data.manutenzione_programmata || []).forEach(r => {
-                if (r && r['Attività'] && /complet/i.test(String(r['Stato'] || '')) && matcher.test(String(r['Attività']))) {
-                    candidates.push({
-                        row: r,
-                        name: r['Attività'],
-                        date: parseDateIT(r['Data di fine'] || r['Data di inizio']),
-                        ore:  normalizeOre(r['Ore motore']),
-                        source: 'manprog'
-                    });
-                }
-            });
-
-            // Sorgente 3: Lavori & Manutenzione (solo righe completate)
-            (data && data.lavori || []).forEach(r => {
-                if (r && r['Attività'] && /complet/i.test(String(r['Stato'] || '')) && matcher.test(String(r['Attività']))) {
-                    candidates.push({
-                        row: r,
-                        name: r['Attività'],
-                        date: parseDateIT(r['Data di fine'] || r['Data di inizio']),
-                        ore:  normalizeOre(r['Ore motore']),
-                        source: 'lavori'
-                    });
-                }
-            });
-
-            // Filtra: vogliamo solo righe con DATA valida e ORE valide (anche 0!).
-            // IMPORTANTE: ore = 0 sono valide (es. motore nuovo installato a 0h)
-            const valid = candidates
-                .filter(x => x.date && !isNaN(x.ore) && x.ore >= 0)
-                .sort((a,b) => b.date - a.date);
-            return valid.length ? valid[0] : null;
+        // Escapa caratteri HTML pericolosi
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g,'&amp;')
+                .replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;');
         }
 
-        function semaforoFromRemaining(remaining, interval) {
-            // Semaforo relativo: rosso = ≥90% del ciclo consumato (o scaduto);
-            // giallo = ≥70%; verde altrimenti. Per cicli >= 50h aggiungo anche
-            // la soglia assoluta di 10h rimanenti come trigger rosso (urgenza
-            // operativa: serve tempo per organizzare l'intervento).
-            if (remaining <= 0) return { cls: 'red',    dot: '🔴' };
-            const pct = (interval - remaining) / interval * 100;
-            if (pct >= 90)                       return { cls: 'red',    dot: '🔴' };
-            if (interval >= 50 && remaining <= 10) return { cls: 'red',  dot: '🔴' };
-            if (pct >= 70)                       return { cls: 'yellow', dot: '🟡' };
-            return { cls: 'green', dot: '🟢' };
-        }
-
-        function escapeHtml(s) {
-            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        }
-
-        function buildScadenzaCard(label, statusClass, metaText) {
-            return `
-                <div class="dash-scadenza ${statusClass}">
-                    <div class="dash-sem-dot ${statusClass}"></div>
-                    <div class="dash-scadenza-body">
-                        <div class="dash-scadenza-title">${escapeHtml(label)}</div>
-                        <div class="dash-scadenza-meta">${metaText}</div>
-                    </div>
-                    <span class="dash-scadenza-arrow">›</span>
-                </div>
-            `;
-        }
-
+        // Dashboard live — aggiorna hero stats e data odierna
         function renderDashboardLive(data) {
-            const oreCorrenti = parseFloat(data && data.ore_motore) || 0;
+            // Saluto in base all'ora
+            const ora = new Date().getHours();
+            const saluto = ora < 12 ? 'Buongiorno' : ora < 18 ? 'Buon pomeriggio' : 'Buonasera';
+            const elGreet = document.getElementById('dash-greet');
+            if (elGreet) elGreet.textContent = saluto + ', Capitano';
 
-            // ─── Hero: ore motore correnti ───
+            // Data odierna
+            const mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+            const oggi = new Date();
+            const elDate = document.getElementById('dash-date');
+            if (elDate) elDate.textContent = oggi.getDate() + ' ' + mesi[oggi.getMonth()] + ' ' + oggi.getFullYear();
+
+            // Ore motore hero
+            const ore = parseFloat(data && data.ore_motore) || 0;
             const elOre = document.getElementById('dash-ore-motore');
-            if (elOre) elOre.textContent = oreCorrenti.toFixed(1) + ' h';
+            if (elOre && ore > 0) elOre.textContent = ore.toFixed(1) + ' h';
 
-            // ─── Hero: ultima uscita dal Diario ───
-            let lastTripDate = null, lastTripDelta = NaN, lastTripMiglia = NaN;
+            // Ultima uscita
             if (Array.isArray(data.diario) && data.diario.length) {
                 const last = data.diario[data.diario.length - 1];
-                const dataKey = findDateKey(last);
-                lastTripDate   = parseDateIT(last[dataKey]);
-                lastTripDelta  = parseFloat(last['ore motore']);
-                lastTripMiglia = parseFloat(last['Miglia percorse']);
-            }
-
-            const elDelta = document.getElementById('dash-ore-delta');
-            if (elDelta) {
-                if (!isNaN(lastTripDelta) && lastTripDelta > 0) {
-                    elDelta.textContent = '+' + lastTripDelta + 'h dall\'ultima uscita';
-                } else {
-                    elDelta.textContent = 'totale a oggi';
+                const d = parseDateIT(last[findDateKey(last)]);
+                if (d) {
+                    const elLast = document.getElementById('dash-last-trip');
+                    if (elLast) elLast.textContent = d.getDate() + ' ' + ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'][d.getMonth()];
+                    const diffG = Math.floor((Date.now() - d.getTime()) / 86400000);
+                    const elSub = document.getElementById('dash-last-trip-sub');
+                    if (elSub) elSub.textContent = diffG <= 0 ? 'oggi' : diffG === 1 ? 'ieri' : diffG + ' giorni fa';
                 }
+                const elDelta = document.getElementById('dash-ore-delta');
+                const oreUscita = parseFloat(last['Ore motore'] || last['ore motore'] || 0);
+                if (elDelta && oreUscita > 0) elDelta.textContent = '+' + oreUscita + 'h dall\'ultima uscita';
+            }
+        }
+
+        // Pill "Prossima scadenza" pagina Motore
+        function renderEngineNextDeadline(data) {
+            // placeholder — la pagina Motore ha già i dati hardcoded nel DOM
+        }
+
+        // ── Pagina Uscite ─────────────────────────────────────────
+        let _tripsData = [];
+        let _tripsYearFilter = 'all';
+
+        function renderTripsPage(data) {
+            const diario = Array.isArray(data.diario) ? data.diario : [];
+            _tripsData = diario.slice().reverse(); // più recenti prima
+
+            // Stats globali
+            const totalMiglia = diario.reduce((s, r) => s + (parseFloat(r['Miglia'] || r['Miglia percorse'] || r['miglia'] || 0)), 0);
+            const anni = [...new Set(diario.map(r => {
+                const d = parseDateIT(r[findDateKey(r)]);
+                return d ? d.getFullYear() : null;
+            }).filter(Boolean))].sort();
+
+            const elCount = document.getElementById('trips-count');
+            const elMiles = document.getElementById('trips-miles');
+            const elYears = document.getElementById('trips-years');
+            const elAvg   = document.getElementById('trips-avg-miles');
+            if (elCount) elCount.textContent = diario.length;
+            if (elMiles) elMiles.textContent = totalMiglia > 0 ? Math.round(totalMiglia) + ' Nm' : '—';
+            if (elYears) elYears.textContent = anni.length ? anni[0] + ' – ' + anni[anni.length-1] : '';
+            if (elAvg && diario.length > 0 && totalMiglia > 0)
+                elAvg.textContent = 'media ' + (totalMiglia / diario.length).toFixed(1) + ' Nm/uscita';
+
+            // Filtri anno
+            const filterBar = document.getElementById('trips-year-filter');
+            if (filterBar && anni.length > 1) {
+                filterBar.innerHTML = ['all', ...anni.reverse()].map(a =>
+                    `<button class="lavori-fbtn${_tripsYearFilter == a ? ' active' : ''}"
+                        onclick="_tripsYearFilter='${a}'; renderTripsList();">
+                        ${a === 'all' ? 'Tutti' : a}
+                    </button>`
+                ).join('');
             }
 
-            const elLast    = document.getElementById('dash-last-trip');
-            const elLastSub = document.getElementById('dash-last-trip-sub');
-            if (lastTripDate && elLast) {
-                const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
-                elLast.textContent = lastTripDate.getDate() + ' ' + mesi[lastTripDate.getMonth()];
+            renderTripsList();
+        }
 
-                const diffGiorni = Math.floor((Date.now() - lastTripDate.getTime()) / 86400000);
-                const subParts = [];
-                if (diffGiorni <= 0)      subParts.push('oggi');
-                else if (diffGiorni === 1) subParts.push('ieri');
-                else                       subParts.push(diffGiorni + ' giorni fa');
-                if (!isNaN(lastTripMiglia) && lastTripMiglia > 0) {
-                    subParts.push(lastTripMiglia + ' Nm');
-                }
-                if (elLastSub) elLastSub.textContent = subParts.join(' · ');
-            } else if (elLast) {
-                elLast.textContent = '—';
-                if (elLastSub) elLastSub.textContent = 'nessuna uscita registrata';
-            }
-
-            // ─── Scadenze motore (rebuild completo) ───
-            const container = document.getElementById('dash-scadenze-motore');
+        function renderTripsList() {
+            const container = document.getElementById('trips-list');
             if (!container) return;
-            container.innerHTML = '';
 
-            VETUS_SCHEDULE.forEach(sched => {
-                const last = findLastMaintenance(data, sched.matcher);
-                let cardHtml;
-                if (!last) {
-                    cardHtml = buildScadenzaCard(
-                        sched.label,
-                        'red',
-                        `🔴 mai registrato · ciclo ${sched.intervalH}h <span style="opacity:.6">— ${escapeHtml(sched.hint)}</span>`
-                    );
-                } else {
-                    const usedSince = oreCorrenti - last.ore;
-                    const remaining = sched.intervalH - usedSince;
-                    const sem       = semaforoFromRemaining(remaining, sched.intervalH);
-                    const dataStr   = last.row['Data'] || '';
-                    let meta;
-                    if (sched.intervalH <= 10) {
-                        // Per le scadenze brevi mostra ore trascorse anziché rimanenti
-                        meta = remaining > 0
-                            ? `${sem.dot} ${usedSince.toFixed(1)}h fa (${dataStr}) · ciclo ${sched.intervalH}h`
-                            : `${sem.dot} scaduto da ${Math.abs(remaining).toFixed(1)}h`;
-                    } else {
-                        meta = remaining > 0
-                            ? `${sem.dot} ${remaining.toFixed(1)}h rimanenti · ciclo ${sched.intervalH}h <span style="opacity:.55">(ultimo: ${dataStr} a ${last.ore}h)</span>`
-                            : `${sem.dot} scaduto da ${Math.abs(remaining).toFixed(1)}h <span style="opacity:.55">(ultimo: ${dataStr} a ${last.ore}h)</span>`;
-                    }
-                    cardHtml = buildScadenzaCard(sched.label, sem.cls, meta);
-                }
-                container.insertAdjacentHTML('beforeend', cardHtml);
+            const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+            const filtered = _tripsData.filter(r => {
+                if (_tripsYearFilter === 'all') return true;
+                const d = parseDateIT(r[findDateKey(r)]);
+                return d && d.getFullYear() == _tripsYearFilter;
+            });
+
+            if (!filtered.length) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;">Nessuna uscita trovata</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(r => {
+                const dateKey = findDateKey(r);
+                const d = parseDateIT(r[dateKey]);
+                const day  = d ? d.getDate() : '—';
+                const mon  = d ? mesi[d.getMonth()] : '';
+                const yr   = d ? d.getFullYear() : '';
+
+                const oreM   = parseFloat(r['Ore motore'] || r['ore motore'] || 0);
+                const miglia = parseFloat(r['Miglia'] || r['Miglia percorse'] || 0);
+                const vento  = r['Vento nodi'] || r['Vento'] || '';
+                const vDir   = r['Vento direzione'] || r['Dir vento'] || '';
+                const mare   = r['Mare cm'] || '';
+                const note   = r['Note'] || r['note'] || '';
+                const giorni = parseInt(r['Giorni'] || 1);
+
+                const pills = [];
+                if (miglia > 0) pills.push(`<span class="trip-pill aqua">⚓ ${miglia} Nm</span>`);
+                if (oreM > 0)   pills.push(`<span class="trip-pill gold">⚙️ ${oreM}h motore</span>`);
+                if (vento)      pills.push(`<span class="trip-pill">💨 ${vento}kn${vDir ? ' ' + vDir : ''}</span>`);
+                if (mare)       pills.push(`<span class="trip-pill">🌊 ${mare}cm</span>`);
+                if (giorni > 1) pills.push(`<span class="trip-pill">📅 ${giorni} giorni</span>`);
+
+                const label = note || (miglia > 0 ? miglia + ' Nm' : 'Uscita in mare');
+
+                return `<div class="trip-card">
+                    <div class="trip-date-block">
+                        <div class="trip-date-day">${day}</div>
+                        <div class="trip-date-mon">${mon}</div>
+                        <div class="trip-date-year">${yr}</div>
+                    </div>
+                    <div class="trip-body">
+                        <div class="trip-title">${escapeHtml(label)}</div>
+                        <div class="trip-pills">${pills.join('')}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Aggiorna stato active sui filtri anno
+            document.querySelectorAll('#trips-year-filter .lavori-fbtn').forEach(btn => {
+                const yr = btn.textContent.trim();
+                btn.classList.toggle('active', yr === 'Tutti' ? _tripsYearFilter === 'all' : yr == _tripsYearFilter);
             });
         }
 
-        // Avvio sincronizzazione al caricamento
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(caricaDatiDaSheets, 500);
-        });
+        // ── Pagina Manutenzione ───────────────────────────────────
+        let _lavoriData = [];
+        let _lavoriFilter = 'all';
+
+        function renderMaintenancePage(data) {
+            const lavori = Array.isArray(data.lavori) ? data.lavori : [];
+            _lavoriData = lavori;
+
+            const aperti     = lavori.filter(l => { const s = l['Stato'] || ''; return s === 'Da fare' || s === 'In corso'; }).length;
+            const completati = lavori.filter(l => (l['Stato'] || '') === 'Completata').length;
+            const costoTot   = lavori.reduce((s, l) => s + (parseFloat(l['Costo €'] || l['Costo'] || 0)), 0);
+            const p0count    = lavori.filter(l => (l['Priorità'] || l['Priorita'] || '') === 'P0' && (l['Stato'] || '') !== 'Completata').length;
+
+            const elAperti = document.getElementById('lavori-aperti');
+            const elComp   = document.getElementById('lavori-completati');
+            const elP0     = document.getElementById('lavori-p0-count');
+            const elCosto  = document.getElementById('lavori-costo-totale');
+            if (elAperti) elAperti.textContent = aperti;
+            if (elComp)   elComp.textContent = completati;
+            if (elP0)     elP0.textContent = p0count > 0 ? p0count + ' urgenti (P0)' : 'nessuna urgenza';
+            if (elCosto && costoTot > 0) elCosto.textContent = '€ ' + Math.round(costoTot).toLocaleString('it-IT');
+
+            renderLavoriList();
+        }
+
+        function filterLavori(stato) {
+            _lavoriFilter = stato;
+            document.querySelectorAll('.lavori-fbtn[data-f]').forEach(b => {
+                b.classList.toggle('active', b.dataset.f === stato);
+            });
+            renderLavoriList();
+        }
+
+        function renderLavoriList() {
+            const container = document.getElementById('lavori-list');
+            if (!container) return;
+
+            const priOrd = { 'P0': 0, 'P1': 1, 'P2': 2, 'P3': 3 };
+            const filtered = (_lavoriFilter === 'all'
+                ? _lavoriData
+                : _lavoriData.filter(l => (l['Stato'] || '') === _lavoriFilter)
+            ).slice().sort((a, b) => {
+                const pa = priOrd[a['Priorità'] || a['Priorita'] || ''] ?? 9;
+                const pb = priOrd[b['Priorità'] || b['Priorita'] || ''] ?? 9;
+                return pa - pb;
+            });
+
+            if (!filtered.length) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;">Nessun lavoro trovato</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(l => {
+                const titolo    = l['Attività'] || l['Lavoro'] || l['Descrizione'] || '—';
+                const area      = l['Area'] || '';
+                const pri       = l['Priorità'] || l['Priorita'] || '';
+                const stato     = l['Stato'] || '';
+                const fornitore = l['Fornitore'] || '';
+                const costo     = parseFloat(l['Costo €'] || l['Costo'] || 0);
+                const note      = l['Note'] || '';
+                const dataAp    = l['Data apertura'] || l['Data'] || '';
+
+                const meta = [area, dataAp, fornitore ? '👤 ' + fornitore : '', costo > 0 ? '€ ' + costo.toLocaleString('it-IT') : ''].filter(Boolean).join(' · ');
+
+                const priClass   = pri ? `pri-badge pri-${pri}` : '';
+                const statoClass = 'stato-badge stato-' + stato.replace(/\s/g, '_');
+
+                return `<div class="lavoro-card">
+                    <div class="lavoro-head">
+                        ${pri ? `<span class="${priClass}">${escapeHtml(pri)}</span>` : ''}
+                        <div style="flex:1">
+                            <div class="lavoro-title">${escapeHtml(titolo)}</div>
+                            ${meta ? `<div class="lavoro-meta">${escapeHtml(meta)}</div>` : ''}
+                            ${note ? `<div class="lavoro-meta" style="margin-top:4px;opacity:.7;font-style:italic">${escapeHtml(note)}</div>` : ''}
+                        </div>
+                        <span class="${statoClass}">${escapeHtml(stato)}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
     </script>
 
 </body>
