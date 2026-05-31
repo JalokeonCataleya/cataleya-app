@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1440">
+<html lang="it" data-app-version="v2026.05.27-2337">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1276,7 +1276,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1440
+                    app v2026.05.27-2337
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2663,6 +2663,39 @@
             renderLavoriList();
         }
 
+        // ── Pagina Manutenzione ───────────────────────────────────
+        let _lavoriData = [];
+        let _lavoriFilter = 'all';
+
+        function renderMaintenancePage(data) {
+            const lavori = Array.isArray(data.lavori) ? data.lavori : [];
+            _lavoriData = lavori;
+
+            const aperti     = lavori.filter(l => { const s = l['Stato'] || ''; return s === 'Da fare' || s === 'In corso'; }).length;
+            const completati = lavori.filter(l => (l['Stato'] || '') === 'Completata').length;
+            const costoTot   = lavori.reduce((s, l) => s + (parseFloat(l['Costo €'] || l['Costo'] || 0)), 0);
+            const p0count    = lavori.filter(l => (l['Priorità'] || l['Priorita'] || '') === 'P0' && (l['Stato'] || '') !== 'Completata').length;
+
+            const elAperti = document.getElementById('lavori-aperti');
+            const elComp   = document.getElementById('lavori-completati');
+            const elP0     = document.getElementById('lavori-p0-count');
+            const elCosto  = document.getElementById('lavori-costo-totale');
+            if (elAperti) elAperti.textContent = aperti;
+            if (elComp)   elComp.textContent = completati;
+            if (elP0)     elP0.textContent = p0count > 0 ? p0count + ' urgenti (P0)' : 'nessuna urgenza';
+            if (elCosto && costoTot > 0) elCosto.textContent = '€ ' + Math.round(costoTot).toLocaleString('it-IT');
+
+            renderLavoriList();
+        }
+
+        function filterLavori(stato) {
+            _lavoriFilter = stato;
+            document.querySelectorAll('.lavori-fbtn[data-f]').forEach(b => {
+                b.classList.toggle('active', b.dataset.f === stato);
+            });
+            renderLavoriList();
+        }
+
         function renderLavoriList() {
             const container = document.getElementById('lavori-list');
             if (!container) return;
@@ -2693,12 +2726,23 @@
                 const dataAp    = l['Data apertura'] || l['Data'] || '';
 
                 const meta = [area, dataAp, fornitore ? '👤 ' + fornitore : '', costo > 0 ? '€ ' + costo.toLocaleString('it-IT') : ''].filter(Boolean).join(' · ');
-
-                const priClass   = pri ? `pri-badge pri-${pri}` : '';
+                const priClass   = pri ? 'pri-badge pri-' + pri : '';
                 const statoClass = 'stato-badge stato-' + stato.replace(/\s/g, '_');
 
-                return `<div class="lavoro-card">
-                    <div class="lavoro-head">
-                        ${pri ? `<span class="${priClass}">${escapeHtml(pri)}</span>` : ''}
-                        <div style="flex:1">
-                            <div class="lavoro-title">${es
+                return '<div class="lavoro-card">' +
+                    '<div class="lavoro-head">' +
+                    (pri ? '<span class="' + priClass + '">' + escapeHtml(pri) + '</span>' : '') +
+                    '<div style="flex:1">' +
+                    '<div class="lavoro-title">' + escapeHtml(titolo) + '</div>' +
+                    (meta ? '<div class="lavoro-meta">' + escapeHtml(meta) + '</div>' : '') +
+                    (note ? '<div class="lavoro-meta" style="margin-top:4px;opacity:.7;font-style:italic">' + escapeHtml(note) + '</div>' : '') +
+                    '</div>' +
+                    '<span class="' + statoClass + '">' + escapeHtml(stato) + '</span>' +
+                    '</div></div>';
+            }).join('');
+        }
+
+    </script>
+
+</body>
+</html>
