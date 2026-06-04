@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.05.31-1640">
+<html lang="it" data-app-version="v2026.06.04-1200">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -749,6 +749,53 @@
         }
         .uscita-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
 
+
+        /* ==================== MODALE REGISTRA INTERVENTO ==================== */
+        .intervento-overlay {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            align-items: flex-end; justify-content: center;
+        }
+        .intervento-overlay.open { display: flex; }
+        .intervento-modal {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            padding: var(--spacing-xl);
+            width: 100%; max-width: 560px;
+            max-height: 90vh; overflow-y: auto;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .intervento-modal h3 { font-family: var(--font-display); font-size: 24px; letter-spacing: 2px; margin-bottom: var(--spacing-xl); color: var(--accent-gold); }
+        .intervento-field { margin-bottom: var(--spacing-lg); }
+        .intervento-field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 6px; }
+        .intervento-field input, .intervento-field textarea, .intervento-field select {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: var(--border-radius-sm);
+            color: var(--text-primary); font-family: var(--font-primary); font-size: 15px;
+            padding: 10px 14px; outline: none; transition: var(--transition);
+        }
+        .intervento-field input:focus, .intervento-field textarea:focus, .intervento-field select:focus {
+            border-color: var(--accent-gold); background: rgba(244,213,141,0.05);
+        }
+        .intervento-field textarea { min-height: 70px; resize: vertical; }
+        .intervento-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
+        .intervento-actions { display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); }
+        .btn-intervento-save {
+            flex: 1; padding: 14px; border-radius: var(--border-radius-sm);
+            background: var(--accent-gold); color: #1a1d29;
+            font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+            font-family: var(--font-primary); transition: var(--transition);
+        }
+        .btn-intervento-save:hover { filter: brightness(1.1); }
+        .btn-intervento-save:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-intervento-cancel {
+            padding: 14px 20px; border-radius: var(--border-radius-sm);
+            background: transparent; color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+            font-family: var(--font-primary); font-size: 15px;
+        }
+
         /* ==================== ENGINE PAGE ==================== */
         .engine-container {
             padding: calc(var(--nav-height) + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
@@ -1246,7 +1293,7 @@
                         <span class="dash-qa-icon">🌊</span>
                         Nuova Uscita
                     </button>
-                    <button class="dash-qa-btn secondary" onclick="window.location.hash='maintenance'">
+                    <button class="dash-qa-btn secondary" onclick="openIntervento()">
                         <span class="dash-qa-icon">🔧</span>
                         Registra Intervento
                     </button>
@@ -1331,7 +1378,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.05.31-1640
+                    app v2026.06.04-1200
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2932,6 +2979,106 @@ renderTripsList();
             }
         }
 
+        // ── Modale Registra Intervento ────────────────────────────
+
+        function openIntervento(prefill) {
+            prefill = prefill || {};
+            const oggi = new Date();
+            const yyyy = oggi.getFullYear();
+            const mm   = String(oggi.getMonth()+1).padStart(2,'0');
+            const dd   = String(oggi.getDate()).padStart(2,'0');
+
+            document.getElementById('int-data').value      = yyyy+'-'+mm+'-'+dd;
+            document.getElementById('int-ore').value       = prefill.ore || (engineState.currentHours > 0 ? engineState.currentHours.toFixed(1) : '');
+            document.getElementById('int-voce').value      = prefill.voce || '';
+            document.getElementById('int-area').value      = prefill.area || 'Motore';
+            document.getElementById('int-esito').value     = 'OK';
+            document.getElementById('int-fornitore').value = '';
+            document.getElementById('int-costo').value     = '';
+            document.getElementById('int-note').value      = '';
+            document.getElementById('int-error').style.display = 'none';
+            document.getElementById('btn-int-save').disabled = false;
+            document.getElementById('btn-int-save').textContent = 'Salva Intervento';
+
+            // Popola datalist con i nomi dei task-card
+            const dl = document.getElementById('int-voce-list');
+            dl.innerHTML = '';
+            document.querySelectorAll('.task-card h4').forEach(h4 => {
+                const opt = document.createElement('option');
+                opt.value = h4.textContent.trim();
+                dl.appendChild(opt);
+            });
+
+            document.getElementById('intervento-overlay').classList.add('open');
+        }
+
+        function closeIntervento() {
+            document.getElementById('intervento-overlay').classList.remove('open');
+        }
+
+        async function salvaIntervento() {
+            const voce  = document.getElementById('int-voce').value.trim();
+            const data  = document.getElementById('int-data').value;
+            const ore   = document.getElementById('int-ore').value;
+            const area  = document.getElementById('int-area').value;
+            const esito = document.getElementById('int-esito').value;
+            const forn  = document.getElementById('int-fornitore').value.trim();
+            const costo = document.getElementById('int-costo').value;
+            const note  = document.getElementById('int-note').value.trim();
+
+            const errEl = document.getElementById('int-error');
+            if (!voce) { errEl.textContent = 'Inserisci il tipo di intervento.'; errEl.style.display='block'; return; }
+            if (!data)  { errEl.textContent = 'Inserisci la data.'; errEl.style.display='block'; return; }
+            errEl.style.display = 'none';
+
+            const url = getScriptUrl();
+            if (!url) { alert('URL del Google Script non configurato. Apri Impostazioni.'); return; }
+
+            const btn = document.getElementById('btn-int-save');
+            btn.disabled = true;
+            btn.textContent = 'Salvataggio...';
+
+            try {
+                const params = new URLSearchParams({
+                    action:    'appendEsecuzione',
+                    voce:      voce,
+                    data:      data,
+                    ore:       ore || '',
+                    area:      area,
+                    esito:     esito,
+                    fornitore: forn || '',
+                    costo:     costo || '',
+                    note:      note || ''
+                });
+                const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
+                const json = await res.json();
+
+                if (json.ok) {
+                    closeIntervento();
+                    // Aggiorna data-last del task-card corrispondente
+                    if (ore) {
+                        const oreNum = parseFloat(ore);
+                        document.querySelectorAll('.task-card').forEach(card => {
+                            const h4 = card.querySelector('h4');
+                            if (h4 && h4.textContent.trim().toLowerCase() === voce.toLowerCase()) {
+                                card.dataset.last = oreNum.toFixed(1);
+                            }
+                        });
+                        updateMaintenanceUI();
+                    }
+                    setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
+                    alert('Intervento salvato!');
+                } else {
+                    throw new Error(json.error || JSON.stringify(json));
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Salva Intervento';
+                errEl.textContent = 'Errore: ' + err.message;
+                errEl.style.display = 'block';
+            }
+        }
+
 </script>
 
     <!-- ==================== MODALE NUOVA USCITA ==================== -->
@@ -3002,6 +3149,83 @@ renderTripsList();
                 <button class="btn-uscita-cancel" onclick="closeNuovaUscita()">Annulla</button>
                 <button class="btn-uscita-save" id="btn-uscita-save" onclick="salvaUscita()">
                     ⚓ Salva Uscita
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== MODALE REGISTRA INTERVENTO ==================== -->
+    <div class="intervento-overlay" id="intervento-overlay" onclick="if(event.target===this)closeIntervento()">
+        <div class="intervento-modal">
+            <h3>🔧 Registra Intervento</h3>
+
+            <div class="intervento-field">
+                <label>Tipo intervento *</label>
+                <input type="text" id="int-voce" list="int-voce-list" placeholder="es. Cambio Olio Motore">
+                <datalist id="int-voce-list"></datalist>
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Data *</label>
+                    <input type="date" id="int-data">
+                </div>
+                <div class="intervento-field">
+                    <label>Ore motore</label>
+                    <input type="number" id="int-ore" step="0.1" placeholder="es. 230.8">
+                </div>
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Area</label>
+                    <select id="int-area">
+                        <option value="Motore">Motore</option>
+                        <option value="Sail drive">Sail drive</option>
+                        <option value="Carena">Carena</option>
+                        <option value="Elettrico">Elettrico</option>
+                        <option value="Idraulico">Idraulico</option>
+                        <option value="Vele/Sartiame">Vele/Sartiame</option>
+                        <option value="Scafo/Coperta">Scafo/Coperta</option>
+                        <option value="Sicurezza">Sicurezza</option>
+                        <option value="Burocrazia">Burocrazia</option>
+                        <option value="Comfort/Interni">Comfort/Interni</option>
+                        <option value="Pulizia">Pulizia</option>
+                    </select>
+                </div>
+                <div class="intervento-field">
+                    <label>Esito</label>
+                    <select id="int-esito">
+                        <option value="OK">OK ✅</option>
+                        <option value="Da rifare">Da rifare ⚠️</option>
+                        <option value="Problema">Problema 🔴</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Fornitore</label>
+                    <input type="text" id="int-fornitore" placeholder="es. Mostes">
+                </div>
+                <div class="intervento-field">
+                    <label>Costo €</label>
+                    <input type="number" id="int-costo" step="0.01" placeholder="es. 450">
+                </div>
+            </div>
+
+            <div class="intervento-field">
+                <label>Note tecniche</label>
+                <textarea id="int-note" placeholder="Dettagli, prodotti usati, osservazioni..."></textarea>
+            </div>
+
+            <div id="int-error" style="color:var(--accent-coral);font-size:13px;margin-bottom:8px;display:none;"></div>
+
+            <div class="intervento-actions">
+                <button class="btn-intervento-cancel" onclick="closeIntervento()">Annulla</button>
+                <button class="btn-intervento-save" id="btn-int-save" onclick="salvaIntervento()">
+                    🔧 Salva Intervento
                 </button>
             </div>
         </div>
