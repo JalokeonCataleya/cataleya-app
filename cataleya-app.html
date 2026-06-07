@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.07-1030">
+<html lang="it" data-app-version="v2026.06.07-1045">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -812,6 +812,61 @@
         .task-card-time .remaining-text-time { font-size: 13px; font-weight: 600; }
         .task-card-time .task-actions { margin-top: var(--spacing-md); display: flex; gap: var(--spacing-sm); }
 
+
+        /* ==================== HAMBURGER MENU MOBILE ==================== */
+        .btn-hamburger {
+            display: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        .btn-hamburger:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+        .btn-hamburger svg { width: 22px; height: 22px; display: block; }
+
+        @media (max-width: 768px) {
+            .btn-hamburger { display: flex; align-items: center; }
+        }
+
+        /* Drawer overlay */
+        .nav-drawer-overlay {
+            display: none; position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,0.5);
+        }
+        .nav-drawer-overlay.open { display: block; }
+
+        /* Drawer panel */
+        .nav-drawer {
+            position: fixed; top: var(--nav-height); right: 0;
+            width: 220px; z-index: 1000;
+            background: var(--bg-secondary);
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0 0 0 var(--border-radius);
+            padding: var(--spacing-md) 0;
+            transform: translateX(100%);
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        .nav-drawer.open { transform: translateX(0); }
+
+        .nav-drawer-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px var(--spacing-xl);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px; font-weight: 500;
+            transition: var(--transition);
+            border: none; background: transparent;
+            width: 100%; cursor: pointer;
+            font-family: var(--font-primary);
+        }
+        .nav-drawer-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+        .nav-drawer-item.active { color: var(--accent-gold); background: rgba(244,213,141,0.06); }
+        .nav-drawer-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 6px 0; }
+
         /* ==================== ENGINE PAGE ==================== */
         .engine-container {
             padding: calc(var(--nav-height) + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
@@ -1250,11 +1305,36 @@
             <button class="btn-icon" title="Ricarica dati dal Google Sheet" onclick="refreshDati()" id="btn-refresh">
                 <i data-lucide="refresh-cw"></i>
             </button>
+            <button class="btn-hamburger" id="btn-hamburger" onclick="toggleDrawer()" title="Menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
             <button class="btn-icon" title="Impostazioni" onclick="openSettings()">
                 <i data-lucide="settings"></i>
             </button>
         </div>
     </nav>
+
+
+    <!-- ==================== NAV DRAWER MOBILE ==================== -->
+    <div class="nav-drawer-overlay" id="nav-drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="nav-drawer" id="nav-drawer">
+        <button class="nav-drawer-item active" data-drawer-page="dashboard" onclick="switchDrawerPage('dashboard')">
+            🏠 Dashboard
+        </button>
+        <button class="nav-drawer-item" data-drawer-page="engine" onclick="switchDrawerPage('engine')">
+            ⚙️ Motore
+        </button>
+        <button class="nav-drawer-item" data-drawer-page="trips" onclick="switchDrawerPage('trips')">
+            🌊 Uscite
+        </button>
+        <button class="nav-drawer-item" data-drawer-page="maintenance" onclick="switchDrawerPage('maintenance')">
+            🔧 Lavori
+        </button>
+    </div>
 
     <!-- ==================== SETTINGS MODAL ==================== -->
     <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this) closeSettings()">
@@ -1394,7 +1474,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.07-1030
+                    app v2026.06.07-1045
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2345,6 +2425,7 @@
                 // Update active state
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
+                syncDrawerActive(page);
                 
                 // Show page
                 const pageName = item.dataset.page;
@@ -3163,6 +3244,35 @@ renderTripsList();
             if (elCosto && costoTot > 0) elCosto.textContent = '€ ' + Math.round(costoTot).toLocaleString('it-IT');
 
             renderLavoriList();
+        }
+
+        // ── Hamburger drawer mobile ───────────────────────────────
+
+        function toggleDrawer() {
+            const drawer  = document.getElementById('nav-drawer');
+            const overlay = document.getElementById('nav-drawer-overlay');
+            const isOpen  = drawer.classList.contains('open');
+            if (isOpen) closeDrawer();
+            else { drawer.classList.add('open'); overlay.classList.add('open'); }
+        }
+
+        function closeDrawer() {
+            document.getElementById('nav-drawer').classList.remove('open');
+            document.getElementById('nav-drawer-overlay').classList.remove('open');
+        }
+
+        function switchDrawerPage(page) {
+            closeDrawer();
+            // Simula click sul nav-item corrispondente
+            const navItem = document.querySelector('.nav-item[data-page="' + page + '"]');
+            if (navItem) navItem.click();
+        }
+
+        // Sincronizza active state del drawer con la nav principale
+        function syncDrawerActive(page) {
+            document.querySelectorAll('.nav-drawer-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.drawerPage === page);
+            });
         }
 
         function filterLavori(stato) {
