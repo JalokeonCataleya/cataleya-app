@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.07-1045">
+<html lang="it" data-app-version="v2026.06.07-1055">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1305,15 +1305,15 @@
             <button class="btn-icon" title="Ricarica dati dal Google Sheet" onclick="refreshDati()" id="btn-refresh">
                 <i data-lucide="refresh-cw"></i>
             </button>
+            <button class="btn-icon" title="Impostazioni" onclick="openSettings()">
+                <i data-lucide="settings"></i>
+            </button>
             <button class="btn-hamburger" id="btn-hamburger" onclick="toggleDrawer()" title="Menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <line x1="3" y1="12" x2="21" y2="12"/>
                     <line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
-            </button>
-            <button class="btn-icon" title="Impostazioni" onclick="openSettings()">
-                <i data-lucide="settings"></i>
             </button>
         </div>
     </nav>
@@ -1474,7 +1474,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.07-1045
+                    app v2026.06.07-1055
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -3263,9 +3263,18 @@ renderTripsList();
 
         function switchDrawerPage(page) {
             closeDrawer();
-            // Simula click sul nav-item corrispondente
-            const navItem = document.querySelector('.nav-item[data-page="' + page + '"]');
-            if (navItem) navItem.click();
+            // Aggiorna active sui nav-item desktop
+            document.querySelectorAll('.nav-item').forEach(i => {
+                i.classList.toggle('active', i.dataset.page === page);
+            });
+            // Aggiorna active sul drawer
+            syncDrawerActive(page);
+            // Mostra la pagina giusta
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+            // Anima le progress bar
+            setTimeout(() => { animateAllProgressBars(); updateTimeBasedCards(); }, 100);
         }
 
         // Sincronizza active state del drawer con la nav principale
