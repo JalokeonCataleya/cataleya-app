@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.04-1200">
+<html lang="it" data-app-version="v2026.06.07-1000">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1343,11 +1343,11 @@
                 <!-- Scadenze burocratiche -->
                 <div class="dash-section-head">
                     <span class="dash-section-title">📋 Scadenze Burocratiche</span>
-                    <a href="#" class="dash-section-link">da inserire →</a>
                 </div>
-                <section class="dash-card" style="text-align: center; color: var(--text-tertiary); font-size: 13px; font-style: italic;">
-                    Assicurazione · Licenza di navigazione · Dichiarazione di potenza · Tassa stazionamento
-                    <div style="margin-top: 8px; font-size: 11px;">— date da configurare —</div>
+                <section id="dash-scadenze-buro">
+                    <div style="text-align:center;color:var(--text-tertiary);font-size:13px;font-style:italic;padding:16px;">
+                        caricamento…
+                    </div>
                 </section>
 
                 <!-- Meteo / Sole Genova -->
@@ -1378,7 +1378,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.04-1200
+                    app v2026.06.07-1000
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2662,6 +2662,70 @@
             updateMaintenanceUI();
         }
 
+
+        // ── Scadenze Burocratiche ─────────────────────────────────
+
+        function renderScadenzeBuro(data) {
+            const container = document.getElementById('dash-scadenze-buro');
+            if (!container) return;
+
+            const scadenze = Array.isArray(data.scadenze_burocratiche) ? data.scadenze_burocratiche : [];
+
+            if (!scadenze.length) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);font-size:13px;font-style:italic;padding:16px;">Nessuna scadenza configurata — compila il foglio "Scadenze burocratiche"</div>';
+                return;
+            }
+
+            const oggi = new Date();
+            oggi.setHours(0,0,0,0);
+
+            // Ordina per urgenza
+            const items = scadenze.map(r => {
+                const tipo     = r['Tipo'] || r['tipo'] || '—';
+                const scad     = parseDateIT(r['Data scadenza'] || r['data scadenza'] || '');
+                const ente     = r['Ente'] || r['ente'] || '';
+                const numero   = r['Numero documento'] || r['numero documento'] || '';
+                const giorni   = scad ? Math.floor((scad - oggi) / 86400000) : null;
+                return { tipo, scad, ente, numero, giorni };
+            }).sort((a, b) => {
+                if (a.giorni === null) return 1;
+                if (b.giorni === null) return -1;
+                return a.giorni - b.giorni;
+            });
+
+            container.innerHTML = items.map(item => {
+                let cls, dot, meta;
+                if (item.giorni === null) {
+                    cls = 'yellow'; dot = '⚪';
+                    meta = dot + ' data scadenza non inserita';
+                } else if (item.giorni < 0) {
+                    cls = 'red'; dot = '🔴';
+                    meta = dot + ' scaduta da ' + Math.abs(item.giorni) + ' giorni';
+                } else if (item.giorni <= 30) {
+                    cls = 'red'; dot = '🔴';
+                    meta = dot + ' scade tra ' + item.giorni + ' giorni';
+                } else if (item.giorni <= 90) {
+                    cls = 'yellow'; dot = '🟡';
+                    meta = dot + ' scade tra ' + item.giorni + ' giorni';
+                } else {
+                    cls = 'green'; dot = '🟢';
+                    meta = dot + ' scade tra ' + item.giorni + ' giorni';
+                }
+                if (item.scad) {
+                    const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+                    meta += ' (' + item.scad.getDate() + ' ' + mesi[item.scad.getMonth()] + ' ' + item.scad.getFullYear() + ')';
+                }
+                const sub = [item.ente, item.numero].filter(Boolean).join(' · ');
+
+                return '<div class="dash-scadenza ' + cls + '">' +
+                    '<div class="dash-sem-dot ' + cls + '"></div>' +
+                    '<div class="dash-scadenza-body">' +
+                    '<div class="dash-scadenza-title">' + escapeHtml(item.tipo) + '</div>' +
+                    '<div class="dash-scadenza-meta">' + meta + (sub ? ' <span style="opacity:.5">· ' + escapeHtml(sub) + '</span>' : '') + '</div>' +
+                    '</div><span class="dash-scadenza-arrow">›</span></div>';
+            }).join('');
+        }
+
         // Dashboard live — aggiorna hero stats, ultima uscita e scadenze motore
         function renderDashboardLive(data) {
             // Saluto in base all'ora
@@ -2697,6 +2761,9 @@
                 const oreU = parseFloat(last['ore motore'] || last['Ore motore'] || 0);
                 if (elDelta && oreU > 0) elDelta.textContent = '+' + oreU + "h dall'ultima uscita";
             }
+
+            // Scadenze burocratiche
+            renderScadenzeBuro(data);
 
             // Scadenze motore — legge le task-card live dalla pagina Motore
             const container = document.getElementById('dash-scadenze-motore');
