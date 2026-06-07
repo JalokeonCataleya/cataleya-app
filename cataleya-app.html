@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.07-1000">
+<html lang="it" data-app-version="v2026.06.07-1030">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -796,6 +796,22 @@
             font-family: var(--font-primary); font-size: 15px;
         }
 
+
+        /* ==================== TIME-BASED TASK CARDS ==================== */
+        .task-card-time {
+            background: rgba(26, 29, 41, 0.4);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-sm);
+            margin-top: var(--spacing-md);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+        .task-card-time .task-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-md); }
+        .task-card-time .task-text h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .task-card-time .task-meta { text-align: right; }
+        .task-card-time .remaining-text-time { font-size: 13px; font-weight: 600; }
+        .task-card-time .task-actions { margin-top: var(--spacing-md); display: flex; gap: var(--spacing-sm); }
+
         /* ==================== ENGINE PAGE ==================== */
         .engine-container {
             padding: calc(var(--nav-height) + var(--spacing-xl)) var(--spacing-xl) var(--spacing-xl);
@@ -1378,7 +1394,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.07-1000
+                    app v2026.06.07-1030
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -1908,6 +1924,119 @@
 
             </section>
 
+
+            <!-- Manutenzioni Stagionali (tempo-based) -->
+            <section class="card" style="margin-top: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-xl);">🗓️ Manutenzioni Stagionali</h3>
+                <p class="text-secondary tiny" style="margin-bottom: var(--spacing-xl);">Basate sul calendario — indipendenti dalle ore motore</p>
+
+                <div class="task-card-time" data-interval-months="12" data-last-date="2024-09-15">
+                    <div class="task-info">
+                        <div class="task-text">
+                            <h4>Antivegetativa</h4>
+                            <p class="tiny text-tertiary">Pittura antivegetativa scafo — da fare in secca</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="remaining-text-time p0">caricamento…</span>
+                        </div>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill p0-gradient" data-width="0"></div>
+                        </div>
+                        <span class="progress-pct">0%</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-primary-sm" onclick="openIntervento({voce:'Antivegetativa',area:'Carena'})">✓ Completata</button>
+                    </div>
+                </div>
+
+                <div class="task-card-time" data-interval-months="18" data-last-date="2024-09-15">
+                    <div class="task-info">
+                        <div class="task-text">
+                            <h4>Zinchi scafo</h4>
+                            <p class="tiny text-tertiary">Sostituzione zinchi scafo e sail drive — in secca</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="remaining-text-time p0">caricamento…</span>
+                        </div>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill p0-gradient" data-width="0"></div>
+                        </div>
+                        <span class="progress-pct">0%</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-primary-sm" onclick="openIntervento({voce:'Zinchi scafo',area:'Carena'})">✓ Completati</button>
+                    </div>
+                </div>
+
+                <div class="task-card-time" data-interval-months="12" data-last-date="2024-09-15">
+                    <div class="task-info">
+                        <div class="task-text">
+                            <h4>Ispezione carena</h4>
+                            <p class="tiny text-tertiary">Ispezione opera viva e appendici — in secca</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="remaining-text-time p0">caricamento…</span>
+                        </div>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill p0-gradient" data-width="0"></div>
+                        </div>
+                        <span class="progress-pct">0%</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-primary-sm" onclick="openIntervento({voce:'Ispezione carena',area:'Carena'})">✓ Completata</button>
+                    </div>
+                </div>
+
+                <div class="task-card-time" data-interval-months="12" data-last-date="2024-09-15">
+                    <div class="task-info">
+                        <div class="task-text">
+                            <h4>Barbotin e salpa ancora</h4>
+                            <p class="tiny text-tertiary">Revisione, lubrificazione e test salpa ancora</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="remaining-text-time p0">caricamento…</span>
+                        </div>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill p0-gradient" data-width="0"></div>
+                        </div>
+                        <span class="progress-pct">0%</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-primary-sm" onclick="openIntervento({voce:'Barbotin e salpa ancora',area:'Scafo/Coperta'})">✓ Completato</button>
+                    </div>
+                </div>
+
+                <div class="task-card-time" data-interval-months="84" data-last-date="2024-09-15">
+                    <div class="task-info">
+                        <div class="task-text">
+                            <h4>Cuffia sail drive</h4>
+                            <p class="tiny text-tertiary">Sostituzione cuffia — ciclo 7 anni · prossima: settembre 2031</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="remaining-text-time p3">caricamento…</span>
+                        </div>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill p3-gradient" data-width="0"></div>
+                        </div>
+                        <span class="progress-pct">0%</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-primary-sm" onclick="openIntervento({voce:'Cuffia sail drive',area:'Sail drive'})">✓ Completata</button>
+                    </div>
+                </div>
+
+            </section>
+
             <!-- History Section -->
             <section class="card">
                 <h3 style="margin-bottom: var(--spacing-xl);">📜 Storico Interventi</h3>
@@ -2254,6 +2383,71 @@
             }
         }
 
+
+        // ── Manutenzioni Stagionali (tempo-based) ─────────────────
+
+        function updateTimeBasedCards() {
+            const oggi = new Date();
+            oggi.setHours(0, 0, 0, 0);
+
+            document.querySelectorAll('.task-card-time').forEach(card => {
+                const intervalMonths = parseInt(card.dataset.intervalMonths) || 12;
+                const lastDateStr    = card.dataset.lastDate || '';
+
+                // Parse last date (formato ISO yyyy-mm-dd)
+                let lastDate = null;
+                if (lastDateStr) {
+                    const p = lastDateStr.split('-');
+                    if (p.length === 3) lastDate = new Date(+p[0], +p[1]-1, +p[2]);
+                }
+
+                const fill    = card.querySelector('.progress-fill');
+                const pct     = card.querySelector('.progress-pct');
+                const remText = card.querySelector('.remaining-text-time');
+                if (!fill || !pct || !remText) return;
+
+                if (!lastDate) {
+                    remText.textContent = '— data non registrata';
+                    fill.style.width = '0%';
+                    pct.textContent = '0%';
+                    return;
+                }
+
+                // Mesi trascorsi dall'ultimo intervento
+                const mesiTrascorsi = (oggi - lastDate) / (1000 * 60 * 60 * 24 * 30.44);
+                const mesiRimanenti = intervalMonths - mesiTrascorsi;
+                const percent = Math.min((mesiTrascorsi / intervalMonths) * 100, 100);
+
+                // Classe colore
+                let cls;
+                if (mesiRimanenti <= 0)  cls = 'p0';
+                else if (mesiRimanenti <= 2) cls = 'p0';
+                else if (mesiRimanenti <= 4) cls = 'p1';
+                else if (mesiRimanenti <= 6) cls = 'p2';
+                else cls = 'p3';
+
+                // Testo
+                let txt;
+                if (mesiRimanenti <= 0) {
+                    const mesiSc = Math.abs(Math.floor(mesiRimanenti));
+                    txt = 'scaduto da ' + mesiSc + (mesiSc === 1 ? ' mese' : ' mesi');
+                } else {
+                    const mR = Math.floor(mesiRimanenti);
+                    txt = 'tra ' + mR + (mR === 1 ? ' mese' : ' mesi');
+                }
+
+                remText.textContent = txt;
+                remText.className = 'remaining-text-time ' + cls;
+                fill.setAttribute('data-width', Math.round(percent));
+                fill.className = 'progress-fill ' + cls + '-gradient';
+
+                setTimeout(() => {
+                    fill.style.width = Math.min(percent, 100) + '%';
+                    pct.textContent = Math.round(percent) + '%';
+                }, 100);
+            });
+        }
+
         // Animate all progress bars on page load
         function animateAllProgressBars() {
             const progressBars = document.querySelectorAll('.progress-fill[data-width]');
@@ -2338,6 +2532,7 @@
             
             // Update maintenance UI
             updateMaintenanceUI();
+            updateTimeBasedCards();
             
             // Animate all progress bars
             setTimeout(() => {
@@ -2499,6 +2694,7 @@
             }
             // UI manutenzioni (pagina Motore)
             updateMaintenanceUI();
+            updateTimeBasedCards();
             // Aggiorna data-last da storico GAS se disponibile
             if (data.storico_manutenzioni && data.storico_manutenzioni.length) {
                 updateTaskCardsFromStorico(data.storico_manutenzioni);
@@ -2771,23 +2967,44 @@
 
             const oreCorrente = engineState.currentHours || ore;
             const tasks = Array.from(document.querySelectorAll('.task-card'));
+            const timeCards = Array.from(document.querySelectorAll('.task-card-time'));
             if (!tasks.length) return;
 
-            // Calcola remaining per ogni task
-            const items = tasks.map(t => {
+            // Calcola remaining per ogni task (ore-based)
+            const itemsOre = tasks.map(t => {
                 const interval  = parseInt(t.dataset.interval) || 0;
                 const lastDone  = parseFloat(t.dataset.last) || 0;
                 const nome      = (t.querySelector('h4') || {}).textContent || '?';
                 const remaining = interval - (oreCorrente - lastDone);
-                return { nome, interval, remaining };
-            }).sort((a, b) => a.remaining - b.remaining); // urgenti prima
+                // Normalizza su scala 0-1 rispetto all'intervallo per confronto con time-based
+                return { nome, remaining, unit: 'h', score: remaining / Math.max(interval, 1) };
+            });
+            // Calcola remaining per card temporali (mesi-based → converti in "score" comparabile)
+            const oggiTime = new Date(); oggiTime.setHours(0,0,0,0);
+            const itemsTime = timeCards.map(t => {
+                const intervalM = parseInt(t.dataset.intervalMonths) || 12;
+                const ds = t.dataset.lastDate || '';
+                let lastDate = null;
+                if (ds) { const p = ds.split('-'); if (p.length===3) lastDate = new Date(+p[0],+p[1]-1,+p[2]); }
+                const mesiTrasc = lastDate ? (oggiTime - lastDate)/(1000*60*60*24*30.44) : intervalM;
+                const mesiRim   = intervalM - mesiTrasc;
+                const nome      = (t.querySelector('h4') || {}).textContent || '?';
+                return { nome, remaining: mesiRim, unit: 'mesi', score: mesiRim / intervalM };
+            });
+            const items = [...itemsOre, ...itemsTime].sort((a, b) => a.score - b.score);
 
             // Mostra le prime 4
             container.innerHTML = items.slice(0, 4).map(item => {
                 let cls, dot, meta;
-                if (item.remaining <= 0) {
+                if (item.unit === 'mesi') {
+                    const mR = Math.floor(item.remaining);
+                    if (item.remaining <= 0) { cls='red'; dot='🔴'; meta=dot+' scaduto da '+Math.abs(mR)+' mesi'; }
+                    else if (item.remaining <= 2) { cls='red'; dot='🔴'; meta=dot+' scade tra '+mR+' mesi'; }
+                    else if (item.remaining <= 4) { cls='yellow'; dot='🟡'; meta=dot+' scade tra '+mR+' mesi'; }
+                    else { cls='green'; dot='🟢'; meta=dot+' '+mR+' mesi rimanenti'; }
+                } else if (item.remaining <= 0) {
                     cls = 'red';   dot = '🔴';
-                    meta = dot + ' scaduto da ' + Math.abs(item.remaining).toFixed(1) + 'h · ciclo ' + item.interval + 'h';
+                    meta = dot + ' scaduto da ' + Math.abs(item.remaining).toFixed(1) + 'h';
                 } else if (item.remaining <= engineState.thresholdUrgent) {
                     cls = 'red';   dot = '🔴';
                     meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
@@ -2796,7 +3013,7 @@
                     meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
                 } else {
                     cls = 'green';  dot = '🟢';
-                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · ciclo ' + item.interval + 'h';
+                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti';
                 }
                 return '<div class="dash-scadenza ' + cls + '">' +
                     '<div class="dash-sem-dot ' + cls + '"></div>' +
