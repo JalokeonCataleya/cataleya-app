@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-1907">
+<html lang="it" data-app-version="v2026.06.30-1918">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -659,6 +659,48 @@
         }
         .trip-edit-btn:hover,
         .trip-edit-btn:active { background: rgba(78, 205, 196, 0.15); }
+
+        /* ── Cicliche dinamiche pagina Motore ────────────────── */
+        .engine-cicliche .area-group { margin-bottom: var(--spacing-xl); }
+        .engine-cicliche .area-title {
+            font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--text-tertiary); font-weight: 600;
+            padding: 0 4px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 10px;
+        }
+        .cic-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-left-width: 4px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+        .cic-card.red    { border-left-color: var(--sem-red); }
+        .cic-card.yellow { border-left-color: var(--sem-yellow); }
+        .cic-card.green  { border-left-color: var(--sem-green); }
+        .cic-card-head { display: flex; align-items: flex-start; gap: 10px; }
+        .cic-card-icon { font-size: 18px; flex-shrink: 0; padding-top: 2px; }
+        .cic-card-body { flex: 1; min-width: 0; }
+        .cic-card-title { font-weight: 600; font-size: 14px; color: var(--text-primary); }
+        .cic-card-meta {
+            font-size: 11px; color: var(--text-tertiary);
+            margin-top: 4px; line-height: 1.5;
+        }
+        .cic-card-meta.red    { color: var(--sem-red); font-weight: 600; }
+        .cic-card-meta.yellow { color: var(--sem-yellow); }
+        .cic-card-meta.green  { color: var(--sem-green); }
+        .cic-card-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .cic-btn-done {
+            background: rgba(78, 205, 196, 0.12);
+            color: var(--accent-aqua);
+            border: 1px solid rgba(78, 205, 196, 0.25);
+            font-size: 12px; padding: 6px 10px; border-radius: 6px;
+            cursor: pointer;
+        }
+        .cic-btn-done:hover, .cic-btn-done:active { background: rgba(78, 205, 196, 0.22); }
+        .cic-card-note { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; font-style: italic; }
         .trip-pill {
             font-size: 11px; padding: 2px 8px;
             border-radius: var(--border-radius-pill);
@@ -1557,7 +1599,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-1907
+                    app v2026.06.30-1918
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -1622,8 +1664,19 @@
                 </div>
             </header>
 
-            <!-- Maintenance Groups -->
-            <section class="maintenance-groups" style="margin-bottom: var(--spacing-2xl);">
+            <!-- ── NUOVO: Programma Manutenzione dinamico dal foglio Cicliche ── -->
+            <section id="engine-cicliche-dynamic" class="engine-cicliche" style="margin-bottom: var(--spacing-2xl);">
+                <h2 style="margin-bottom: var(--spacing-md);">🔄 Programma Manutenzione</h2>
+                <p class="tiny text-tertiary" style="margin-bottom: var(--spacing-lg);">
+                    Voci lette dal foglio <strong>Cicliche</strong>. Modificare il foglio per cambiare intervalli.
+                </p>
+                <div id="engine-cicliche-list">
+                    <div style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">caricamento…</div>
+                </div>
+            </section>
+
+            <!-- VECCHI accordion hardcoded (nascosti dopo il refactor del 30/6/2026) -->
+            <section class="maintenance-groups" style="display:none;">
                 <h2 style="margin-bottom: var(--spacing-xl);">Programma Manutenzione</h2>
                 
                 <!-- EVERY 10H / DAILY -->
@@ -2876,6 +2929,210 @@
             renderMaintenancePage(data);
             // Lista "Ultimi inserimenti" sulla Dashboard con tasto ✏️ Modifica
             renderUltimiInserimenti(data);
+            // Sezione "Programma Manutenzione" pagina Motore (dinamica da foglio Cicliche)
+            renderCicliche(data);
+        }
+
+        // ── RENDER CICLICHE DINAMICO (pagina Motore) ────────────────
+        // Legge data.cicliche (foglio Cicliche) e data.esecuzioni (foglio Esecuzioni
+        // o fallback a storico) per generare le card con stato semaforo aggiornato.
+        function renderCicliche(data) {
+            const container = document.getElementById('engine-cicliche-list');
+            if (!container) return;
+            const cicliche = Array.isArray(data.cicliche) ? data.cicliche : [];
+            if (!cicliche.length) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:24px;font-style:italic;">Foglio "Cicliche" vuoto o non trovato.</div>';
+                return;
+            }
+            const esecuzioni = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni
+                              : (data.storico_manutenzioni || []);
+            const oreCorrenti = engineState.currentHours || parseFloat(data.ore_motore) || 0;
+
+            // Raggruppa per Area
+            const groups = {};
+            cicliche.forEach(c => {
+                const voce = String(c['Voce'] || '').trim();
+                if (!voce) return;
+                const area = String(c['Area'] || 'Altro').trim();
+                if (!groups[area]) groups[area] = [];
+                groups[area].push(c);
+            });
+
+            // Ordine consigliato delle aree
+            const ordineAree = ['Motore','Sail drive','Carena','Idraulico','Elettrico','Vele/Sartiame','Scafo/Coperta','Sicurezza','Burocrazia','Comfort/Interni','Pulizia','Altro'];
+            const areeOrdinate = Object.keys(groups).sort((a,b) => {
+                const ia = ordineAree.indexOf(a), ib = ordineAree.indexOf(b);
+                return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+            });
+
+            const iconaArea = {
+                'Motore': '⚙️', 'Sail drive': '🔧', 'Carena': '⚓', 'Idraulico': '💧',
+                'Elettrico': '⚡', 'Vele/Sartiame': '⛵', 'Scafo/Coperta': '🛥️',
+                'Sicurezza': '🦺', 'Burocrazia': '📋', 'Comfort/Interni': '🛋️', 'Pulizia': '✨'
+            };
+
+            // Render
+            let html = '';
+            areeOrdinate.forEach(area => {
+                html += '<div class="area-group">';
+                html += '<div class="area-title">' + (iconaArea[area] || '🔹') + '  ' + escapeHtml(area) + '</div>';
+                groups[area].forEach(c => {
+                    html += _renderCiclicaCard(c, esecuzioni, oreCorrenti);
+                });
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function _renderCiclicaCard(c, esecuzioni, oreCorrenti) {
+            const voce = String(c['Voce'] || '').trim();
+            const area = String(c['Area'] || '').trim();
+            const intOre = parseFloat(c['Intervallo ore']);
+            const intMesi = parseFloat(c['Intervallo mesi']);
+            const note = String(c['Note'] || '').trim();
+
+            // Trova l'ultima esecuzione di questa voce
+            const ultima = _trovaUltimaEsecuzione(voce, esecuzioni);
+
+            // Calcolo stato (può essere ore-based, time-based o entrambi → prendi il più urgente)
+            const stato = { cls: 'green', meta: '', sem: '🟢' };
+            const candidates = [];
+
+            // 1) Ciclica per ore
+            if (!isNaN(intOre) && intOre > 0) {
+                if (ultima && ultima.ore != null) {
+                    const usate = oreCorrenti - ultima.ore;
+                    const rim = intOre - usate;
+                    const pct = (usate / intOre) * 100;
+                    candidates.push({
+                        type: 'ore',
+                        rim,
+                        pct,
+                        text: rim > 0
+                            ? rim.toFixed(1) + 'h rimanenti · ciclo ' + intOre + 'h (ultimo ' + ultima.dataStr + ' a ' + ultima.ore + 'h)'
+                            : 'Scaduto da ' + Math.abs(rim).toFixed(1) + 'h (ciclo ' + intOre + 'h)',
+                        cls: _semaforoOre(rim, intOre)
+                    });
+                } else {
+                    candidates.push({
+                        type: 'ore',
+                        rim: -Infinity,
+                        pct: 100,
+                        text: 'Mai registrato · ciclo ' + intOre + 'h',
+                        cls: 'red'
+                    });
+                }
+            }
+
+            // 2) Ciclica per mesi
+            if (!isNaN(intMesi) && intMesi > 0) {
+                if (ultima && ultima.date) {
+                    const oggi = new Date();
+                    const mesiPassati = ((oggi - ultima.date) / (1000*60*60*24*30.44));
+                    const rimMesi = intMesi - mesiPassati;
+                    candidates.push({
+                        type: 'mesi',
+                        rim: rimMesi,
+                        pct: (mesiPassati / intMesi) * 100,
+                        text: rimMesi > 0
+                            ? rimMesi.toFixed(1) + ' mesi rimanenti · ciclo ' + intMesi + ' mesi (ultimo ' + ultima.dataStr + ')'
+                            : 'Scaduto da ' + Math.abs(rimMesi).toFixed(0) + ' mesi (ciclo ' + intMesi + ' mesi)',
+                        cls: _semaforoMesi(rimMesi, intMesi)
+                    });
+                } else {
+                    candidates.push({
+                        type: 'mesi',
+                        rim: -Infinity,
+                        pct: 100,
+                        text: 'Mai registrato · ciclo ' + intMesi + ' mesi',
+                        cls: 'red'
+                    });
+                }
+            }
+
+            // Nessun intervallo definito
+            if (candidates.length === 0) {
+                candidates.push({
+                    type: 'none', rim: Infinity, pct: 0,
+                    text: 'Nessun intervallo definito nel foglio Cicliche',
+                    cls: 'green'
+                });
+            }
+
+            // Prendi il più urgente (cls red > yellow > green)
+            const priorita = { red: 3, yellow: 2, green: 1 };
+            candidates.sort((a, b) => (priorita[b.cls] || 0) - (priorita[a.cls] || 0));
+            const winning = candidates[0];
+            stato.cls = winning.cls;
+            stato.sem = winning.cls === 'red' ? '🔴' : winning.cls === 'yellow' ? '🟡' : '🟢';
+            stato.meta = winning.text;
+
+            // Costruisce HTML card
+            const voceEsc = escapeHtml(voce);
+            const areaEsc = escapeHtml(area);
+            const noteHtml = note ? '<div class="cic-card-note">💡 ' + escapeHtml(note) + '</div>' : '';
+            const onclickReg = "openIntervento({voce: '" + voce.replace(/'/g, "\\'") + "', area: '" + area.replace(/'/g, "\\'") + "'})";
+
+            return `
+                <div class="cic-card ${stato.cls}">
+                    <div class="cic-card-head">
+                        <div class="cic-card-body">
+                            <div class="cic-card-title">${voceEsc}</div>
+                            <div class="cic-card-meta ${stato.cls}">${stato.sem} ${escapeHtml(stato.meta)}</div>
+                            ${noteHtml}
+                            <div class="cic-card-actions">
+                                <button class="cic-btn-done" onclick="${onclickReg}">✓ Registra esecuzione</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // Trova l'ultima esecuzione di una voce nel foglio Esecuzioni/storico
+        function _trovaUltimaEsecuzione(voce, esecuzioni) {
+            if (!voce || !esecuzioni || !esecuzioni.length) return null;
+            const voceLower = voce.toLowerCase();
+            // Estrai parole chiave (ignora articoli/preposizioni brevi)
+            const keywords = voceLower.split(/[\s\+\,\/]+/).filter(w => w.length > 3);
+
+            const matches = [];
+            esecuzioni.forEach(e => {
+                const eVoce = String(e['Voce'] || e['Manutenzione'] || e['Attività'] || '').toLowerCase();
+                if (!eVoce) return;
+                // Match: voce identica O contiene tutte le keyword principali
+                let isMatch = (eVoce === voceLower) || eVoce.indexOf(voceLower) !== -1;
+                if (!isMatch && keywords.length >= 2) {
+                    isMatch = keywords.every(k => eVoce.indexOf(k) !== -1);
+                }
+                if (!isMatch) return;
+                const dataStr = e['Data'] || e['Data di fine'] || e['Data di inizio'];
+                const d = parseDateIT(dataStr);
+                if (!d) return;
+                const oreVal = e['Ore motore'] || e['Ore Motore'];
+                const ore = oreVal != null && oreVal !== '' ? parseFloat(String(oreVal).replace(',', '.').replace(/\s*h\s*$/i, '')) : null;
+                matches.push({ date: d, ore: isNaN(ore) ? null : ore, dataStr: String(dataStr) });
+            });
+            if (!matches.length) return null;
+            matches.sort((a, b) => b.date - a.date);
+            return matches[0];
+        }
+
+        // Semafori
+        function _semaforoOre(rim, intervallo) {
+            if (rim <= 0) return 'red';
+            const pct = ((intervallo - rim) / intervallo) * 100;
+            if (pct >= 90) return 'red';
+            if (intervallo >= 50 && rim <= 10) return 'red';
+            if (pct >= 70) return 'yellow';
+            return 'green';
+        }
+        function _semaforoMesi(rimMesi, intervalloMesi) {
+            if (rimMesi <= 0) return 'red';
+            const pct = ((intervalloMesi - rimMesi) / intervalloMesi) * 100;
+            if (pct >= 90) return 'red';
+            if (rimMesi <= 1) return 'red';
+            if (pct >= 70) return 'yellow';
+            return 'green';
         }
 
         // ── LISTA ULTIMI INSERIMENTI (Dashboard) ─────────────────────
