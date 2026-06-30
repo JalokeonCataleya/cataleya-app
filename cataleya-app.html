@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-2006">
+<html lang="it" data-app-version="v2026.06.30-2011">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1599,7 +1599,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-2006
+                    app v2026.06.30-2011
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -1671,17 +1671,8 @@
                     Voci lette dal foglio <strong>Cicliche</strong>. Modificare il foglio per cambiare intervalli.
                 </p>
                 <div id="engine-cicliche-list">
-                    <div id="engine-cicliche-init" style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">caricamento…</div>
+                    <div style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">caricamento…</div>
                 </div>
-                <!-- Script inline che scrive un timestamp se il JS gira. Se Stefano lo vede,
-                     il file HTML è quello giusto e il JS è eseguito. Se non lo vede,
-                     ha cache vecchia dell'HTML. -->
-                <script>
-                    (function(){
-                        var el = document.getElementById('engine-cicliche-init');
-                        if (el) el.textContent = 'caricamento… (file HTML caricato alle ' + new Date().toLocaleTimeString() + ')';
-                    })();
-                </script>
             </section>
 
             <!-- VECCHI accordion hardcoded (nascosti dopo il refactor del 30/6/2026) -->
@@ -2960,18 +2951,9 @@
         }
 
         function renderCicliche(data) {
-            // SONDA DI VITA: scrive nel container per dimostrare che la funzione viene chiamata
-            const _dbgCont = document.getElementById('engine-cicliche-list');
-            if (_dbgCont) {
-                _dbgCont.innerHTML = '<div style="background:#2d5b86;color:#fff;padding:10px;border-radius:8px;font-family:monospace;font-size:11px;">[SONDA] renderCicliche attivata alle ' + new Date().toLocaleTimeString() + ' · data.cicliche tipo=' + (typeof data.cicliche) + ' · count=' + (data && data.cicliche ? data.cicliche.length : 'n/a') + '</div>';
-            }
             try {
                 const container = document.getElementById('engine-cicliche-list');
-                if (!container) {
-                    console.warn('[Cataleya] renderCicliche: container engine-cicliche-list NON TROVATO.');
-                    return;
-                }
-                console.log('[Cataleya] renderCicliche - cicliche:', (data.cicliche || []).length, 'esecuzioni:', (data.esecuzioni || []).length);
+                if (!container) return;
 
                 // Caso 1: Apps Script non restituisce il campo cicliche → Codice.gs vecchio
                 if (data.cicliche === undefined) {
@@ -3012,8 +2994,6 @@
                 if (!groups[area]) groups[area] = [];
                 groups[area].push(c);
             });
-            console.log('[Cataleya] renderCicliche - voci valide:', voceValide, 'aree:', Object.keys(groups));
-
             if (voceValide === 0) {
                 container.innerHTML = `
                     <div style="background:rgba(243,156,18,0.12);border:1px solid var(--warning);border-radius:8px;padding:16px;">
