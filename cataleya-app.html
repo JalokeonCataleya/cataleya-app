@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.07-1110">
+<html lang="it" data-app-version="v2026.06.30-1759">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1196,6 +1196,64 @@
         #page-dashboard .dash-scadenza.red    { border-left-color: var(--sem-red); }
         #page-dashboard .dash-scadenza.yellow { border-left-color: var(--sem-yellow); }
         #page-dashboard .dash-scadenza.green  { border-left-color: var(--sem-green); }
+        /* Lista ultimi inserimenti con tasto Modifica */
+        #page-dashboard .dash-ultimi { display:flex; flex-direction:column; gap:8px; }
+        #page-dashboard .dash-ultimo-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--dash-card-radius-sm);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #page-dashboard .dash-ultimo-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+        #page-dashboard .dash-ultimo-body { flex: 1; min-width: 0; }
+        #page-dashboard .dash-ultimo-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #page-dashboard .dash-ultimo-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+        #page-dashboard .dash-ultimo-edit {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--accent-aqua);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            transition: background 0.15s;
+        }
+        #page-dashboard .dash-ultimo-edit:hover,
+        #page-dashboard .dash-ultimo-edit:active {
+            background: rgba(78, 205, 196, 0.12);
+        }
+        #page-dashboard .dash-ultimo-tipo {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+        #page-dashboard .dash-ultimo-tipo.uscita    { background: rgba(78, 205, 196, 0.2); color: var(--accent-aqua); }
+        #page-dashboard .dash-ultimo-tipo.intervento{ background: rgba(244, 213, 141, 0.2); color: var(--accent-gold); }
         #page-dashboard .dash-sem-dot {
             width: 12px; height: 12px; border-radius: 50%;
             flex-shrink: 0;
@@ -1446,6 +1504,17 @@
                     </div>
                 </section>
 
+                <!-- Ultimi inserimenti (con tasto Modifica) -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">🕐 Ultimi Inserimenti</span>
+                    <span class="dash-section-link" style="color:var(--text-tertiary);font-style:italic;">tocca ✏️ per modificare</span>
+                </div>
+                <section id="dash-ultimi-list" class="dash-ultimi">
+                    <div style="text-align:center;color:var(--text-tertiary);font-size:13px;font-style:italic;padding:16px;">
+                        caricamento…
+                    </div>
+                </section>
+
                 <!-- Meteo / Sole Genova -->
                 <div class="dash-section-head">
                     <span class="dash-section-title">☀️ Oggi a Genova</span>
@@ -1474,7 +1543,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.07-1110
+                    app v2026.06.30-1759
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2751,8 +2820,12 @@
             });
         }
 
+        // Memorizza l'ultimo payload ricevuto: serve per popolare la modale di modifica
+        let _lastFetchedData = null;
+
         // Applica i dati ricevuti a tutti gli elementi della UI (Dashboard + Engine page)
         function _applicaDati(data) {
+            _lastFetchedData = data;
             // Ore motore (engineState + tutti gli elementi con classe ore-motore-display)
             if (data.ore_motore !== undefined && data.ore_motore !== null) {
                 const ore = parseFloat(data.ore_motore);
@@ -2787,6 +2860,137 @@
             // Pagine Uscite e Manutenzione
             renderTripsPage(data);
             renderMaintenancePage(data);
+            // Lista "Ultimi inserimenti" sulla Dashboard con tasto ✏️ Modifica
+            renderUltimiInserimenti(data);
+        }
+
+        // ── LISTA ULTIMI INSERIMENTI (Dashboard) ─────────────────────
+        // Mostra le ultime 3 uscite e 3 interventi, ognuno con tasto ✏️ modifica
+        function renderUltimiInserimenti(data) {
+            const container = document.getElementById('dash-ultimi-list');
+            if (!container) return;
+            const items = [];
+
+            // Ultime uscite — usa "Uscite" se presente, altrimenti fallback a "diario"
+            const usciteSrc = (data.uscite && data.uscite.length) ? data.uscite : (data.diario || []);
+            const fonteUscite = (data.uscite && data.uscite.length) ? 'uscite' : 'diario';
+            usciteSrc.slice(-3).reverse().forEach(u => {
+                const dataKey = findDateKey(u);
+                const d = parseDateIT(u[dataKey]);
+                if (!d) return;
+                const oreTot = u['Ore motore totali'] || u['ore motore totali'] || u['Ore tot'];
+                items.push({
+                    tipo: 'uscita',
+                    icon: '⚓',
+                    titolo: 'Uscita del ' + formatDataShort(d),
+                    meta: (oreTot != null && oreTot !== '' ? oreTot + ' h motore' : '') +
+                          (u['Miglia'] || u['Miglia percorse'] ? ' · ' + (u['Miglia'] || u['Miglia percorse']) + ' Nm' : ''),
+                    rowIndex: u._rowIndex,
+                    fonte: fonteUscite,
+                    timestamp: d.getTime(),
+                    raw: u
+                });
+            });
+
+            // Ultime esecuzioni/interventi
+            const eseSrc = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni : (data.storico_manutenzioni || []);
+            const fonteEse = (data.esecuzioni && data.esecuzioni.length) ? 'esecuzioni' : 'storico';
+            eseSrc.slice(-3).reverse().forEach(e => {
+                const dataStr = e['Data'] || e['Data di fine'] || e['Data di inizio'];
+                const d = parseDateIT(dataStr);
+                if (!d) return;
+                const voce = e['Voce'] || e['Manutenzione'] || e['Attività'] || '—';
+                const ore = e['Ore motore'] || e['Ore Motore'];
+                items.push({
+                    tipo: 'intervento',
+                    icon: '🔧',
+                    titolo: voce.length > 38 ? voce.slice(0, 35) + '…' : voce,
+                    meta: formatDataShort(d) + (ore != null && ore !== '' ? ' · ' + ore + ' h motore' : ''),
+                    rowIndex: e._rowIndex,
+                    fonte: fonteEse,
+                    timestamp: d.getTime(),
+                    raw: e
+                });
+            });
+
+            // Ordina per data decrescente, prendi max 6
+            items.sort((a, b) => b.timestamp - a.timestamp);
+            const top = items.slice(0, 6);
+
+            if (top.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);font-size:13px;font-style:italic;padding:16px;">Nessun inserimento ancora registrato</div>';
+                return;
+            }
+
+            container.innerHTML = top.map(it => `
+                <div class="dash-ultimo-item">
+                    <div class="dash-ultimo-icon">${it.icon}</div>
+                    <div class="dash-ultimo-body">
+                        <div class="dash-ultimo-title">
+                            <span class="dash-ultimo-tipo ${it.tipo}">${it.tipo}</span>${escapeHtml(it.titolo)}
+                        </div>
+                        <div class="dash-ultimo-meta">${escapeHtml(it.meta)}</div>
+                    </div>
+                    <button class="dash-ultimo-edit"
+                            onclick="apriModifica('${it.tipo}', ${it.rowIndex}, '${it.fonte}')"
+                            title="Modifica">✏️</button>
+                </div>
+            `).join('');
+        }
+
+        function formatDataShort(d) {
+            if (!(d instanceof Date)) return '';
+            const mesi = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+            return d.getDate() + ' ' + mesi[d.getMonth()] + ' ' + String(d.getFullYear()).slice(-2);
+        }
+
+        // ── APERTURA MODALI IN MODALITÀ MODIFICA ─────────────────────
+        // Trova la voce nei dati e apre la modale corrispondente precompilata
+        function apriModifica(tipo, rowIndex, fonte) {
+            if (!_lastFetchedData) {
+                alert('Dati non ancora caricati. Aspetta che il pallino diventi verde e riprova.');
+                return;
+            }
+            let arr = [];
+            if (tipo === 'uscita') {
+                arr = fonte === 'uscite' ? (_lastFetchedData.uscite || []) : (_lastFetchedData.diario || []);
+            } else {
+                arr = fonte === 'esecuzioni' ? (_lastFetchedData.esecuzioni || []) : (_lastFetchedData.storico_manutenzioni || []);
+            }
+            const row = arr.find(r => r._rowIndex === rowIndex);
+            if (!row) {
+                alert('Voce non trovata (riga ' + rowIndex + '). Probabilmente il foglio è stato modificato. Ricarica e riprova.');
+                return;
+            }
+            if (tipo === 'uscita') {
+                openNuovaUscita({
+                    _editMode: true,
+                    _rowIndex: rowIndex,
+                    _fonte: fonte,
+                    data:    parseDateIT(row[findDateKey(row)]),
+                    oreTot:  row['Ore motore totali'] || row['ore motore totali'] || row['Ore tot'] || '',
+                    miglia:  row['Miglia'] || row['Miglia percorse'] || '',
+                    ventoKn: row['Vento nodi'] || (row['vento'] ? String(row['vento']).match(/\d+/) : '') || '',
+                    ventoDir:row['Vento direzione'] || row['Dir'] || '',
+                    mare:    row['Mare cm'] || '',
+                    veloc:   row['Velocità max kn'] || row['velocità Cataleya'] || row['Vel max'] || '',
+                    note:    row['Note'] || row['note'] || ''
+                });
+            } else {
+                openIntervento({
+                    _editMode: true,
+                    _rowIndex: rowIndex,
+                    _fonte: fonte,
+                    voce:    row['Voce'] || row['Manutenzione'] || row['Attività'] || '',
+                    data:    parseDateIT(row['Data'] || row['Data di fine'] || row['Data di inizio']),
+                    ore:     row['Ore motore'] || row['Ore Motore'] || '',
+                    area:    row['Area'] || '',
+                    esito:   row['Esito'] || 'OK',
+                    fornitore: row['Fornitore'] || '',
+                    costo:   row['Costo €'] || row['Costo'] || '',
+                    note:    row['Note tecniche'] || row['Note'] || row['note'] || ''
+                });
+            }
         }
 
         async function caricaDatiDaSheets(opts) {
@@ -3294,24 +3498,38 @@ renderTripsList();
 
         // ── Modale Nuova Uscita ───────────────────────────────────
 
-        function openNuovaUscita() {
-            const oggi = new Date();
-            const yyyy = oggi.getFullYear();
-            const mm   = String(oggi.getMonth()+1).padStart(2,'0');
-            const dd   = String(oggi.getDate()).padStart(2,'0');
+        function openNuovaUscita(edit) {
+            const isEdit = !!(edit && edit._editMode);
+            const btn = document.getElementById('btn-uscita-save');
+            let yyyy, mm, dd;
+            if (isEdit && edit.data instanceof Date) {
+                yyyy = edit.data.getFullYear();
+                mm   = String(edit.data.getMonth()+1).padStart(2,'0');
+                dd   = String(edit.data.getDate()).padStart(2,'0');
+            } else {
+                const oggi = new Date();
+                yyyy = oggi.getFullYear();
+                mm   = String(oggi.getMonth()+1).padStart(2,'0');
+                dd   = String(oggi.getDate()).padStart(2,'0');
+            }
             document.getElementById('uscita-data').value = yyyy + '-' + mm + '-' + dd;
-            document.getElementById('uscita-ore-tot').value = '';
+            document.getElementById('uscita-ore-tot').value = isEdit ? (edit.oreTot || '') : '';
             const elPrec = document.getElementById('uscita-ore-prec');
             if (elPrec) elPrec.textContent = engineState.currentHours > 0 ? engineState.currentHours.toFixed(1) + ' h' : '—';
-            document.getElementById('uscita-miglia').value   = '';
-            document.getElementById('uscita-vento-kn').value = '';
-            document.getElementById('uscita-vento-dir').value = '';
-            document.getElementById('uscita-mare').value      = '';
-            document.getElementById('uscita-velocita').value  = '';
-            document.getElementById('uscita-note').value      = '';
+            document.getElementById('uscita-miglia').value    = isEdit ? (edit.miglia || '')   : '';
+            document.getElementById('uscita-vento-kn').value  = isEdit ? (edit.ventoKn || '')  : '';
+            document.getElementById('uscita-vento-dir').value = isEdit ? (edit.ventoDir || '') : '';
+            document.getElementById('uscita-mare').value      = isEdit ? (edit.mare || '')     : '';
+            document.getElementById('uscita-velocita').value  = isEdit ? (edit.veloc || '')    : '';
+            document.getElementById('uscita-note').value      = isEdit ? (edit.note || '')     : '';
             document.getElementById('uscita-error').style.display = 'none';
-            document.getElementById('btn-uscita-save').disabled = false;
-            document.getElementById('btn-uscita-save').textContent = '\u2693 Salva Uscita';
+            btn.dataset.editMode  = isEdit ? '1' : '0';
+            btn.dataset.editRow   = isEdit ? String(edit._rowIndex || '') : '';
+            btn.dataset.editFonte = isEdit ? (edit._fonte || '')          : '';
+            btn.disabled = false;
+            btn.textContent = isEdit ? '\ud83d\udcbe Salva modifiche' : '\u2693 Salva Uscita';
+            const titoloEl = document.querySelector('#uscita-overlay .uscita-modal h3');
+            if (titoloEl) titoloEl.innerHTML = isEdit ? '\u270f\ufe0f Modifica Uscita' : '\u2693 Nuova Uscita';
             document.getElementById('uscita-overlay').classList.add('open');
         }
 
@@ -3349,12 +3567,14 @@ renderTripsList();
             if (!url) { alert('URL del Google Script non configurato. Apri Impostazioni.'); return; }
 
             const btn = document.getElementById('btn-uscita-save');
+            const isEdit = btn.dataset.editMode === '1';
+            const editRow = btn.dataset.editRow;
+            const editFonte = btn.dataset.editFonte;
             btn.disabled = true;
             btn.textContent = 'Salvataggio...';
 
             try {
-                const params = new URLSearchParams({
-                    action:    'appendUscita',
+                const baseParams = {
                     data:      data,
                     ore:       ore.toFixed(1),
                     ore_tot:   oreTot.toFixed(1),
@@ -3364,7 +3584,15 @@ renderTripsList();
                     mare:      mare || '',
                     velocita:  veloc || '',
                     note:      note || ''
-                });
+                };
+                if (isEdit) {
+                    baseParams.action = 'updateUscita';
+                    baseParams.row_index = editRow;
+                    baseParams.fonte = editFonte; // "uscite" o "diario"
+                } else {
+                    baseParams.action = 'appendUscita';
+                }
+                const params = new URLSearchParams(baseParams);
                 const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
                 const json = await res.json();
 
@@ -3374,13 +3602,13 @@ renderTripsList();
                         engineState.currentHours = oreTot;
                     }
                     setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
-                    alert('Uscita salvata!');
+                    alert(isEdit ? 'Modifiche salvate!' : 'Uscita salvata!');
                 } else {
                     throw new Error('GAS risponde: ' + JSON.stringify(json));
                 }
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = '\u2693 Salva Uscita';
+                btn.textContent = isEdit ? '\ud83d\udcbe Salva modifiche' : '\u2693 Salva Uscita';
                 errEl.textContent = 'Errore: ' + err.message;
                 errEl.style.display = 'block';
             }
@@ -3390,22 +3618,42 @@ renderTripsList();
 
         function openIntervento(prefill) {
             prefill = prefill || {};
-            const oggi = new Date();
-            const yyyy = oggi.getFullYear();
-            const mm   = String(oggi.getMonth()+1).padStart(2,'0');
-            const dd   = String(oggi.getDate()).padStart(2,'0');
+            const isEdit = !!prefill._editMode;
+            const btn = document.getElementById('btn-int-save');
+
+            // Data
+            let yyyy, mm, dd;
+            if (isEdit && prefill.data instanceof Date) {
+                yyyy = prefill.data.getFullYear();
+                mm   = String(prefill.data.getMonth()+1).padStart(2,'0');
+                dd   = String(prefill.data.getDate()).padStart(2,'0');
+            } else {
+                const oggi = new Date();
+                yyyy = oggi.getFullYear();
+                mm   = String(oggi.getMonth()+1).padStart(2,'0');
+                dd   = String(oggi.getDate()).padStart(2,'0');
+            }
 
             document.getElementById('int-data').value      = yyyy+'-'+mm+'-'+dd;
             document.getElementById('int-ore').value       = prefill.ore || (engineState.currentHours > 0 ? engineState.currentHours.toFixed(1) : '');
             document.getElementById('int-voce').value      = prefill.voce || '';
             document.getElementById('int-area').value      = prefill.area || 'Motore';
-            document.getElementById('int-esito').value     = 'OK';
-            document.getElementById('int-fornitore').value = '';
-            document.getElementById('int-costo').value     = '';
-            document.getElementById('int-note').value      = '';
+            document.getElementById('int-esito').value     = prefill.esito || 'OK';
+            document.getElementById('int-fornitore').value = prefill.fornitore || '';
+            document.getElementById('int-costo').value     = prefill.costo || '';
+            document.getElementById('int-note').value      = prefill.note || '';
             document.getElementById('int-error').style.display = 'none';
-            document.getElementById('btn-int-save').disabled = false;
-            document.getElementById('btn-int-save').textContent = 'Salva Intervento';
+
+            // Stato modifica
+            btn.dataset.editMode  = isEdit ? '1' : '0';
+            btn.dataset.editRow   = isEdit ? String(prefill._rowIndex || '') : '';
+            btn.dataset.editFonte = isEdit ? (prefill._fonte || '')          : '';
+            btn.disabled = false;
+            btn.textContent = isEdit ? '💾 Salva modifiche' : 'Salva Intervento';
+
+            // Titolo modale
+            const titoloEl = document.querySelector('#intervento-overlay .intervento-modal h3, #intervento-overlay h3');
+            if (titoloEl) titoloEl.innerHTML = isEdit ? '✏️ Modifica Intervento' : '🔧 Registra Intervento';
 
             // Popola datalist con i nomi dei task-card
             const dl = document.getElementById('int-voce-list');
@@ -3442,12 +3690,14 @@ renderTripsList();
             if (!url) { alert('URL del Google Script non configurato. Apri Impostazioni.'); return; }
 
             const btn = document.getElementById('btn-int-save');
+            const isEdit = btn.dataset.editMode === '1';
+            const editRow = btn.dataset.editRow;
+            const editFonte = btn.dataset.editFonte;
             btn.disabled = true;
             btn.textContent = 'Salvataggio...';
 
             try {
-                const params = new URLSearchParams({
-                    action:    'appendEsecuzione',
+                const baseParams = {
                     voce:      voce,
                     data:      data,
                     ore:       ore || '',
@@ -3456,7 +3706,15 @@ renderTripsList();
                     fornitore: forn || '',
                     costo:     costo || '',
                     note:      note || ''
-                });
+                };
+                if (isEdit) {
+                    baseParams.action = 'updateEsecuzione';
+                    baseParams.row_index = editRow;
+                    baseParams.fonte = editFonte; // "esecuzioni" o "storico"
+                } else {
+                    baseParams.action = 'appendEsecuzione';
+                }
+                const params = new URLSearchParams(baseParams);
                 const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
                 const json = await res.json();
 
@@ -3474,13 +3732,13 @@ renderTripsList();
                         updateMaintenanceUI();
                     }
                     setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
-                    alert('Intervento salvato!');
+                    alert(isEdit ? 'Modifiche salvate!' : 'Intervento salvato!');
                 } else {
                     throw new Error(json.error || JSON.stringify(json));
                 }
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = 'Salva Intervento';
+                btn.textContent = isEdit ? '💾 Salva modifiche' : 'Salva Intervento';
                 errEl.textContent = 'Errore: ' + err.message;
                 errEl.style.display = 'block';
             }
