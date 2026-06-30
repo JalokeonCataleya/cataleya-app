@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-1856">
+<html lang="it" data-app-version="v2026.06.30-1907">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -645,6 +645,20 @@
         .trip-card.expanded { background: rgba(78,205,196,0.08); border-color: rgba(78,205,196,0.2); }
         .trip-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
         .trip-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .trip-edit-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--accent-aqua);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            align-self: flex-start;
+            transition: background 0.15s;
+        }
+        .trip-edit-btn:hover,
+        .trip-edit-btn:active { background: rgba(78, 205, 196, 0.15); }
         .trip-pill {
             font-size: 11px; padding: 2px 8px;
             border-radius: var(--border-radius-pill);
@@ -1543,7 +1557,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-1856
+                    app v2026.06.30-1907
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -3359,12 +3373,30 @@
         let _tripsYearFilter = 'all';
 
         function renderTripsPage(data) {
-            const diario = Array.isArray(data.diario) ? data.diario : [];
-            _tripsData = diario.slice().reverse(); // più recenti prima
+            // Preferisce il foglio nuovo "Uscite", fallback al vecchio "diario"
+            const sorgente = (Array.isArray(data.uscite) && data.uscite.length) ? data.uscite
+                           : (Array.isArray(data.diario) ? data.diario : []);
+            const fonteUscitePage = (Array.isArray(data.uscite) && data.uscite.length) ? 'uscite' : 'diario';
+            // Filtra date assurde (prima 2020 o oltre 30gg nel futuro) per scartare dati sporchi
+            const minTs = new Date(2020,0,1).getTime();
+            const maxTs = Date.now() + 30 * 86400000;
+            const valid = sorgente.filter(r => {
+                const d = parseDateIT(r[findDateKey(r)]);
+                return d && d.getTime() >= minTs && d.getTime() <= maxTs;
+            });
+            // Ordina per data decrescente (più recenti prima)
+            valid.sort((a, b) => {
+                const da = parseDateIT(a[findDateKey(a)]);
+                const db = parseDateIT(b[findDateKey(b)]);
+                return db - da;
+            });
+            // Aggiungi al record la "fonte" per la modifica
+            valid.forEach(r => r._fonte = fonteUscitePage);
+            _tripsData = valid;
 
-            // Stats globali
-            const totalMiglia = diario.reduce((s, r) => s + (parseFloat(r['Miglia'] || r['Miglia percorse'] || r['miglia'] || 0)), 0);
-            const anni = [...new Set(diario.map(r => {
+            // Stats globali (su tutte le uscite valide)
+            const totalMiglia = valid.reduce((s, r) => s + (parseFloat(r['Miglia'] || r['Miglia percorse'] || r['miglia'] || 0)), 0);
+            const anni = [...new Set(valid.map(r => {
                 const d = parseDateIT(r[findDateKey(r)]);
                 return d ? d.getFullYear() : null;
             }).filter(Boolean))].sort();
@@ -3373,11 +3405,11 @@
             const elMiles = document.getElementById('trips-miles');
             const elYears = document.getElementById('trips-years');
             const elAvg   = document.getElementById('trips-avg-miles');
-            if (elCount) elCount.textContent = diario.length;
+            if (elCount) elCount.textContent = valid.length;
             if (elMiles) elMiles.textContent = totalMiglia > 0 ? Math.round(totalMiglia) + ' Nm' : '—';
             if (elYears) elYears.textContent = anni.length ? anni[0] + ' – ' + anni[anni.length-1] : '';
-            if (elAvg && diario.length > 0 && totalMiglia > 0)
-                elAvg.textContent = 'media ' + (totalMiglia / diario.length).toFixed(1) + ' Nm/uscita';
+            if (elAvg && valid.length > 0 && totalMiglia > 0)
+                elAvg.textContent = 'media ' + (totalMiglia / valid.length).toFixed(1) + ' Nm/uscita';
 
             // Filtri anno
             const filterBar = document.getElementById('trips-year-filter');
@@ -3456,6 +3488,9 @@ renderTripsList();
                         <div class="trip-pills">${pills.join('')}</div>
                         ${extras.length ? `<div class="trip-extra">${extras.join('<br>')}</div>` : ''}
                     </div>
+                    <button class="trip-edit-btn"
+                            onclick="event.stopPropagation(); apriModifica('uscita', ${r._rowIndex}, '${r._fonte || 'uscite'}');"
+                            title="Modifica">✏️</button>
                 </div>`;
             }).join('');
 
