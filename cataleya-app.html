@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-2011">
+<html lang="it" data-app-version="v2026.06.30-2014">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -701,6 +701,8 @@
         }
         .cic-btn-done:hover, .cic-btn-done:active { background: rgba(78, 205, 196, 0.22); }
         .cic-card-note { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; font-style: italic; }
+        .cic-card.expanded .cic-card-note { display: block !important; }
+        .cic-card.expanded { background: rgba(78,205,196,0.08); border-color: rgba(78,205,196,0.25); }
         .trip-pill {
             font-size: 11px; padding: 2px 8px;
             border-radius: var(--border-radius-pill);
@@ -1599,7 +1601,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-2011
+                    app v2026.06.30-2014
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -3838,6 +3840,89 @@ renderTripsList();
             if (elCosto && costoTot > 0) elCosto.textContent = '€ ' + Math.round(costoTot).toLocaleString('it-IT');
 
             renderLavoriList();
+        }
+
+        // ── Render lista lavori (filtrata per stato + ordinata) ───────────
+        function renderLavoriList() {
+            const container = document.getElementById('lavori-list');
+            if (!container) return;
+            const lavori = _lavoriData || [];
+
+            // Filtro
+            const filtered = lavori.filter(l => {
+                if (_lavoriFilter === 'all') return true;
+                return (l['Stato'] || '') === _lavoriFilter;
+            });
+
+            if (!filtered.length) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:32px;font-style:italic;">Nessun lavoro per questo filtro</div>';
+                return;
+            }
+
+            // Ordinamento: prima P0, poi P1, P2, P3; a parità di priorità → data apertura decrescente
+            const pesoPri = { 'P0': 0, 'P1': 1, 'P2': 2, 'P3': 3 };
+            const pesoSt  = { 'In corso': 0, 'Da fare': 1, 'Bloccata': 2, 'Completata': 3, 'Annullata': 4 };
+            filtered.sort((a, b) => {
+                const pa = pesoSt[a['Stato']] ?? 99;
+                const pb = pesoSt[b['Stato']] ?? 99;
+                if (pa !== pb) return pa - pb;
+                const pra = pesoPri[a['Priorità'] || a['Priorita']] ?? 99;
+                const prb = pesoPri[b['Priorità'] || b['Priorita']] ?? 99;
+                if (pra !== prb) return pra - prb;
+                const da = parseDateIT(a['Data apertura'] || a['Data di inizio']) || new Date(0);
+                const db = parseDateIT(b['Data apertura'] || b['Data di inizio']) || new Date(0);
+                return db - da;
+            });
+
+            container.innerHTML = filtered.map(l => _renderLavoroCard(l)).join('');
+        }
+
+        function _renderLavoroCard(l) {
+            const att   = String(l['Attività'] || l['Attivita'] || '—').trim();
+            const area  = String(l['Area'] || '').trim();
+            const pri   = String(l['Priorità'] || l['Priorita'] || 'P3').trim();
+            const stato = String(l['Stato'] || 'Da fare').trim();
+            const forn  = String(l['Fornitore'] || '').trim();
+            const note  = String(l['Note'] || '').trim();
+            const costo = parseFloat(l['Costo €'] || l['Costo'] || 0);
+            const tempo = parseFloat(l['Tempo ore'] || l['Tempo'] || 0);
+            const dApert= parseDateIT(l['Data apertura'] || l['Data di inizio']);
+            const dChius= parseDateIT(l['Data chiusura'] || l['Data di fine']);
+
+            // Classi semaforo: priorità + stato
+            const cls = (stato === 'Completata') ? 'green'
+                      : (stato === 'Bloccata' || stato === 'Annullata') ? 'yellow'
+                      : (pri === 'P0') ? 'red'
+                      : (pri === 'P1') ? 'yellow'
+                      : 'green';
+
+            const badgePri = `<span class="trip-pill" style="background:${pri==='P0'?'rgba(231,76,60,0.2)':pri==='P1'?'rgba(243,156,18,0.2)':'rgba(255,255,255,0.06)'};color:${pri==='P0'?'var(--sem-red)':pri==='P1'?'var(--sem-yellow)':'var(--text-secondary)'};font-weight:600;">${escapeHtml(pri)}</span>`;
+            const badgeSt  = `<span class="trip-pill" style="background:rgba(78,205,196,0.12);color:var(--accent-aqua);">${escapeHtml(stato)}</span>`;
+            const badgeAr  = area ? `<span class="trip-pill">${escapeHtml(area)}</span>` : '';
+            const badgeFor = forn ? `<span class="trip-pill">${escapeHtml(forn)}</span>` : '';
+
+            const dApertStr = dApert ? formatDataShort(dApert) : '';
+            const dChiusStr = dChius ? formatDataShort(dChius) : '';
+
+            const extras = [];
+            if (dApert) extras.push('📅 Aperto: ' + dApertStr);
+            if (dChius) extras.push('✅ Chiuso: ' + dChiusStr);
+            if (costo > 0) extras.push('💶 Costo: € ' + costo.toFixed(2));
+            if (tempo > 0) extras.push('⏱️ Tempo: ' + tempo + ' h');
+            if (note) extras.push('📝 ' + escapeHtml(note));
+
+            return `
+                <div class="cic-card ${cls}" onclick="this.classList.toggle('expanded')">
+                    <div class="cic-card-head">
+                        <div class="cic-card-body">
+                            <div class="cic-card-title">${escapeHtml(att)}</div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+                                ${badgePri}${badgeSt}${badgeAr}${badgeFor}
+                            </div>
+                            ${extras.length ? `<div class="cic-card-note" style="display:none;margin-top:8px;line-height:1.6;">${extras.join('<br>')}</div>` : ''}
+                        </div>
+                    </div>
+                </div>`;
         }
 
         // ── Hamburger drawer mobile ───────────────────────────────
