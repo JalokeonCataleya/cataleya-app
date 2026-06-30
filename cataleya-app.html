@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-1927">
+<html lang="it" data-app-version="v2026.06.30-1940">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1599,7 +1599,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-1927
+                    app v2026.06.30-1940
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2936,57 +2936,85 @@
         // ── RENDER CICLICHE DINAMICO (pagina Motore) ────────────────
         // Legge data.cicliche (foglio Cicliche) e data.esecuzioni (foglio Esecuzioni
         // o fallback a storico) per generare le card con stato semaforo aggiornato.
-        function renderCicliche(data) {
-            const container = document.getElementById('engine-cicliche-list');
-            if (!container) {
-                console.warn('[Cataleya] renderCicliche: container engine-cicliche-list non trovato');
-                return;
+        // Helper: legge una proprietà di un oggetto in modo case-insensitive
+        // (gestisce "Voce", "voce", "VOCE", "  Voce  ", ecc.)
+        function _ci(obj, ...possibili) {
+            if (!obj) return undefined;
+            const keysLower = {};
+            Object.keys(obj).forEach(k => { keysLower[k.toLowerCase().trim()] = k; });
+            for (const p of possibili) {
+                const realKey = keysLower[p.toLowerCase().trim()];
+                if (realKey !== undefined) {
+                    const v = obj[realKey];
+                    if (v != null && v !== '') return v;
+                }
             }
-            console.log('[Cataleya] renderCicliche - data.cicliche:', data.cicliche);
-            console.log('[Cataleya] renderCicliche - data.esecuzioni:', (data.esecuzioni || []).length);
+            return undefined;
+        }
 
-            // Caso 1: Apps Script non restituisce il campo cicliche → Codice.gs vecchio
-            if (data.cicliche === undefined) {
-                container.innerHTML = `
-                    <div style="background:rgba(231,76,60,0.15);border:1px solid var(--danger);border-radius:8px;padding:16px;">
-                        <div style="font-weight:600;color:var(--danger);margin-bottom:8px;">⚠️ Codice.gs Apps Script non aggiornato</div>
-                        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
-                            La risposta del Web App non contiene il campo <code>cicliche</code>.
-                            Devi sostituire il tuo <strong>Codice.gs</strong> con la nuova versione
-                            che ti ho preparato (file <code>Codice.gs</code> in cartella Cataleya, dal 30/6/2026).
-                            <br><br>
-                            Procedura: Estensioni → Apps Script → Codice.gs → Ctrl+A → cancella →
-                            incolla nuovo → Ctrl+S → Implementa → Gestisci implementazioni → matita ✏️ →
-                            Versione: Nuova versione → Distribuisci.
-                        </div>
-                    </div>`;
-                return;
-            }
-            const cicliche = Array.isArray(data.cicliche) ? data.cicliche : [];
-            if (!cicliche.length) {
-                container.innerHTML = `
-                    <div style="background:rgba(243,156,18,0.12);border:1px solid var(--warning);border-radius:8px;padding:16px;">
-                        <div style="font-weight:600;color:var(--warning);margin-bottom:8px;">📋 Foglio "Cicliche" vuoto</div>
-                        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
-                            Apps Script funziona, ma il foglio Cicliche non ha righe (o non si chiama esattamente "Cicliche").
-                            Verifica il nome del foglio e che ci siano voci dentro.
-                        </div>
-                    </div>`;
-                return;
-            }
+        function renderCicliche(data) {
+            try {
+                const container = document.getElementById('engine-cicliche-list');
+                if (!container) {
+                    console.warn('[Cataleya] renderCicliche: container engine-cicliche-list NON TROVATO. La pagina HTML caricata è vecchia (cached). Fai hard refresh: Chrome → 3 puntini → Cronologia → Cancella dati cache.');
+                    return;
+                }
+                console.log('[Cataleya] renderCicliche - cicliche:', (data.cicliche || []).length, 'esecuzioni:', (data.esecuzioni || []).length);
+
+                // Caso 1: Apps Script non restituisce il campo cicliche → Codice.gs vecchio
+                if (data.cicliche === undefined) {
+                    container.innerHTML = `
+                        <div style="background:rgba(231,76,60,0.15);border:1px solid var(--danger);border-radius:8px;padding:16px;">
+                            <div style="font-weight:600;color:var(--danger);margin-bottom:8px;">⚠️ Codice.gs Apps Script non aggiornato</div>
+                            <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
+                                La risposta del Web App non contiene il campo <code>cicliche</code>.
+                                Devi sostituire il tuo <strong>Codice.gs</strong> con la nuova versione
+                                e fare deploy "Nuova versione".
+                            </div>
+                        </div>`;
+                    return;
+                }
+                const cicliche = Array.isArray(data.cicliche) ? data.cicliche : [];
+                if (!cicliche.length) {
+                    container.innerHTML = `
+                        <div style="background:rgba(243,156,18,0.12);border:1px solid var(--warning);border-radius:8px;padding:16px;">
+                            <div style="font-weight:600;color:var(--warning);margin-bottom:8px;">📋 Foglio "Cicliche" vuoto</div>
+                            <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
+                                Apps Script funziona, ma il foglio Cicliche non ha righe.
+                            </div>
+                        </div>`;
+                    return;
+                }
             const esecuzioni = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni
                               : (data.storico_manutenzioni || []);
             const oreCorrenti = engineState.currentHours || parseFloat(data.ore_motore) || 0;
 
-            // Raggruppa per Area
+            // Raggruppa per Area (case-insensitive sui nomi colonne)
             const groups = {};
+            let voceValide = 0;
             cicliche.forEach(c => {
-                const voce = String(c['Voce'] || '').trim();
+                const voce = String(_ci(c, 'Voce', 'voce', 'Nome', 'Manutenzione', 'Attività') || '').trim();
                 if (!voce) return;
-                const area = String(c['Area'] || 'Altro').trim();
+                voceValide++;
+                const area = String(_ci(c, 'Area', 'area', 'Categoria') || 'Altro').trim();
                 if (!groups[area]) groups[area] = [];
                 groups[area].push(c);
             });
+            console.log('[Cataleya] renderCicliche - voci valide:', voceValide, 'aree:', Object.keys(groups));
+
+            if (voceValide === 0) {
+                container.innerHTML = `
+                    <div style="background:rgba(243,156,18,0.12);border:1px solid var(--warning);border-radius:8px;padding:16px;">
+                        <div style="font-weight:600;color:var(--warning);margin-bottom:8px;">⚠️ Colonna "Voce" non trovata</div>
+                        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
+                            Ho trovato ${cicliche.length} righe nel foglio Cicliche ma nessuna ha la colonna <strong>Voce</strong> popolata.
+                            Verifica che l'header della prima colonna sia esattamente "Voce".
+                            <br><br>
+                            Colonne che vedo: <code>${Object.keys(cicliche[0] || {}).filter(k => k !== '_rowIndex').join(', ')}</code>
+                        </div>
+                    </div>`;
+                return;
+            }
 
             // Ordine consigliato delle aree
             const ordineAree = ['Motore','Sail drive','Carena','Idraulico','Elettrico','Vele/Sartiame','Scafo/Coperta','Sicurezza','Burocrazia','Comfort/Interni','Pulizia','Altro'];
@@ -3012,14 +3040,21 @@
                 html += '</div>';
             });
             container.innerHTML = html;
+            } catch (err) {
+                console.error('[Cataleya] renderCicliche ERRORE:', err);
+                const container = document.getElementById('engine-cicliche-list');
+                if (container) {
+                    container.innerHTML = `<div style="background:rgba(231,76,60,0.15);border:1px solid var(--danger);border-radius:8px;padding:16px;color:var(--danger);">Errore JS: ${escapeHtml(err.message || String(err))}</div>`;
+                }
+            }
         }
 
         function _renderCiclicaCard(c, esecuzioni, oreCorrenti) {
-            const voce = String(c['Voce'] || '').trim();
-            const area = String(c['Area'] || '').trim();
-            const intOre = parseFloat(c['Intervallo ore']);
-            const intMesi = parseFloat(c['Intervallo mesi']);
-            const note = String(c['Note'] || '').trim();
+            const voce = String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim();
+            const area = String(_ci(c, 'Area', 'Categoria') || '').trim();
+            const intOre = parseFloat(_ci(c, 'Intervallo ore', 'Intervallo h', 'Ore'));
+            const intMesi = parseFloat(_ci(c, 'Intervallo mesi', 'Mesi'));
+            const note = String(_ci(c, 'Note', 'note') || '').trim();
 
             // Trova l'ultima esecuzione di questa voce
             const ultima = _trovaUltimaEsecuzione(voce, esecuzioni);
