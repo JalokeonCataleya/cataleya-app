@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-1918">
+<html lang="it" data-app-version="v2026.06.30-1927">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1599,7 +1599,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-1918
+                    app v2026.06.30-1927
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2938,10 +2938,40 @@
         // o fallback a storico) per generare le card con stato semaforo aggiornato.
         function renderCicliche(data) {
             const container = document.getElementById('engine-cicliche-list');
-            if (!container) return;
+            if (!container) {
+                console.warn('[Cataleya] renderCicliche: container engine-cicliche-list non trovato');
+                return;
+            }
+            console.log('[Cataleya] renderCicliche - data.cicliche:', data.cicliche);
+            console.log('[Cataleya] renderCicliche - data.esecuzioni:', (data.esecuzioni || []).length);
+
+            // Caso 1: Apps Script non restituisce il campo cicliche → Codice.gs vecchio
+            if (data.cicliche === undefined) {
+                container.innerHTML = `
+                    <div style="background:rgba(231,76,60,0.15);border:1px solid var(--danger);border-radius:8px;padding:16px;">
+                        <div style="font-weight:600;color:var(--danger);margin-bottom:8px;">⚠️ Codice.gs Apps Script non aggiornato</div>
+                        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
+                            La risposta del Web App non contiene il campo <code>cicliche</code>.
+                            Devi sostituire il tuo <strong>Codice.gs</strong> con la nuova versione
+                            che ti ho preparato (file <code>Codice.gs</code> in cartella Cataleya, dal 30/6/2026).
+                            <br><br>
+                            Procedura: Estensioni → Apps Script → Codice.gs → Ctrl+A → cancella →
+                            incolla nuovo → Ctrl+S → Implementa → Gestisci implementazioni → matita ✏️ →
+                            Versione: Nuova versione → Distribuisci.
+                        </div>
+                    </div>`;
+                return;
+            }
             const cicliche = Array.isArray(data.cicliche) ? data.cicliche : [];
             if (!cicliche.length) {
-                container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:24px;font-style:italic;">Foglio "Cicliche" vuoto o non trovato.</div>';
+                container.innerHTML = `
+                    <div style="background:rgba(243,156,18,0.12);border:1px solid var(--warning);border-radius:8px;padding:16px;">
+                        <div style="font-weight:600;color:var(--warning);margin-bottom:8px;">📋 Foglio "Cicliche" vuoto</div>
+                        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
+                            Apps Script funziona, ma il foglio Cicliche non ha righe (o non si chiama esattamente "Cicliche").
+                            Verifica il nome del foglio e che ci siano voci dentro.
+                        </div>
+                    </div>`;
                 return;
             }
             const esecuzioni = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni
