@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-2014">
+<html lang="it" data-app-version="v2026.06.30-2031">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1601,7 +1601,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-2014
+                    app v2026.06.30-2031
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -3303,6 +3303,8 @@
             let arr = [];
             if (tipo === 'uscita') {
                 arr = fonte === 'uscite' ? (_lastFetchedData.uscite || []) : (_lastFetchedData.diario || []);
+            } else if (tipo === 'lavoro') {
+                arr = _lastFetchedData.lavori || [];
             } else {
                 arr = fonte === 'esecuzioni' ? (_lastFetchedData.esecuzioni || []) : (_lastFetchedData.storico_manutenzioni || []);
             }
@@ -3324,6 +3326,21 @@
                     mare:    row['Mare cm'] || '',
                     veloc:   row['Velocità max kn'] || row['velocità Cataleya'] || row['Vel max'] || '',
                     note:    row['Note'] || row['note'] || ''
+                });
+            } else if (tipo === 'lavoro') {
+                openLavoro({
+                    _editMode: true,
+                    _rowIndex: rowIndex,
+                    attivita:     row['Attività'] || row['Attivita'] || '',
+                    area:         row['Area'] || '',
+                    priorita:     row['Priorità'] || row['Priorita'] || 'P2',
+                    stato:        row['Stato'] || 'Da fare',
+                    dataApertura: parseDateIT(row['Data apertura'] || row['Data di inizio']),
+                    dataChiusura: parseDateIT(row['Data chiusura'] || row['Data di fine']),
+                    fornitore:    row['Fornitore'] || '',
+                    costo:        row['Costo €'] || row['Costo'] || '',
+                    tempo:        row['Tempo ore'] || row['Tempo'] || '',
+                    note:         row['Note'] || row['note'] || ''
                 });
             } else {
                 openIntervento({
@@ -3912,9 +3929,12 @@ renderTripsList();
             if (note) extras.push('📝 ' + escapeHtml(note));
 
             return `
-                <div class="cic-card ${cls}" onclick="this.classList.toggle('expanded')">
+                <div class="cic-card ${cls}" onclick="this.classList.toggle('expanded')" style="position:relative;">
+                    <button class="trip-edit-btn" style="position:absolute;top:10px;right:10px;"
+                            onclick="event.stopPropagation(); apriModifica('lavoro', ${l._rowIndex});"
+                            title="Modifica">✏️</button>
                     <div class="cic-card-head">
-                        <div class="cic-card-body">
+                        <div class="cic-card-body" style="padding-right:42px;">
                             <div class="cic-card-title">${escapeHtml(att)}</div>
                             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
                                 ${badgePri}${badgeSt}${badgeAr}${badgeFor}
@@ -4219,6 +4239,110 @@ renderTripsList();
             }
         }
 
+        // ── MODALE LAVORO (Nuovo / Modifica) ─────────────────────────
+        function openLavoro(edit) {
+            const isEdit = !!(edit && edit._editMode);
+            const btn = document.getElementById('btn-lav-save');
+
+            function fmtDate(d) {
+                if (!(d instanceof Date)) return '';
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth()+1).padStart(2,'0');
+                const dd = String(d.getDate()).padStart(2,'0');
+                return yyyy + '-' + mm + '-' + dd;
+            }
+
+            // Data apertura: in modifica dal record, in nuovo = oggi
+            const today = fmtDate(new Date());
+            document.getElementById('lav-attivita').value      = isEdit ? (edit.attivita || '') : '';
+            document.getElementById('lav-area').value          = isEdit ? (edit.area || '') : '';
+            document.getElementById('lav-priorita').value      = isEdit ? (edit.priorita || 'P2') : 'P2';
+            document.getElementById('lav-stato').value         = isEdit ? (edit.stato || 'Da fare') : 'Da fare';
+            document.getElementById('lav-data-apertura').value = isEdit ? fmtDate(edit.dataApertura) : today;
+            document.getElementById('lav-data-chiusura').value = isEdit ? fmtDate(edit.dataChiusura) : '';
+            document.getElementById('lav-fornitore').value     = isEdit ? (edit.fornitore || '') : '';
+            document.getElementById('lav-costo').value         = isEdit ? (edit.costo || '') : '';
+            document.getElementById('lav-tempo').value         = isEdit ? (edit.tempo || '') : '';
+            document.getElementById('lav-note').value          = isEdit ? (edit.note || '') : '';
+            document.getElementById('lav-error').style.display = 'none';
+
+            btn.dataset.editMode = isEdit ? '1' : '0';
+            btn.dataset.editRow  = isEdit ? String(edit._rowIndex || '') : '';
+            btn.disabled = false;
+            btn.textContent = isEdit ? '💾 Salva modifiche' : '💾 Salva Lavoro';
+
+            const titoloEl = document.getElementById('lavoro-title');
+            if (titoloEl) titoloEl.innerHTML = isEdit ? '✏️ Modifica Lavoro' : '🔧 Nuovo Lavoro';
+
+            document.getElementById('lavoro-overlay').classList.add('open');
+        }
+
+        function closeLavoro() {
+            document.getElementById('lavoro-overlay').classList.remove('open');
+        }
+
+        async function salvaLavoro() {
+            const attivita = document.getElementById('lav-attivita').value.trim();
+            const area     = document.getElementById('lav-area').value;
+            const priorita = document.getElementById('lav-priorita').value;
+            const stato    = document.getElementById('lav-stato').value;
+            const dApert   = document.getElementById('lav-data-apertura').value;
+            const dChius   = document.getElementById('lav-data-chiusura').value;
+            const forn     = document.getElementById('lav-fornitore').value.trim();
+            const costo    = document.getElementById('lav-costo').value;
+            const tempo    = document.getElementById('lav-tempo').value;
+            const note     = document.getElementById('lav-note').value.trim();
+
+            const errEl = document.getElementById('lav-error');
+            if (!attivita) { errEl.textContent = 'Inserisci la descrizione dell\'attività.'; errEl.style.display='block'; return; }
+            errEl.style.display = 'none';
+
+            const url = getScriptUrl();
+            if (!url) { alert('URL del Google Script non configurato. Apri Impostazioni.'); return; }
+
+            const btn = document.getElementById('btn-lav-save');
+            const isEdit = btn.dataset.editMode === '1';
+            const editRow = btn.dataset.editRow;
+            btn.disabled = true;
+            btn.textContent = 'Salvataggio...';
+
+            try {
+                const baseParams = {
+                    attivita: attivita,
+                    area: area || '',
+                    priorita: priorita,
+                    stato: stato,
+                    data_apertura: dApert || '',
+                    data_chiusura: dChius || '',
+                    fornitore: forn || '',
+                    costo: costo || '',
+                    tempo: tempo || '',
+                    note: note || ''
+                };
+                if (isEdit) {
+                    baseParams.action = 'updateLavoro';
+                    baseParams.row_index = editRow;
+                } else {
+                    baseParams.action = 'appendLavoro';
+                }
+                const params = new URLSearchParams(baseParams);
+                const res = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
+                const json = await res.json();
+                if (json.ok) {
+                    closeLavoro();
+                    setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
+                    alert(isEdit ? 'Modifiche salvate!' : 'Lavoro salvato!');
+                } else {
+                    throw new Error(json.error || JSON.stringify(json));
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = isEdit ? '💾 Salva modifiche' : '💾 Salva Lavoro';
+                errEl.textContent = 'Errore: ' + err.message;
+                errEl.style.display = 'block';
+            }
+        }
+
 </script>
 
     <!-- ==================== MODALE NUOVA USCITA ==================== -->
@@ -4366,6 +4490,99 @@ renderTripsList();
                 <button class="btn-intervento-cancel" onclick="closeIntervento()">Annulla</button>
                 <button class="btn-intervento-save" id="btn-int-save" onclick="salvaIntervento()">
                     🔧 Salva Intervento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALE LAVORO (Nuovo/Modifica) ==================== -->
+    <div class="intervento-overlay" id="lavoro-overlay" onclick="if(event.target===this)closeLavoro()">
+        <div class="intervento-modal">
+            <h3 id="lavoro-title">🔧 Nuovo Lavoro</h3>
+
+            <div class="intervento-field">
+                <label>Attività *</label>
+                <input type="text" id="lav-attivita" placeholder="es. Sostituire luci pozzetto">
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Area</label>
+                    <select id="lav-area">
+                        <option value="">—</option>
+                        <option value="Motore">Motore</option>
+                        <option value="Sail drive">Sail drive</option>
+                        <option value="Carena">Carena</option>
+                        <option value="Elettrico">Elettrico</option>
+                        <option value="Idraulico">Idraulico</option>
+                        <option value="Vele/Sartiame">Vele/Sartiame</option>
+                        <option value="Scafo/Coperta">Scafo/Coperta</option>
+                        <option value="Sicurezza">Sicurezza</option>
+                        <option value="Burocrazia">Burocrazia</option>
+                        <option value="Comfort/Interni">Comfort/Interni</option>
+                        <option value="Pulizia">Pulizia</option>
+                    </select>
+                </div>
+                <div class="intervento-field">
+                    <label>Priorità</label>
+                    <select id="lav-priorita">
+                        <option value="P0">P0 — Urgente/Sicurezza 🔴</option>
+                        <option value="P1">P1 — Importante 🟡</option>
+                        <option value="P2" selected>P2 — Utile 🟢</option>
+                        <option value="P3">P3 — Nice-to-have ⚪</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="intervento-field">
+                <label>Stato</label>
+                <select id="lav-stato">
+                    <option value="Da fare" selected>Da fare</option>
+                    <option value="In corso">In corso</option>
+                    <option value="Completata">Completata</option>
+                    <option value="Bloccata">Bloccata</option>
+                    <option value="Annullata">Annullata</option>
+                </select>
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Data apertura</label>
+                    <input type="date" id="lav-data-apertura">
+                </div>
+                <div class="intervento-field">
+                    <label>Data chiusura</label>
+                    <input type="date" id="lav-data-chiusura">
+                </div>
+            </div>
+
+            <div class="intervento-row">
+                <div class="intervento-field">
+                    <label>Fornitore</label>
+                    <input type="text" id="lav-fornitore" placeholder="es. Ferramenta Casaviva">
+                </div>
+                <div class="intervento-field">
+                    <label>Costo €</label>
+                    <input type="number" id="lav-costo" step="0.01" placeholder="es. 50">
+                </div>
+            </div>
+
+            <div class="intervento-field">
+                <label>Tempo impiegato (ore)</label>
+                <input type="number" id="lav-tempo" step="0.5" placeholder="es. 2.5">
+            </div>
+
+            <div class="intervento-field">
+                <label>Note</label>
+                <textarea id="lav-note" placeholder="Materiali, idee, link, problemi..."></textarea>
+            </div>
+
+            <div id="lav-error" style="color:var(--accent-coral);font-size:13px;margin-bottom:8px;display:none;"></div>
+
+            <div class="intervento-actions">
+                <button class="btn-intervento-cancel" onclick="closeLavoro()">Annulla</button>
+                <button class="btn-intervento-save" id="btn-lav-save" onclick="salvaLavoro()">
+                    💾 Salva Lavoro
                 </button>
             </div>
         </div>
