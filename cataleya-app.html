@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-1759">
+<html lang="it" data-app-version="v2026.06.30-1856">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1543,7 +1543,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-1759
+                    app v2026.06.30-1856
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2872,9 +2872,19 @@
             const items = [];
 
             // Ultime uscite — usa "Uscite" se presente, altrimenti fallback a "diario"
+            // Scarta date assurde (prima 2020 / oltre 30gg nel futuro) per evitare dati sporchi
+            const oggiTs = Date.now();
+            const minTs = new Date(2020,0,1).getTime();
+            const maxTs = oggiTs + 30 * 86400000;
             const usciteSrc = (data.uscite && data.uscite.length) ? data.uscite : (data.diario || []);
             const fonteUscite = (data.uscite && data.uscite.length) ? 'uscite' : 'diario';
-            usciteSrc.slice(-3).reverse().forEach(u => {
+            const usciteValide = usciteSrc.filter(u => {
+                const d = parseDateIT(u[findDateKey(u)]);
+                return d && d.getTime() >= minTs && d.getTime() <= maxTs;
+            });
+            // Ordina per data decrescente e prendi le 3 più recenti
+            usciteValide.sort((a, b) => parseDateIT(b[findDateKey(b)]) - parseDateIT(a[findDateKey(a)]));
+            usciteValide.slice(0, 3).forEach(u => {
                 const dataKey = findDateKey(u);
                 const d = parseDateIT(u[dataKey]);
                 if (!d) return;
@@ -2892,10 +2902,19 @@
                 });
             });
 
-            // Ultime esecuzioni/interventi
+            // Ultime esecuzioni/interventi — stesso filtro anti-date-sporche
             const eseSrc = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni : (data.storico_manutenzioni || []);
             const fonteEse = (data.esecuzioni && data.esecuzioni.length) ? 'esecuzioni' : 'storico';
-            eseSrc.slice(-3).reverse().forEach(e => {
+            const eseValide = eseSrc.filter(e => {
+                const d = parseDateIT(e['Data'] || e['Data di fine'] || e['Data di inizio']);
+                return d && d.getTime() >= minTs && d.getTime() <= maxTs;
+            });
+            eseValide.sort((a, b) => {
+                const da = parseDateIT(a['Data'] || a['Data di fine'] || a['Data di inizio']);
+                const db = parseDateIT(b['Data'] || b['Data di fine'] || b['Data di inizio']);
+                return db - da;
+            });
+            eseValide.slice(0, 3).forEach(e => {
                 const dataStr = e['Data'] || e['Data di fine'] || e['Data di inizio'];
                 const d = parseDateIT(dataStr);
                 if (!d) return;
@@ -3226,21 +3245,43 @@
             const elOre = document.getElementById('dash-ore-motore');
             if (elOre && ore > 0) elOre.textContent = ore.toFixed(1) + ' h';
 
-            // Ultima uscita
-            if (Array.isArray(data.diario) && data.diario.length) {
-                const last = data.diario[data.diario.length - 1];
-                const d = parseDateIT(last[findDateKey(last)]);
-                if (d) {
+            // Ultima uscita: preferiamo il foglio nuovo "Uscite", fallback al vecchio "diario".
+            // Ordiniamo per data e prendiamo la PIÙ RECENTE con data valida (non l'ultima riga
+            // in cronologico, che può avere dati sporchi nelle code dei fogli vecchi).
+            const fonteUsciteHero = (Array.isArray(data.uscite) && data.uscite.length) ? data.uscite
+                                  : (Array.isArray(data.diario) ? data.diario : []);
+            if (fonteUsciteHero.length) {
+                const oggiTs = Date.now();
+                let lastValid = null, lastTs = -Infinity;
+                fonteUsciteHero.forEach(r => {
+                    const dKey = findDateKey(r);
+                    const dParsed = parseDateIT(r[dKey]);
+                    if (!dParsed) return;
+                    const ts = dParsed.getTime();
+                    // Scarta date assurde (prima del 2020 o oltre 30 giorni nel futuro)
+                    if (ts < new Date(2020,0,1).getTime()) return;
+                    if (ts > oggiTs + 30 * 86400000) return;
+                    if (ts > lastTs) { lastTs = ts; lastValid = { date: dParsed, row: r }; }
+                });
+                if (lastValid) {
+                    const d = lastValid.date;
                     const mesiS = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
                     const elLast = document.getElementById('dash-last-trip');
                     if (elLast) elLast.textContent = d.getDate() + ' ' + mesiS[d.getMonth()];
-                    const diffG = Math.floor((Date.now() - d.getTime()) / 86400000);
+                    const diffG = Math.floor((oggiTs - d.getTime()) / 86400000);
                     const elSub = document.getElementById('dash-last-trip-sub');
                     if (elSub) elSub.textContent = diffG <= 0 ? 'oggi' : diffG === 1 ? 'ieri' : diffG + ' giorni fa';
+
+                    const elDelta = document.getElementById('dash-ore-delta');
+                    const oreU = parseFloat(lastValid.row['Ore motore'] || lastValid.row['ore motore'] || 0);
+                    if (elDelta && oreU > 0) elDelta.textContent = '+' + oreU + "h dall'ultima uscita";
+                } else {
+                    // Nessuna data valida trovata
+                    const elLast = document.getElementById('dash-last-trip');
+                    if (elLast) elLast.textContent = '—';
+                    const elSub = document.getElementById('dash-last-trip-sub');
+                    if (elSub) elSub.textContent = 'nessuna uscita';
                 }
-                const elDelta = document.getElementById('dash-ore-delta');
-                const oreU = parseFloat(last['ore motore'] || last['Ore motore'] || 0);
-                if (elDelta && oreU > 0) elDelta.textContent = '+' + oreU + "h dall'ultima uscita";
             }
 
             // Scadenze burocratiche
