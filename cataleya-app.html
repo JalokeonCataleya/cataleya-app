@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.06.30-2031">
+<html lang="it" data-app-version="v2026.10.20-2330">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -692,6 +692,11 @@
         .cic-card-meta.yellow { color: var(--sem-yellow); }
         .cic-card-meta.green  { color: var(--sem-green); }
         .cic-card-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .cic-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+        .cic-bar-fill { height: 100%; border-radius: 3px; }
+        .cic-bar-fill.red    { background: var(--sem-red); }
+        .cic-bar-fill.yellow { background: var(--sem-yellow); }
+        .cic-bar-fill.green  { background: var(--sem-green); }
         .cic-btn-done {
             background: rgba(78, 205, 196, 0.12);
             color: var(--accent-aqua);
@@ -1513,7 +1518,7 @@
 
                 <!-- Scadenze motore -->
                 <div class="dash-section-head">
-                    <span class="dash-section-title">⚠️ Prossime Scadenze Motore</span>
+                    <span class="dash-section-title">⚠️ Prossime Scadenze Manutenzione</span>
                     <a href="#" class="dash-section-link" onclick="event.preventDefault(); document.querySelector('[data-page=engine]').click();">vedi tutte →</a>
                 </div>
 
@@ -1601,7 +1606,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.06.30-2031
+                    app v2026.10.20-2330
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2143,8 +2148,8 @@
             </section>
 
 
-            <!-- Manutenzioni Stagionali (tempo-based) -->
-            <section class="card" style="margin-top: var(--spacing-xl);">
+            <!-- Manutenzioni Stagionali hardcoded: NASCOSTE dal 20/10/2026, ora tutto arriva dal foglio Cicliche -->
+            <section class="card" style="margin-top: var(--spacing-xl); display:none;">
                 <h3 style="margin-bottom: var(--spacing-xl);">🗓️ Manutenzioni Stagionali</h3>
                 <p class="text-secondary tiny" style="margin-bottom: var(--spacing-xl);">Basate sul calendario — indipendenti dalle ore motore</p>
 
@@ -3043,7 +3048,7 @@
             }
         }
 
-        function _renderCiclicaCard(c, esecuzioni, oreCorrenti) {
+        function _calcolaStatoCiclica(c, esecuzioni, oreCorrenti) {
             const voce = String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim();
             const area = String(_ci(c, 'Area', 'Categoria') || '').trim();
             const intOre = parseFloat(_ci(c, 'Intervallo ore', 'Intervallo h', 'Ore'));
@@ -3120,24 +3125,30 @@
 
             // Prendi il più urgente (cls red > yellow > green)
             const priorita = { red: 3, yellow: 2, green: 1 };
-            candidates.sort((a, b) => (priorita[b.cls] || 0) - (priorita[a.cls] || 0));
+            candidates.sort((a, b) => ((priorita[b.cls] || 0) - (priorita[a.cls] || 0)) || ((b.pct || 0) - (a.pct || 0)));
             const winning = candidates[0];
             stato.cls = winning.cls;
             stato.sem = winning.cls === 'red' ? '🔴' : winning.cls === 'yellow' ? '🟡' : '🟢';
             stato.meta = winning.text;
 
-            // Costruisce HTML card
-            const voceEsc = escapeHtml(voce);
-            const areaEsc = escapeHtml(area);
-            const noteHtml = note ? '<div class="cic-card-note">💡 ' + escapeHtml(note) + '</div>' : '';
-            const onclickReg = "openIntervento({voce: '" + voce.replace(/'/g, "\\'") + "', area: '" + area.replace(/'/g, "\\'") + "'})";
+            return { voce, area, note, intOre, intMesi, cls: stato.cls, sem: stato.sem, meta: stato.meta,
+                     pct: isFinite(winning.pct) ? winning.pct : 100, type: winning.type };
+        }
 
+        // Card della pagina Motore: semaforo + barra di avanzamento del ciclo
+        function _renderCiclicaCard(c, esecuzioni, oreCorrenti) {
+            const st = _calcolaStatoCiclica(c, esecuzioni, oreCorrenti);
+            const voceEsc = escapeHtml(st.voce);
+            const noteHtml = st.note ? '<div class="cic-card-note">💡 ' + escapeHtml(st.note) + '</div>' : '';
+            const onclickReg = "openIntervento({voce: '" + st.voce.replace(/'/g, "\\'") + "', area: '" + st.area.replace(/'/g, "\\'") + "'})";
+            const barW = st.type === 'none' ? 0 : Math.max(0, Math.min(100, st.pct));
             return `
-                <div class="cic-card ${stato.cls}">
+                <div class="cic-card ${st.cls}">
                     <div class="cic-card-head">
                         <div class="cic-card-body">
                             <div class="cic-card-title">${voceEsc}</div>
-                            <div class="cic-card-meta ${stato.cls}">${stato.sem} ${escapeHtml(stato.meta)}</div>
+                            <div class="cic-card-meta ${st.cls}">${st.sem} ${escapeHtml(st.meta)}</div>
+                            <div class="cic-bar"><div class="cic-bar-fill ${st.cls}" style="width:${barW.toFixed(0)}%"></div></div>
                             ${noteHtml}
                             <div class="cic-card-actions">
                                 <button class="cic-btn-done" onclick="${onclickReg}">✓ Registra esecuzione</button>
@@ -3145,6 +3156,20 @@
                         </div>
                     </div>
                 </div>`;
+        }
+
+        // Tutte le cicliche (escluse Burocrazia) con stato calcolato, dalla più urgente
+        function calcolaScadenzeCicliche(data) {
+            const cicliche = Array.isArray(data && data.cicliche) ? data.cicliche : [];
+            const esecuzioni = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni
+                              : (data.storico_manutenzioni || []);
+            const oreCorrenti = engineState.currentHours || parseFloat(data.ore_motore) || 0;
+            const pr = { red: 3, yellow: 2, green: 1 };
+            return cicliche
+                .filter(c => String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim())
+                .filter(c => String(_ci(c, 'Area', 'Categoria') || '').trim() !== 'Burocrazia')
+                .map(c => _calcolaStatoCiclica(c, esecuzioni, oreCorrenti))
+                .sort((a, b) => ((pr[b.cls] || 0) - (pr[a.cls] || 0)) || (b.pct - a.pct));
         }
 
         // Trova l'ultima esecuzione di una voce nel foglio Esecuzioni/storico
@@ -3172,7 +3197,8 @@
                 matches.push({ date: d, ore: isNaN(ore) ? null : ore, dataStr: String(dataStr) });
             });
             if (!matches.length) return null;
-            matches.sort((a, b) => b.date - a.date);
+            // Più recente per data; a parità di data preferisce la riga con le ore motore compilate
+            matches.sort((a, b) => (b.date - a.date) || ((b.ore != null ? b.ore : -1) - (a.ore != null ? a.ore : -1)));
             return matches[0];
         }
 
@@ -3634,71 +3660,30 @@
             // Scadenze burocratiche
             renderScadenzeBuro(data);
 
-            // Scadenze motore — legge le task-card live dalla pagina Motore
+            // Scadenze manutenzione — stessa logica e stessi dati della pagina Motore (foglio Cicliche)
             const container = document.getElementById('dash-scadenze-motore');
             if (!container) return;
-
-            const oreCorrente = engineState.currentHours || ore;
-            const tasks = Array.from(document.querySelectorAll('.task-card'));
-            const timeCards = Array.from(document.querySelectorAll('.task-card-time'));
-            if (!tasks.length) return;
-
-            // Calcola remaining per ogni task (ore-based)
-            const itemsOre = tasks.map(t => {
-                const interval  = parseInt(t.dataset.interval) || 0;
-                const lastDone  = parseFloat(t.dataset.last) || 0;
-                const nome      = (t.querySelector('h4') || {}).textContent || '?';
-                const remaining = interval - (oreCorrente - lastDone);
-                // Normalizza su scala 0-1 rispetto all'intervallo per confronto con time-based
-                return { nome, remaining, unit: 'h', score: remaining / Math.max(interval, 1) };
-            });
-            // Calcola remaining per card temporali (mesi-based → converti in "score" comparabile)
-            const oggiTime = new Date(); oggiTime.setHours(0,0,0,0);
-            const itemsTime = timeCards.map(t => {
-                const intervalM = parseInt(t.dataset.intervalMonths) || 12;
-                const ds = t.dataset.lastDate || '';
-                let lastDate = null;
-                if (ds) { const p = ds.split('-'); if (p.length===3) lastDate = new Date(+p[0],+p[1]-1,+p[2]); }
-                const mesiTrasc = lastDate ? (oggiTime - lastDate)/(1000*60*60*24*30.44) : intervalM;
-                const mesiRim   = intervalM - mesiTrasc;
-                const nome      = (t.querySelector('h4') || {}).textContent || '?';
-                return { nome, remaining: mesiRim, unit: 'mesi', score: mesiRim / intervalM };
-            });
-            const items = [...itemsOre, ...itemsTime].sort((a, b) => a.score - b.score);
-
-            // Mostra le prime 4
-            container.innerHTML = items.slice(0, 4).map(item => {
-                let cls, dot, meta;
-                if (item.unit === 'mesi') {
-                    const mR = Math.floor(item.remaining);
-                    if (item.remaining <= 0) { cls='red'; dot='🔴'; meta=dot+' scaduto da '+Math.abs(mR)+' mesi'; }
-                    else if (item.remaining <= 2) { cls='red'; dot='🔴'; meta=dot+' scade tra '+mR+' mesi'; }
-                    else if (item.remaining <= 4) { cls='yellow'; dot='🟡'; meta=dot+' scade tra '+mR+' mesi'; }
-                    else { cls='green'; dot='🟢'; meta=dot+' '+mR+' mesi rimanenti'; }
-                } else if (item.remaining <= 0) {
-                    cls = 'red';   dot = '🔴';
-                    meta = dot + ' scaduto da ' + Math.abs(item.remaining).toFixed(1) + 'h';
-                } else if (item.remaining <= engineState.thresholdUrgent) {
-                    cls = 'red';   dot = '🔴';
-                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
-                } else if (item.remaining <= engineState.thresholdWarning) {
-                    cls = 'yellow'; dot = '🟡';
-                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti · alle ' + (oreCorrente + item.remaining).toFixed(0) + 'h';
-                } else {
-                    cls = 'green';  dot = '🟢';
-                    meta = dot + ' ' + item.remaining.toFixed(1) + 'h rimanenti';
-                }
-                return '<div class="dash-scadenza ' + cls + '">' +
-                    '<div class="dash-sem-dot ' + cls + '"></div>' +
+            // I controlli ogni 10 h sono controlli prima della partenza, non scadenze: restano solo nella pagina Motore
+            const items = calcolaScadenzeCicliche(data).filter(it => !(it.intOre > 0 && it.intOre <= 10));
+            if (!items.length) return;
+            container.innerHTML = items.slice(0, 4).map(it => {
+                const barW = it.type === 'none' ? 0 : Math.max(0, Math.min(100, it.pct));
+                return '<div class="dash-scadenza ' + it.cls + '">' +
+                    '<div class="dash-sem-dot ' + it.cls + '"></div>' +
                     '<div class="dash-scadenza-body">' +
-                    '<div class="dash-scadenza-title">' + escapeHtml(item.nome) + '</div>' +
-                    '<div class="dash-scadenza-meta">' + meta + '</div>' +
+                    '<div class="dash-scadenza-title">' + escapeHtml(it.voce) + '</div>' +
+                    '<div class="dash-scadenza-meta">' + it.sem + ' ' + escapeHtml(it.meta) + '</div>' +
+                    '<div class="cic-bar"><div class="cic-bar-fill ' + it.cls + '" style="width:' + barW.toFixed(0) + '%"></div></div>' +
                     '</div><span class="dash-scadenza-arrow">›</span></div>';
             }).join('');
         }
 
         function renderEngineNextDeadline(data) {
-            // placeholder — la pagina Motore ha già i dati hardcoded nel DOM
+            // Pillola "Prossima scadenza" della pagina Motore: la voce Motore/Sail drive più urgente
+            const el = document.getElementById('engine-next-value');
+            if (!el) return;
+            const items = calcolaScadenzeCicliche(data).filter(it => (it.area === 'Motore' || it.area === 'Sail drive') && !(it.intOre > 0 && it.intOre <= 10));
+            el.textContent = items.length ? items[0].sem + ' ' + items[0].voce : '—';
         }
 
         // ── Pagina Uscite ─────────────────────────────────────────
