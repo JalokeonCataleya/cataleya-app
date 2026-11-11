@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.10.20-2330">
+<html lang="it" data-app-version="v2026.11.11-2030">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1519,7 +1519,7 @@
                 <!-- Scadenze motore -->
                 <div class="dash-section-head">
                     <span class="dash-section-title">⚠️ Prossime Scadenze Manutenzione</span>
-                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); document.querySelector('[data-page=engine]').click();">vedi tutte →</a>
+                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); apriScadenzeMotore();">vedi tutte →</a>
                 </div>
 
                 <section class="dash-scadenze" id="dash-scadenze-motore">
@@ -1606,7 +1606,7 @@
 
                 <!-- Versione app (per verificare di vedere l'ultima versione) -->
                 <div style="text-align: center; padding: 16px 0; opacity: 0.4; font-size: 11px; font-family: monospace;">
-                    app v2026.10.20-2330
+                    app v2026.11.11-2030
                 </div>
 
                 <!-- Script di aggiornamento data e saluto hero -->
@@ -2288,6 +2288,25 @@
         </div>
     </div>
 
+    <!-- ==================== SCADENZE MOTORE PAGE ==================== -->
+    <div id="page-scadenze" class="page">
+        <div class="engine-container">
+            <section class="engine-cicliche" style="margin-top: var(--spacing-md); margin-bottom: var(--spacing-2xl);">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:var(--spacing-md);">
+                    <h2 style="margin:0;">⚙️ Scadenze Motore</h2>
+                    <button class="cic-btn-done" onclick="switchDrawerPage('dashboard'); window.scrollTo(0,0);">← Dashboard</button>
+                </div>
+                <div id="scadenze-motore-riepilogo" style="margin-bottom: var(--spacing-md);"></div>
+                <p class="tiny text-tertiary" style="margin-bottom: var(--spacing-lg);">
+                    Voci con area <strong>Motore</strong> del foglio <strong>Cicliche</strong>, calcolate con le esecuzioni registrate. Dalla più urgente.
+                </p>
+                <div id="scadenze-motore-list">
+                    <div style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">caricamento…</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
     <!-- ==================== TRIPS PAGE ==================== -->
     <div id="page-trips" class="page">
         <div style="margin-top: calc(var(--nav-height) + var(--spacing-md));">
@@ -2568,7 +2587,7 @@
                 // Update active state
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
-                syncDrawerActive(page);
+                syncDrawerActive(item.dataset.page);
                 
                 // Show page
                 const pageName = item.dataset.page;
@@ -2933,6 +2952,7 @@
             }
             _safe('renderDashboardLive', () => renderDashboardLive(data));
             _safe('renderEngineNextDeadline', () => renderEngineNextDeadline(data));
+            _safe('renderScadenzeMotore', () => renderScadenzeMotore(data));
             _safe('renderTripsPage', () => renderTripsPage(data));
             _safe('renderMaintenancePage', () => renderMaintenancePage(data));
             _safe('renderUltimiInserimenti', () => renderUltimiInserimenti(data));
@@ -3170,6 +3190,71 @@
                 .filter(c => String(_ci(c, 'Area', 'Categoria') || '').trim() !== 'Burocrazia')
                 .map(c => _calcolaStatoCiclica(c, esecuzioni, oreCorrenti))
                 .sort((a, b) => ((pr[b.cls] || 0) - (pr[a.cls] || 0)) || (b.pct - a.pct));
+        }
+
+        // ── PAGINA "VEDI TUTTE": scadenze del solo motore (area Motore di Cicliche) ──
+        function apriScadenzeMotore() {
+            switchDrawerPage('scadenze');
+            window.scrollTo(0, 0);
+            const box = document.getElementById('scadenze-motore-list');
+            if (_lastFetchedData) { renderScadenzeMotore(_lastFetchedData); return; }
+            if (!getScriptUrl()) {
+                if (box) box.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-secondary);">Questa copia dell\'app non ha ancora il collegamento al foglio (URL Apps Script). Apri <strong>Impostazioni</strong>, incolla l\'URL /exec e premi Testa connessione: poi torna qui.</div>';
+                return;
+            }
+            if (box) box.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-tertiary);font-style:italic;">caricamento dal foglio…</div>';
+            caricaDatiDaSheets({ manual: true });
+            setTimeout(() => {
+                if (!_lastFetchedData && box) box.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-secondary);">Nessuna risposta dal foglio. Controlla la connessione e premi 🔄.</div>';
+            }, 15000);
+        }
+
+        function renderScadenzeMotore(data) {
+            const box = document.getElementById('scadenze-motore-list');
+            const riep = document.getElementById('scadenze-motore-riepilogo');
+            if (!box) return;
+            if (!data || data.cicliche === undefined) {
+                box.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">Dati non ancora disponibili: sincronizza dal foglio.</div>';
+                if (riep) riep.innerHTML = '';
+                return;
+            }
+            const esecuzioni = (data.esecuzioni && data.esecuzioni.length) ? data.esecuzioni
+                              : (data.storico_manutenzioni || []);
+            const oreCorrenti = engineState.currentHours || parseFloat(data.ore_motore) || 0;
+            const pr = { red: 3, yellow: 2, green: 1 };
+            const voci = (Array.isArray(data.cicliche) ? data.cicliche : [])
+                .filter(c => String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim())
+                .filter(c => String(_ci(c, 'Area', 'Categoria') || '').trim() === 'Motore')
+                .map(c => ({ c: c, st: _calcolaStatoCiclica(c, esecuzioni, oreCorrenti) }))
+                .sort((a, b) => ((pr[b.st.cls] || 0) - (pr[a.st.cls] || 0)) || (b.st.pct - a.st.pct));
+            if (!voci.length) {
+                box.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);font-style:italic;padding:24px;">Nessuna voce con area Motore nel foglio Cicliche.</div>';
+                if (riep) riep.innerHTML = '';
+                return;
+            }
+            // I controlli "ogni 10 h / ogni giorno" sono sempre da rifare: vanno in un gruppo a parte,
+            // così non coprono le scadenze vere (stessa scelta della Dashboard, che li esclude).
+            const _ore10 = v => { const h = parseFloat(_ci(v.c, 'Intervallo ore', 'Intervallo h', 'Ore')); return h > 0 && h <= 10; };
+            const giornalieri = voci.filter(_ore10);
+            const principali = voci.filter(v => !_ore10(v));
+            const n = { red: 0, yellow: 0, green: 0 };
+            principali.forEach(v => { n[v.st.cls] = (n[v.st.cls] || 0) + 1; });
+            if (riep) {
+                riep.innerHTML = '<div class="space-grotesk" style="font-size:14px;color:var(--text-secondary);">' +
+                    'Ore motore: <strong style="color:var(--text-primary);">' + oreCorrenti.toFixed(1).replace('.', ',') + ' h</strong>' +
+                    ' &nbsp;·&nbsp; 🔴 ' + n.red + ' &nbsp; 🟡 ' + n.yellow + ' &nbsp; 🟢 ' + n.green +
+                    (giornalieri.length ? ' &nbsp;·&nbsp; ' + giornalieri.length + ' controlli a ogni uscita' : '') + '</div>';
+            }
+            let html = '';
+            if (principali.length) {
+                html += '<div class="area-group"><div class="area-title">⚙️ Interventi programmati</div>' +
+                        principali.map(v => _renderCiclicaCard(v.c, esecuzioni, oreCorrenti)).join('') + '</div>';
+            }
+            if (giornalieri.length) {
+                html += '<div class="area-group"><div class="area-title">🔁 Controlli a ogni uscita (ogni 10 h o ogni giorno)</div>' +
+                        giornalieri.map(v => _renderCiclicaCard(v.c, esecuzioni, oreCorrenti)).join('') + '</div>';
+            }
+            box.innerHTML = html;
         }
 
         // Trova l'ultima esecuzione di una voce nel foglio Esecuzioni/storico
