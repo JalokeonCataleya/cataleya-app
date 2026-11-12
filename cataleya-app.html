@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" data-app-version="v2026.11.11-2030">
+<html lang="it" data-app-version="v3-2026.11.12">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1152,14 +1152,14 @@
         .gap-3 { gap: var(--spacing-xl); }
 
         /* ==================== DASHBOARD MOBILE-FIRST (v2) ==================== */
-        #page-dashboard {
+        .page {
             --sem-red: #ff3b30;
             --sem-yellow: #ffb800;
             --sem-green: #34c759;
             --dash-card-radius: 16px;
             --dash-card-radius-sm: 10px;
         }
-        #page-dashboard .dash-wrap {
+        .page .dash-wrap {
             max-width: 520px;
             margin: 0 auto;
             padding: 16px;
@@ -1167,7 +1167,7 @@
             flex-direction: column;
             gap: 18px;
         }
-        #page-dashboard .dash-card {
+        .page .dash-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--dash-card-radius);
@@ -1175,7 +1175,7 @@
             backdrop-filter: blur(12px);
         }
         /* Hero */
-        #page-dashboard .dash-hero {
+        .page .dash-hero {
             background:
                 linear-gradient(135deg, rgba(244, 213, 141, 0.12), rgba(78, 205, 196, 0.05)),
                 var(--bg-secondary);
@@ -1183,70 +1183,70 @@
             padding: 22px;
             border-radius: var(--dash-card-radius);
         }
-        #page-dashboard .dash-hero-greet {
+        .page .dash-hero-greet {
             font-family: var(--font-display);
             font-size: 34px;
             letter-spacing: 2px;
             margin-bottom: 4px;
         }
-        #page-dashboard .dash-hero-date {
+        .page .dash-hero-date {
             font-size: 12px;
             letter-spacing: 1px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             margin-bottom: 18px;
         }
-        #page-dashboard .dash-hero-stats {
+        .page .dash-hero-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
-        #page-dashboard .dash-stat {
+        .page .dash-stat {
             border-left: 2px solid var(--accent-gold);
             padding-left: 10px;
         }
-        #page-dashboard .dash-stat.aqua { border-color: var(--accent-aqua); }
-        #page-dashboard .dash-stat-label {
+        .page .dash-stat.aqua { border-color: var(--accent-aqua); }
+        .page .dash-stat-label {
             font-size: 10px;
             letter-spacing: 1.2px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             margin-bottom: 4px;
         }
-        #page-dashboard .dash-stat-value {
+        .page .dash-stat-value {
             font-family: var(--font-mono);
             font-size: 24px;
             font-weight: 700;
         }
-        #page-dashboard .dash-stat-sub {
+        .page .dash-stat-sub {
             font-size: 11px;
             color: var(--text-secondary);
             margin-top: 2px;
         }
         /* Section header */
-        #page-dashboard .dash-section-head {
+        .page .dash-section-head {
             display: flex;
             align-items: baseline;
             justify-content: space-between;
             padding: 0 4px;
             margin-bottom: -4px;
         }
-        #page-dashboard .dash-section-title {
+        .page .dash-section-title {
             font-size: 13px;
             letter-spacing: 1.5px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             font-weight: 600;
         }
-        #page-dashboard .dash-section-link {
+        .page .dash-section-link {
             font-size: 12px;
             color: var(--accent-aqua);
             text-decoration: none;
             font-weight: 500;
         }
         /* Scadenze semaforo */
-        #page-dashboard .dash-scadenze { display: flex; flex-direction: column; gap: 10px; }
-        #page-dashboard .dash-scadenza {
+        .page .dash-scadenze { display: flex; flex-direction: column; gap: 10px; }
+        .page .dash-scadenza {
             background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.08);
             border-left-width: 4px;
@@ -1256,12 +1256,12 @@
             align-items: center;
             gap: 14px;
         }
-        #page-dashboard .dash-scadenza.red    { border-left-color: var(--sem-red); }
-        #page-dashboard .dash-scadenza.yellow { border-left-color: var(--sem-yellow); }
-        #page-dashboard .dash-scadenza.green  { border-left-color: var(--sem-green); }
+        .page .dash-scadenza.red    { border-left-color: var(--sem-red); }
+        .page .dash-scadenza.yellow { border-left-color: var(--sem-yellow); }
+        .page .dash-scadenza.green  { border-left-color: var(--sem-green); }
         /* Lista ultimi inserimenti con tasto Modifica */
-        #page-dashboard .dash-ultimi { display:flex; flex-direction:column; gap:8px; }
-        #page-dashboard .dash-ultimo-item {
+        .page .dash-ultimi { display:flex; flex-direction:column; gap:8px; }
+        .page .dash-ultimo-item {
             background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: var(--dash-card-radius-sm);
@@ -1270,7 +1270,7 @@
             align-items: center;
             gap: 10px;
         }
-        #page-dashboard .dash-ultimo-icon {
+        .page .dash-ultimo-icon {
             font-size: 18px;
             flex-shrink: 0;
             width: 28px; height: 28px;
@@ -1278,8 +1278,8 @@
             background: rgba(255,255,255,0.05);
             border-radius: 6px;
         }
-        #page-dashboard .dash-ultimo-body { flex: 1; min-width: 0; }
-        #page-dashboard .dash-ultimo-title {
+        .page .dash-ultimo-body { flex: 1; min-width: 0; }
+        .page .dash-ultimo-title {
             font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
@@ -1287,12 +1287,12 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        #page-dashboard .dash-ultimo-meta {
+        .page .dash-ultimo-meta {
             font-size: 11px;
             color: var(--text-tertiary);
             margin-top: 2px;
         }
-        #page-dashboard .dash-ultimo-edit {
+        .page .dash-ultimo-edit {
             background: transparent;
             border: 1px solid rgba(255,255,255,0.15);
             color: var(--accent-aqua);
@@ -1303,11 +1303,11 @@
             flex-shrink: 0;
             transition: background 0.15s;
         }
-        #page-dashboard .dash-ultimo-edit:hover,
-        #page-dashboard .dash-ultimo-edit:active {
+        .page .dash-ultimo-edit:hover,
+        .page .dash-ultimo-edit:active {
             background: rgba(78, 205, 196, 0.12);
         }
-        #page-dashboard .dash-ultimo-tipo {
+        .page .dash-ultimo-tipo {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -1315,18 +1315,18 @@
             border-radius: 4px;
             margin-right: 6px;
         }
-        #page-dashboard .dash-ultimo-tipo.uscita    { background: rgba(78, 205, 196, 0.2); color: var(--accent-aqua); }
-        #page-dashboard .dash-ultimo-tipo.intervento{ background: rgba(244, 213, 141, 0.2); color: var(--accent-gold); }
-        #page-dashboard .dash-sem-dot {
+        .page .dash-ultimo-tipo.uscita    { background: rgba(78, 205, 196, 0.2); color: var(--accent-aqua); }
+        .page .dash-ultimo-tipo.intervento{ background: rgba(244, 213, 141, 0.2); color: var(--accent-gold); }
+        .page .dash-sem-dot {
             width: 12px; height: 12px; border-radius: 50%;
             flex-shrink: 0;
             box-shadow: 0 0 12px currentColor;
         }
-        #page-dashboard .dash-sem-dot.red    { background: var(--sem-red);    color: var(--sem-red); }
-        #page-dashboard .dash-sem-dot.yellow { background: var(--sem-yellow); color: var(--sem-yellow); }
-        #page-dashboard .dash-sem-dot.green  { background: var(--sem-green);  color: var(--sem-green); }
-        #page-dashboard .dash-scadenza-body { flex: 1; min-width: 0; }
-        #page-dashboard .dash-scadenza-title {
+        .page .dash-sem-dot.red    { background: var(--sem-red);    color: var(--sem-red); }
+        .page .dash-sem-dot.yellow { background: var(--sem-yellow); color: var(--sem-yellow); }
+        .page .dash-sem-dot.green  { background: var(--sem-green);  color: var(--sem-green); }
+        .page .dash-scadenza-body { flex: 1; min-width: 0; }
+        .page .dash-scadenza-title {
             font-size: 15px;
             font-weight: 600;
             margin-bottom: 3px;
@@ -1334,19 +1334,19 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        #page-dashboard .dash-scadenza-meta {
+        .page .dash-scadenza-meta {
             font-size: 12px;
             color: var(--text-secondary);
             font-family: var(--font-mono);
         }
-        #page-dashboard .dash-scadenza-arrow { color: var(--text-tertiary); font-size: 20px; }
+        .page .dash-scadenza-arrow { color: var(--text-tertiary); font-size: 20px; }
         /* Quick actions */
-        #page-dashboard .dash-qa {
+        .page .dash-qa {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        #page-dashboard .dash-qa-btn {
+        .page .dash-qa-btn {
             background: linear-gradient(135deg, rgba(244, 213, 141, 0.15), rgba(255, 107, 107, 0.1));
             border: 1px solid rgba(244, 213, 141, 0.3);
             color: var(--text-primary);
@@ -1362,39 +1362,39 @@
             font-family: var(--font-primary);
             transition: transform 0.15s;
         }
-        #page-dashboard .dash-qa-btn:active { transform: scale(0.97); }
-        #page-dashboard .dash-qa-btn.secondary {
+        .page .dash-qa-btn:active { transform: scale(0.97); }
+        .page .dash-qa-btn.secondary {
             background: var(--bg-card);
             border-color: rgba(255,255,255,0.08);
         }
-        #page-dashboard .dash-qa-icon { font-size: 26px; }
+        .page .dash-qa-icon { font-size: 26px; }
         /* Meteo */
-        #page-dashboard .dash-meteo {
+        .page .dash-meteo {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
-        #page-dashboard .dash-meteo-block {
+        .page .dash-meteo-block {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        #page-dashboard .dash-meteo-icon { font-size: 28px; }
-        #page-dashboard .dash-meteo-label {
+        .page .dash-meteo-icon { font-size: 28px; }
+        .page .dash-meteo-label {
             font-size: 10px;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: var(--text-tertiary);
         }
-        #page-dashboard .dash-meteo-value {
+        .page .dash-meteo-value {
             font-family: var(--font-mono);
             font-size: 18px;
             font-weight: 700;
             color: var(--accent-gold);
         }
-        #page-dashboard .dash-meteo-value.aqua { color: var(--accent-aqua); }
+        .page .dash-meteo-value.aqua { color: var(--accent-aqua); }
         /* Proverbio */
-        #page-dashboard .dash-quote {
+        .page .dash-quote {
             text-align: center;
             padding: 18px 20px;
             font-style: italic;
@@ -1404,9 +1404,153 @@
             border: 1px dashed rgba(78, 205, 196, 0.25);
             border-radius: var(--dash-card-radius-sm);
         }
-        #page-dashboard .dash-quote::before { content: '« '; opacity: 0.6; }
-        #page-dashboard .dash-quote::after  { content: ' »'; opacity: 0.6; }
+        .page .dash-quote::before { content: '« '; opacity: 0.6; }
+        .page .dash-quote::after  { content: ' »'; opacity: 0.6; }
         /* ==================== FINE DASHBOARD v2 ==================== */
+
+        /* ==================== CATALEYA v3 — struttura MyBoatPlan ==================== */
+        .nav-menu, .btn-hamburger, .nav-drawer, .nav-drawer-overlay { display: none !important; }
+        body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+        .offline-pill {
+            display: none; align-items: center; padding: 3px 10px; border-radius: 999px;
+            background: rgba(243,156,18,0.18); color: var(--warning); font-size: 12px; font-weight: 700; cursor: pointer;
+        }
+
+        /* Tab bar in basso */
+        .tabbar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 1500;
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            background: rgba(26,29,41,0.96); backdrop-filter: blur(14px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+        }
+        .tabbar button {
+            position: relative; background: none; border: none; color: var(--text-tertiary);
+            font-family: var(--font-primary); font-size: 10.5px; font-weight: 600; letter-spacing: -0.2px;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            padding: 6px 2px; border-radius: 12px; cursor: pointer; transition: var(--transition); min-width: 0;
+        }
+        .tabbar button span:not(.tb-ico):not(.tb-badge) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .tabbar .tb-ico { font-size: 21px; line-height: 1.1; filter: grayscale(0.7) opacity(0.75); transition: var(--transition); }
+        .tabbar button.active { color: var(--accent-aqua); background: rgba(78,205,196,0.10); }
+        .tabbar button.active .tb-ico { filter: none; transform: translateY(-1px); }
+        .tb-badge {
+            display: none; position: absolute; top: 2px; left: calc(50% + 6px);
+            min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px;
+            background: var(--accent-coral); color: #fff; font-size: 10px; font-weight: 700; line-height: 17px; text-align: center;
+        }
+        @media (min-width: 900px) {
+            .tabbar { left: 50%; right: auto; transform: translateX(-50%); width: 640px; bottom: 14px;
+                      border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        }
+
+        /* Sotto-schede Manutenzione */
+        .subtabs {
+            display: none; position: fixed; top: var(--nav-height); left: 0; right: 0; z-index: 900;
+            gap: 6px; padding: 8px 16px; overflow-x: auto; scrollbar-width: none;
+            background: rgba(26,29,41,0.94); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .subtabs::-webkit-scrollbar { display: none; }
+        body.has-subtabs .subtabs { display: flex; justify-content: center; }
+        @media (max-width: 600px) { body.has-subtabs .subtabs { justify-content: flex-start; } }
+        body.has-subtabs .page.active { padding-top: 52px; }
+        .subtabs button, .seg button {
+            flex-shrink: 0; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary); font-family: var(--font-primary); font-size: 13px; font-weight: 600; transition: var(--transition);
+        }
+        .subtabs button.active, .seg button.active { background: var(--accent-aqua); color: #1a1d29; border-color: var(--accent-aqua); }
+        .seg { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 14px; }
+
+        /* Componenti generici v3 */
+        .v3-page { margin-top: calc(var(--nav-height) + var(--spacing-md)); }
+        .v3-card {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--border-radius); padding: 16px; margin-bottom: 16px;
+        }
+        .v3-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .v3-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 14px; border-radius: var(--border-radius-sm); cursor: pointer; text-decoration: none;
+            background: rgba(78,205,196,0.12); color: var(--accent-aqua); border: 1px solid rgba(78,205,196,0.3);
+            font-family: var(--font-primary); font-size: 14px; font-weight: 600; transition: var(--transition); white-space: nowrap;
+        }
+        .v3-btn:hover { filter: brightness(1.15); }
+        .v3-btn.primary { background: var(--accent-aqua); color: #1a1d29; border-color: var(--accent-aqua); }
+        .v3-btn.ghost { background: transparent; color: var(--text-secondary); border-color: rgba(255,255,255,0.14); }
+        .v3-btn.small { padding: 6px 10px; font-size: 13px; flex-shrink: 0; }
+        .v3-toolbar { display: flex; gap: 8px; margin-bottom: 14px; }
+        .v3-search {
+            flex: 1; min-width: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--border-radius-sm); color: var(--text-primary); font-family: var(--font-primary);
+            font-size: 15px; padding: 9px 14px; outline: none;
+        }
+        .v3-search:focus { border-color: var(--accent-aqua); }
+        .v3-empty { text-align: center; color: var(--text-tertiary); font-size: 13px; font-style: italic; padding: 16px; }
+        .v3-ul { margin: 6px 0 0 18px; }
+        .v3-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 8px;
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-left: 4px solid rgba(255,255,255,0.12); border-radius: var(--border-radius-sm); cursor: pointer;
+            transition: var(--transition);
+        }
+        .v3-item:hover { background: rgba(55,60,80,0.7); }
+        .v3-item.red { border-left-color: var(--danger); }
+        .v3-item.yellow { border-left-color: var(--warning); }
+        .v3-item.green { border-left-color: var(--success); }
+        .v3-item.grey { border-left-color: rgba(255,255,255,0.2); }
+        .v3-item-ico { font-size: 22px; flex-shrink: 0; }
+        .v3-item-body { flex: 1; min-width: 0; }
+        .v3-item-title { font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+        .v3-item-meta { font-size: 12.5px; color: var(--text-secondary); overflow-wrap: anywhere; }
+        .v3-item-side { color: var(--accent-coral); font-weight: 700; flex-shrink: 0; }
+        .sem-red { color: var(--accent-coral); } .sem-yellow { color: var(--warning); }
+        .sem-green { color: var(--success); } .sem-grey { color: var(--text-tertiary); }
+        .qty { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .qty button {
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: 700;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: var(--text-primary);
+        }
+        .qty button:active { background: var(--accent-aqua); color: #1a1d29; }
+        .qty span { min-width: 48px; text-align: center; font-weight: 700; }
+        .qty small { font-weight: 400; color: var(--text-tertiary); font-size: 11px; }
+
+        /* GPS */
+        .gps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        @media (max-width: 600px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
+        .gps-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); }
+        .gps-val { font-size: 19px; font-weight: 700; color: var(--accent-aqua); }
+        .gps-meta { font-size: 12.5px; color: var(--text-secondary); margin-top: 10px; }
+        .uscita-gps { background: rgba(78,205,196,0.05); border: 1px dashed rgba(78,205,196,0.3);
+                      border-radius: var(--border-radius-sm); padding: 12px; margin-bottom: var(--spacing-lg); }
+        .uscita-gps-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .uscita-gps-head label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-aqua); }
+
+        /* Calendario */
+        .cal-head { display: flex; align-items: center; justify-content: space-between; margin: 8px 0 10px; }
+        .cal-head h2 { font-size: 30px; margin: 0; }
+        .cal-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+        .cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
+        .cal-dow { text-align: center; font-size: 11px; color: var(--text-tertiary); font-weight: 700; padding: 4px 0; }
+        .cal-cell {
+            aspect-ratio: 1 / 1; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px;
+            color: var(--text-primary); font-family: var(--font-mono); font-size: 14px; cursor: pointer; padding: 0;
+        }
+        .cal-cell.today { border-color: var(--accent-aqua); color: var(--accent-aqua); font-weight: 700; }
+        .cal-cell.sel { background: rgba(78,205,196,0.18); }
+        .cal-dots { display: flex; gap: 2px; height: 6px; }
+        .cal-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .cal-dots .cal-dot { width: 5px; height: 5px; }
+        .cal-dot.doc { background: var(--accent-coral); }
+        .cal-dot.man { background: var(--accent-gold); }
+        .cal-dot.lav { background: var(--info); }
+        .cal-dot.cam { background: var(--success); }
+        .cal-dot.usc { background: var(--accent-aqua); }
+        @media (max-width: 480px) { .cal-cell { border-radius: 8px; font-size: 13px; } }
+        /* ==================== FINE CATALEYA v3 ==================== */
 
     </style>
 </head>
@@ -1415,28 +1559,33 @@
     <!-- ==================== NAVIGATION ==================== -->
     <nav class="nav">
         <div class="nav-logo">⚓ CATALEYA</div>
-        <div class="nav-menu">
-            <a href="#" class="nav-item active" data-page="dashboard">Dashboard</a>
-            <a href="#" class="nav-item" data-page="engine">⚙️ Motore</a>
-            <a href="#" class="nav-item" data-page="trips">🌊 Uscite</a>
-            <a href="#" class="nav-item" data-page="maintenance">🔧 Lavori</a>
-        </div>
         <div class="nav-actions">
+            <span class="offline-pill" id="offline-pill" title="Modifiche salvate sul telefono, in attesa di rete" onclick="syncCoda(true)"></span>
             <div class="sync-status" id="sync-status" title="Sincronizzato"></div>
             <button class="btn-icon" title="Ricarica dati dal Google Sheet" onclick="refreshDati()" id="btn-refresh">
                 <i data-lucide="refresh-cw"></i>
             </button>
-            <button class="btn-icon" title="Impostazioni" onclick="openSettings()">
-                <i data-lucide="settings"></i>
-            </button>
-            <button class="btn-hamburger" id="btn-hamburger" onclick="toggleDrawer()" title="Menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <line x1="3" y1="6" x2="21" y2="6"/>
-                    <line x1="3" y1="12" x2="21" y2="12"/>
-                    <line x1="3" y1="18" x2="21" y2="18"/>
-                </svg>
+            <button class="btn-icon" title="Altro: fornitori, backup, impostazioni" onclick="switchDrawerPage('altro')" id="btn-altro">
+                <i data-lucide="more-horizontal"></i>
             </button>
         </div>
+    </nav>
+
+    <!-- ==================== SOTTO-SCHEDE MANUTENZIONE ==================== -->
+    <div class="subtabs" id="subtabs-manut">
+        <button data-sub="engine" onclick="switchDrawerPage('engine')">⚙️ Motore</button>
+        <button data-sub="maintenance" onclick="switchDrawerPage('maintenance')">🔧 Lavori</button>
+        <button data-sub="interventi" onclick="switchDrawerPage('interventi')">📜 Interventi</button>
+        <button data-sub="calendar" onclick="switchDrawerPage('calendar')">📅 Calendario</button>
+    </div>
+
+    <!-- ==================== TAB BAR (stile MyBoatPlan) ==================== -->
+    <nav class="tabbar" id="tabbar">
+        <button data-tab="home" class="active" onclick="switchDrawerPage('dashboard')"><span class="tb-ico">🏠</span><span>Home</span></button>
+        <button data-tab="nav" onclick="switchDrawerPage('trips')"><span class="tb-ico">🧭</span><span>Navigazione</span></button>
+        <button data-tab="manut" onclick="switchDrawerPage(_lastManutPage || 'engine')"><span class="tb-ico">🔧</span><span>Manutenz.</span><span class="tb-badge" id="tb-badge-manut"></span></button>
+        <button data-tab="cambusa" onclick="switchDrawerPage('cambusa')"><span class="tb-ico">🍞</span><span>Cambusa</span><span class="tb-badge" id="tb-badge-cambusa"></span></button>
+        <button data-tab="docs" onclick="switchDrawerPage('docs')"><span class="tb-ico">📁</span><span>Documenti</span><span class="tb-badge" id="tb-badge-docs"></span></button>
     </nav>
 
 
@@ -1560,11 +1709,30 @@
                 <!-- Scadenze burocratiche -->
                 <div class="dash-section-head">
                     <span class="dash-section-title">📋 Scadenze Burocratiche</span>
+                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); switchDrawerPage('docs');">documenti →</a>
                 </div>
                 <section id="dash-scadenze-buro">
                     <div style="text-align:center;color:var(--text-tertiary);font-size:13px;font-style:italic;padding:16px;">
                         caricamento…
                     </div>
+                </section>
+
+                <!-- Cambusa da rifornire -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">🍞 Cambusa da rifornire</span>
+                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); switchDrawerPage('cambusa'); camVista('spesa');">lista spesa →</a>
+                </div>
+                <section id="dash-cambusa">
+                    <div class="v3-empty">caricamento…</div>
+                </section>
+
+                <!-- Prossimi 30 giorni -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">📅 Prossimi 30 giorni</span>
+                    <a href="#" class="dash-section-link" onclick="event.preventDefault(); switchDrawerPage('calendar');">calendario →</a>
+                </div>
+                <section id="dash-prossimi">
+                    <div class="v3-empty">caricamento…</div>
                 </section>
 
                 <!-- Ultimi inserimenti (con tasto Modifica) -->
@@ -2314,7 +2482,7 @@
 
                 <!-- Hero stats -->
                 <section class="dash-hero">
-                    <h1 class="dash-hero-greet bebas">🌊 Diario Uscite</h1>
+                    <h1 class="dash-hero-greet bebas">🧭 Navigazione</h1>
                     <div class="dash-hero-stats">
                         <div class="dash-stat">
                             <div class="dash-stat-label">Uscite Totali</div>
@@ -2329,9 +2497,28 @@
                     </div>
                 </section>
 
+                <!-- Posizione GPS (stile MyBoatPlan) -->
+                <div class="dash-section-head">
+                    <span class="dash-section-title">📡 Posizione attuale</span>
+                </div>
+                <section class="v3-card gps-card">
+                    <div class="gps-grid">
+                        <div><div class="gps-lbl">Latitudine</div><div class="gps-val space-grotesk" id="gps-lat">—</div></div>
+                        <div><div class="gps-lbl">Longitudine</div><div class="gps-val space-grotesk" id="gps-lon">—</div></div>
+                        <div><div class="gps-lbl">SOG</div><div class="gps-val space-grotesk" id="gps-sog">—</div></div>
+                        <div><div class="gps-lbl">COG</div><div class="gps-val space-grotesk" id="gps-cog">—</div></div>
+                    </div>
+                    <div class="gps-meta" id="gps-meta">Premi "Rileva da GPS" per leggere posizione, velocità e rotta.</div>
+                    <div class="v3-actions">
+                        <button class="v3-btn" onclick="rilevaGPS()">📡 Rileva da GPS</button>
+                        <button class="v3-btn ghost" onclick="apriMappaGPS()">🗺️ Mappa</button>
+                        <button class="v3-btn primary" onclick="openNuovaUscita({_fromGps:true})">⚓ Nuova uscita</button>
+                    </div>
+                </section>
+
                 <!-- Filtro anno -->
                 <div class="dash-section-head">
-                    <span class="dash-section-title">📅 Storico uscite</span>
+                    <span class="dash-section-title">📅 Diario di bordo</span>
                     <div id="trips-year-filter" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
                 </div>
 
@@ -2387,6 +2574,154 @@
                     </div>
                 </section>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== INTERVENTI (storico dal foglio Esecuzioni) ==================== -->
+    <div id="page-interventi" class="page">
+        <div class="v3-page">
+            <div class="dash-wrap">
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet bebas">📜 Storico interventi</h1>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat"><div class="dash-stat-label">Interventi</div><div class="dash-stat-value space-grotesk" id="int-count">—</div><div class="dash-stat-sub" id="int-anno">—</div></div>
+                        <div class="dash-stat aqua"><div class="dash-stat-label">Spesa totale</div><div class="dash-stat-value space-grotesk" id="int-spesa">—</div><div class="dash-stat-sub" id="int-spesa-anno">—</div></div>
+                    </div>
+                </section>
+                <div class="v3-toolbar">
+                    <input type="search" class="v3-search" id="int-search" placeholder="Cerca intervento, area, fornitore…" oninput="renderInterventiList()">
+                    <button class="v3-btn primary" onclick="openIntervento()">+ Registra</button>
+                </div>
+                <section id="interventi-list"><div class="v3-empty">caricamento…</div></section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CALENDARIO SCADENZE ==================== -->
+    <div id="page-calendar" class="page">
+        <div class="v3-page">
+            <div class="dash-wrap">
+                <div class="cal-head">
+                    <button class="v3-btn ghost" onclick="calSposta(-1)">‹</button>
+                    <h2 class="bebas" id="cal-title">—</h2>
+                    <button class="v3-btn ghost" onclick="calSposta(1)">›</button>
+                </div>
+                <div class="cal-legend">
+                    <span><i class="cal-dot doc"></i>Documenti</span>
+                    <span><i class="cal-dot man"></i>Manutenzione</span>
+                    <span><i class="cal-dot lav"></i>Lavori</span>
+                    <span><i class="cal-dot cam"></i>Cambusa</span>
+                    <span><i class="cal-dot usc"></i>Uscite</span>
+                </div>
+                <div class="cal-grid" id="cal-grid"></div>
+                <div class="dash-section-head"><span class="dash-section-title" id="cal-day-title">📌 Eventi del mese</span></div>
+                <section id="cal-list"></section>
+                <div class="dash-section-head"><span class="dash-section-title">⚙️ Scadenze a ore motore</span></div>
+                <p class="tiny text-tertiary" style="margin-bottom:12px;">Dipendono da quanto navighi: la data stimata usa la media ore motore degli ultimi 12 mesi.</p>
+                <section id="cal-ore-list"></section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CAMBUSA ==================== -->
+    <div id="page-cambusa" class="page">
+        <div class="v3-page">
+            <div class="dash-wrap">
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet bebas">🍞 Cambusa</h1>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat"><div class="dash-stat-label">Articoli</div><div class="dash-stat-value space-grotesk" id="cam-count">—</div><div class="dash-stat-sub" id="cam-cat">—</div></div>
+                        <div class="dash-stat" style="--accent: var(--accent-coral)"><div class="dash-stat-label">Da comprare</div><div class="dash-stat-value space-grotesk" id="cam-sotto">—</div><div class="dash-stat-sub" id="cam-scad">—</div></div>
+                    </div>
+                </section>
+                <div class="seg" id="cam-seg">
+                    <button class="active" data-v="scorte" onclick="camVista('scorte')">📦 Scorte</button>
+                    <button data-v="spesa" onclick="camVista('spesa')">🛒 Lista spesa</button>
+                </div>
+                <div class="v3-toolbar">
+                    <input type="search" class="v3-search" id="cam-search" placeholder="Cerca articolo…" oninput="renderCambusa()">
+                    <button class="v3-btn primary" onclick="apriRecord('cambusa')">+ Articolo</button>
+                </div>
+                <section id="cambusa-list"><div class="v3-empty">caricamento…</div></section>
+                <div class="v3-actions" id="cam-spesa-actions" style="display:none;">
+                    <button class="v3-btn" onclick="copiaListaSpesa()">📋 Copia lista</button>
+                    <button class="v3-btn ghost" onclick="condividiListaSpesa()">📤 Condividi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DOCUMENTI ==================== -->
+    <div id="page-docs" class="page">
+        <div class="v3-page">
+            <div class="dash-wrap">
+                <section class="dash-hero">
+                    <h1 class="dash-hero-greet bebas">📁 Documenti</h1>
+                    <div class="dash-hero-stats">
+                        <div class="dash-stat"><div class="dash-stat-label">Documenti</div><div class="dash-stat-value space-grotesk" id="doc-count">—</div><div class="dash-stat-sub" id="doc-cat">—</div></div>
+                        <div class="dash-stat" style="--accent: var(--accent-coral)"><div class="dash-stat-label">In scadenza</div><div class="dash-stat-value space-grotesk" id="doc-scad">—</div><div class="dash-stat-sub" id="doc-scad-sub">entro 90 giorni</div></div>
+                    </div>
+                </section>
+                <div class="seg" id="doc-seg">
+                    <button class="active" data-v="all" onclick="docFiltro('all')">Tutti</button>
+                    <button data-v="Barca" onclick="docFiltro('Barca')">⛵ Barca</button>
+                    <button data-v="Equipaggio" onclick="docFiltro('Equipaggio')">👥 Equipaggio</button>
+                    <button data-v="Assicurazione" onclick="docFiltro('Assicurazione')">🛡️ Assicurazione</button>
+                </div>
+                <div class="v3-toolbar">
+                    <input type="search" class="v3-search" id="doc-search" placeholder="Cerca documento, titolare, numero…" oninput="renderDocumenti()">
+                    <button class="v3-btn primary" onclick="apriRecord('documenti')">+ Documento</button>
+                </div>
+                <section id="docs-list"><div class="v3-empty">caricamento…</div></section>
+                <p class="tiny text-tertiary" style="margin-top:12px;">I documenti stanno nel foglio <strong>Scadenze burocratiche</strong>. Per avere il file a bordo anche offline, incolla nel campo "Link" il collegamento Google Drive del PDF e rendilo disponibile offline nell'app Drive.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ALTRO ==================== -->
+    <div id="page-altro" class="page">
+        <div class="v3-page">
+            <div class="dash-wrap">
+                <h1 class="dash-hero-greet bebas" style="margin:8px 0 16px;">⋯ Altro</h1>
+
+                <div class="dash-section-head"><span class="dash-section-title">🔄 Sincronizzazione</span></div>
+                <section class="v3-card">
+                    <div id="altro-sync-info" class="tiny text-secondary">—</div>
+                    <div class="v3-actions">
+                        <button class="v3-btn primary" onclick="syncCoda(true)">⬆️ Invia modifiche in attesa</button>
+                        <button class="v3-btn" onclick="openSettings()">⚙️ Collegamento Google Sheet</button>
+                    </div>
+                </section>
+
+                <div class="dash-section-head"><span class="dash-section-title">💾 Backup</span></div>
+                <section class="v3-card">
+                    <p class="tiny text-secondary">Il backup contiene tutti i dati scaricati dal foglio e le modifiche non ancora inviate, in formato JSON. Il ripristino carica i dati sul telefono per consultarli offline: non sovrascrive il Google Sheet.</p>
+                    <div class="v3-actions">
+                        <button class="v3-btn" onclick="esportaBackup()">⬇️ Esporta backup JSON</button>
+                        <button class="v3-btn ghost" onclick="document.getElementById('backup-file').click()">⬆️ Ripristina da JSON</button>
+                        <input type="file" id="backup-file" accept=".json,application/json" style="display:none" onchange="importaBackup(this.files[0]); this.value='';">
+                    </div>
+                </section>
+
+                <div class="dash-section-head"><span class="dash-section-title">🏪 Fornitori</span></div>
+                <section id="fornitori-list"><div class="v3-empty">caricamento…</div></section>
+
+                <p class="tiny text-tertiary" style="margin:24px 0;text-align:center;">Cataleya · Grand Soleil 41 · app v3</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALE GENERICA (Cambusa / Documenti) ==================== -->
+    <div class="uscita-overlay" id="rec-overlay" onclick="if(event.target===this)chiudiRecord()">
+        <div class="uscita-modal">
+            <h3 id="rec-title">—</h3>
+            <div id="rec-fields"></div>
+            <div id="rec-error" style="color:var(--accent-coral);font-size:13px;margin-bottom:8px;display:none;"></div>
+            <div class="uscita-actions">
+                <button class="btn-uscita-cancel" id="rec-delete" onclick="eliminaRecord()" style="display:none;">🗑️</button>
+                <button class="btn-uscita-cancel" onclick="chiudiRecord()">Annulla</button>
+                <button class="btn-uscita-save" id="rec-save" onclick="salvaRecord()">💾 Salva</button>
             </div>
         </div>
     </div>
@@ -2787,6 +3122,9 @@
                 lucide.createIcons();
             }
 
+            // v3: mostra subito i dati salvati sul telefono (funziona anche senza rete)
+            initV3();
+
             // Auto-carica dati dal Google Sheet se URL configurato
             if (getScriptUrl()) {
                 setTimeout(caricaDatiDaSheets, 600);
@@ -2861,6 +3199,11 @@
             if (state === 'syncing') {
                 el.className = 'sync-status syncing';
                 el.title = 'Sincronizzando...';
+            } else if (state === 'offline') {
+                el.className = 'sync-status';
+                el.style.background = 'var(--warning)';
+                el.style.boxShadow = '0 0 10px var(--warning)';
+                el.title = 'Offline: stai vedendo i dati salvati sul telefono';
             } else if (state === 'error') {
                 el.className = 'sync-status';
                 el.style.background = 'var(--danger)';
@@ -2956,6 +3299,7 @@
             _safe('renderTripsPage', () => renderTripsPage(data));
             _safe('renderMaintenancePage', () => renderMaintenancePage(data));
             _safe('renderUltimiInserimenti', () => renderUltimiInserimenti(data));
+            _safe('renderTuttoV3', () => _renderTuttoV3(data));
         }
 
         // ── RENDER CICLICHE DINAMICO (pagina Motore) ────────────────
@@ -3436,7 +3780,15 @@
                     ventoDir:row['Vento direzione'] || row['Dir'] || '',
                     mare:    row['Mare cm'] || '',
                     veloc:   row['Velocità max kn'] || row['velocità Cataleya'] || row['Vel max'] || '',
-                    note:    row['Note'] || row['note'] || ''
+                    note:    row['Note'] || row['note'] || '',
+                    lat:        _ci(row, 'Lat', 'Latitudine') || '',
+                    lon:        _ci(row, 'Lon', 'Longitudine') || '',
+                    sog:        _ci(row, 'SOG kn', 'SOG') || '',
+                    cog:        _ci(row, 'COG', 'COG °') || '',
+                    luogo:      _ci(row, 'Porto', 'Luogo', 'Destinazione') || '',
+                    equipaggio: _ci(row, 'Equipaggio', 'Persone') || '',
+                    vele:       _ci(row, 'Vele') || '',
+                    meteo:      _ci(row, 'Meteo') || ''
                 });
             } else if (tipo === 'lavoro') {
                 openLavoro({
@@ -3479,11 +3831,18 @@
                 return;
             }
 
+            if (!navigator.onLine) {
+                setSyncStatus('offline');
+                return;
+            }
             setSyncStatus('syncing');
             try {
+                // v3: prima invia le modifiche fatte offline, poi rilegge il foglio
+                await syncCoda(false);
                 // PRIMO FETCH — applichiamo subito quel che torna
                 const data1 = await _singleFetch(url, '1°');
                 _applicaDati(data1);
+                _salvaCache(data1);
                 const sig1 = _signatureOf(data1);
 
                 // SECONDO FETCH dopo 2.5 secondi — bypassa cache server Google (~60s)
@@ -3496,6 +3855,7 @@
                 if (sig1 !== sig2) {
                     console.log('[Cataleya] 2° fetch più fresco → aggiorno UI');
                     _applicaDati(data2);
+                    _salvaCache(data2);
                 } else {
                     console.log('[Cataleya] 2° fetch identico al 1° → niente da aggiornare');
                 }
@@ -3860,6 +4220,9 @@ renderTripsList();
                 const giorni = parseInt(r['Giorni'] || 1);
 
                 const pills = [];
+                const luogo = _ci(r, 'Porto', 'Luogo', 'Destinazione') || '';
+                if (r._pending) pills.push(`<span class="trip-pill" style="color:var(--warning)">⏳ da inviare</span>`);
+                if (luogo)      pills.push(`<span class="trip-pill">📍 ${escapeHtml(String(luogo))}</span>`);
                 if (miglia > 0) pills.push(`<span class="trip-pill aqua">⚓ ${miglia} Nm</span>`);
                 if (oreM > 0)   pills.push(`<span class="trip-pill gold">⚙️ ${oreM}h motore</span>`);
                 if (vento)      pills.push(`<span class="trip-pill">💨 ${vento}kn${vDir ? ' ' + vDir : ''}</span>`);
@@ -3879,6 +4242,13 @@ renderTripsList();
                 if (velRaw) extras.push('🚀 Velocità max: ' + escapeHtml(String(velRaw)) + ' kn');
                 const persone = r['Persone'] || r['persone'] || '';
                 if (persone) extras.push('👥 Persone: ' + persone);
+                const equip = _ci(r, 'Equipaggio'); if (equip) extras.push('👥 Equipaggio: ' + escapeHtml(String(equip)));
+                const vele = _ci(r, 'Vele');        if (vele)  extras.push('⛵ Vele: ' + escapeHtml(String(vele)));
+                const meteo = _ci(r, 'Meteo');      if (meteo) extras.push('🌤️ Meteo: ' + escapeHtml(String(meteo)));
+                const lat = _ci(r, 'Lat', 'Latitudine'), lon = _ci(r, 'Lon', 'Longitudine');
+                if (lat && lon) extras.push('📡 Posizione: <a href="https://www.openstreetmap.org/?mlat=' + encodeURIComponent(lat) + '&mlon=' + encodeURIComponent(lon) + '#map=13/' + encodeURIComponent(lat) + '/' + encodeURIComponent(lon) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--accent-aqua)">' + escapeHtml(String(lat)) + ', ' + escapeHtml(String(lon)) + '</a>');
+                const sogR = _ci(r, 'SOG kn', 'SOG'), cogR = _ci(r, 'COG', 'COG °');
+                if (sogR || cogR) extras.push('🧭 SOG ' + escapeHtml(String(sogR || '—')) + ' kn · COG ' + escapeHtml(String(cogR || '—')) + '°');
 
                 return `<div class="trip-card" onclick="this.classList.toggle('expanded')">
                     <div class="trip-date-block">
@@ -3891,9 +4261,9 @@ renderTripsList();
                         <div class="trip-pills">${pills.join('')}</div>
                         ${extras.length ? `<div class="trip-extra">${extras.join('<br>')}</div>` : ''}
                     </div>
-                    <button class="trip-edit-btn"
+                    ${r._rowIndex ? `<button class="trip-edit-btn"
                             onclick="event.stopPropagation(); apriModifica('uscita', ${r._rowIndex}, '${r._fonte || 'uscite'}');"
-                            title="Modifica">✏️</button>
+                            title="Modifica">✏️</button>` : ''}
                 </div>`;
             }).join('');
 
@@ -4042,6 +4412,15 @@ renderTripsList();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const target = document.getElementById('page-' + page);
             if (target) target.classList.add('active');
+            // v3: tab bar in basso + sotto-schede Manutenzione
+            const tab = PAGE_TAB[page] || '';
+            document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            const isManut = tab === 'manut';
+            document.body.classList.toggle('has-subtabs', isManut);
+            if (isManut && page !== 'scadenze') _lastManutPage = page;
+            document.querySelectorAll('#subtabs-manut button').forEach(b => b.classList.toggle('active', b.dataset.sub === page));
+            _renderPaginaV3(page);
+            window.scrollTo(0, 0);
             // Anima le progress bar
             setTimeout(() => { animateAllProgressBars(); updateTimeBasedCards(); }, 100);
         }
@@ -4087,6 +4466,17 @@ renderTripsList();
             document.getElementById('uscita-mare').value      = isEdit ? (edit.mare || '')     : '';
             document.getElementById('uscita-velocita').value  = isEdit ? (edit.veloc || '')    : '';
             document.getElementById('uscita-note').value      = isEdit ? (edit.note || '')     : '';
+            // Campi v3 (GPS, equipaggio, vele, meteo)
+            const g = (!isEdit && _lastGps) ? _lastGps : null;
+            document.getElementById('uscita-lat').value        = isEdit ? (edit.lat || '') : (g ? g.lat.toFixed(5) : '');
+            document.getElementById('uscita-lon').value        = isEdit ? (edit.lon || '') : (g ? g.lon.toFixed(5) : '');
+            document.getElementById('uscita-sog').value        = isEdit ? (edit.sog || '') : (g && g.sog != null ? g.sog.toFixed(1) : '');
+            document.getElementById('uscita-cog').value        = isEdit ? (edit.cog || '') : (g && g.cog != null ? Math.round(g.cog) : '');
+            document.getElementById('uscita-luogo').value      = isEdit ? (edit.luogo || '') : '';
+            document.getElementById('uscita-equipaggio').value = isEdit ? (edit.equipaggio || '') : '';
+            document.getElementById('uscita-vele').value       = isEdit ? (edit.vele || '') : '';
+            document.getElementById('uscita-meteo').value      = isEdit ? (edit.meteo || '') : '';
+            _popolaEquipaggioSuggerimenti();
             document.getElementById('uscita-error').style.display = 'none';
             btn.dataset.editMode  = isEdit ? '1' : '0';
             btn.dataset.editRow   = isEdit ? String(edit._rowIndex || '') : '';
@@ -4148,7 +4538,15 @@ renderTripsList();
                     vento_dir: ventoDir || '',
                     mare:      mare || '',
                     velocita:  veloc || '',
-                    note:      note || ''
+                    note:      note || '',
+                    lat:        document.getElementById('uscita-lat').value.trim(),
+                    lon:        document.getElementById('uscita-lon').value.trim(),
+                    sog:        document.getElementById('uscita-sog').value,
+                    cog:        document.getElementById('uscita-cog').value,
+                    luogo:      document.getElementById('uscita-luogo').value.trim(),
+                    equipaggio: document.getElementById('uscita-equipaggio').value.trim(),
+                    vele:       document.getElementById('uscita-vele').value,
+                    meteo:      document.getElementById('uscita-meteo').value.trim()
                 };
                 if (isEdit) {
                     baseParams.action = 'updateUscita';
@@ -4157,17 +4555,25 @@ renderTripsList();
                 } else {
                     baseParams.action = 'appendUscita';
                 }
-                const params = new URLSearchParams(baseParams);
-                const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
-                const json = await res.json();
+                const json = await gasWrite(baseParams, isEdit ? 'Modifica uscita' : 'Uscita del ' + data);
 
                 if (json.ok) {
                     closeNuovaUscita();
                     if (oreTot > engineState.currentHours) {
                         engineState.currentHours = oreTot;
                     }
-                    setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
-                    alert(isEdit ? 'Modifiche salvate!' : 'Uscita salvata!');
+                    if (json.queued) {
+                        if (!isEdit) _aggiuntaOttimistica('uscite', {
+                            'Data': data.split('-').reverse().join('/'), 'Ore motore': +ore.toFixed(1), 'Ore motore totali': oreTot,
+                            'Miglia': miglia, 'Vento nodi': ventoKn, 'Vento direzione': ventoDir, 'Mare cm': mare,
+                            'Velocità max kn': veloc, 'Note': note, 'Porto': baseParams.luogo, 'Equipaggio': baseParams.equipaggio,
+                            'Vele': baseParams.vele, 'Lat': baseParams.lat, 'Lon': baseParams.lon, 'Meteo': baseParams.meteo
+                        });
+                        alert('📴 Sei offline: uscita salvata sul telefono. La invio al foglio appena torna la rete.');
+                    } else {
+                        setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
+                        alert(isEdit ? 'Modifiche salvate!' : 'Uscita salvata!');
+                    }
                 } else {
                     throw new Error('GAS risponde: ' + JSON.stringify(json));
                 }
@@ -4279,12 +4685,18 @@ renderTripsList();
                 } else {
                     baseParams.action = 'appendEsecuzione';
                 }
-                const params = new URLSearchParams(baseParams);
-                const res  = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
-                const json = await res.json();
+                const json = await gasWrite(baseParams, (isEdit ? 'Modifica intervento: ' : 'Intervento: ') + voce);
 
                 if (json.ok) {
                     closeIntervento();
+                    if (json.queued) {
+                        if (!isEdit) _aggiuntaOttimistica('esecuzioni', {
+                            'Data': data.split('-').reverse().join('/'), 'Voce': voce, 'Area': area, 'Ore motore': ore,
+                            'Esito': esito, 'Fornitore': forn, 'Costo €': costo, 'Note tecniche': note
+                        });
+                        alert('📴 Sei offline: intervento salvato sul telefono. Lo invio al foglio appena torna la rete.');
+                        return;
+                    }
                     // Aggiorna data-last del task-card corrispondente
                     if (ore) {
                         const oreNum = parseFloat(ore);
@@ -4395,11 +4807,18 @@ renderTripsList();
                 } else {
                     baseParams.action = 'appendLavoro';
                 }
-                const params = new URLSearchParams(baseParams);
-                const res = await fetch(url + '?' + params.toString(), { cache: 'no-store' });
-                const json = await res.json();
+                const json = await gasWrite(baseParams, (isEdit ? 'Modifica lavoro: ' : 'Lavoro: ') + attivita);
                 if (json.ok) {
                     closeLavoro();
+                    if (json.queued) {
+                        if (!isEdit) _aggiuntaOttimistica('lavori', {
+                            'Attività': attivita, 'Area': area, 'Priorità': priorita, 'Stato': stato,
+                            'Data apertura': dApert ? dApert.split('-').reverse().join('/') : '', 'Fornitore': forn,
+                            'Costo €': costo, 'Tempo ore': tempo, 'Note': note
+                        });
+                        alert('📴 Sei offline: lavoro salvato sul telefono. Lo invio al foglio appena torna la rete.');
+                        return;
+                    }
                     setTimeout(() => caricaDatiDaSheets({ manual: true }), 1500);
                     alert(isEdit ? 'Modifiche salvate!' : 'Lavoro salvato!');
                 } else {
@@ -4410,6 +4829,774 @@ renderTripsList();
                 btn.textContent = isEdit ? '💾 Salva modifiche' : '💾 Salva Lavoro';
                 errEl.textContent = 'Errore: ' + err.message;
                 errEl.style.display = 'block';
+            }
+        }
+
+        // ═════════════════════════════════════════════════════════════════
+        // CATALEYA v3 — struttura "MyBoatPlan": tab bar, offline, GPS,
+        // Cambusa, Documenti, Calendario, Interventi, Backup
+        // ═════════════════════════════════════════════════════════════════
+        const PAGE_TAB = {
+            dashboard: 'home', trips: 'nav',
+            engine: 'manut', maintenance: 'manut', interventi: 'manut', calendar: 'manut', scadenze: 'manut',
+            cambusa: 'cambusa', docs: 'docs', altro: ''
+        };
+        let _lastManutPage = 'engine';
+        const CACHE_KEY = 'cataleya_v3_cache';
+        const QUEUE_KEY = 'cataleya_v3_coda';
+        const SCARTATE_KEY = 'cataleya_v3_scartate';
+        const MESI_S = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+        const MESI_L = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+
+        function _lsGet(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+        function _lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { console.warn('[Cataleya v3] storage', e); return false; } }
+        function _uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+        function _oggi0() { const d = new Date(); d.setHours(0,0,0,0); return d; }
+        function _giorniDa(d) { return d ? Math.round((d - _oggi0()) / 86400000) : null; }
+        function _fmtData(d) { return d ? d.getDate() + ' ' + MESI_S[d.getMonth()] + ' ' + d.getFullYear() : '—'; }
+        function _toISO(d) { return d ? d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') : ''; }
+        function _isoToIT(s) { const p = String(s || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : s; }
+        function _num(v) { const n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isNaN(n) ? null : n; }
+        function _jsArg(s) { return "'" + String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"; }
+        function _empty(msg) { return '<div class="v3-empty">' + msg + '</div>'; }
+
+        // ── Archivio sul telefono (cache) ────────────────────────────────
+        function _salvaCache(data) {
+            if (!data) return;
+            _lsSet(CACHE_KEY, { ts: Date.now(), data: data });
+        }
+
+        // ── Coda delle modifiche fatte offline ───────────────────────────
+        function _coda() { return _lsGet(QUEUE_KEY, []); }
+        function _setCoda(q) { _lsSet(QUEUE_KEY, q); _aggiornaBadgeCoda(); }
+
+        function _aggiornaBadgeCoda() {
+            const n = _coda().length;
+            const el = document.getElementById('offline-pill');
+            if (el) { el.textContent = n ? '⏳ ' + n : ''; el.style.display = n ? 'inline-flex' : 'none'; }
+            _renderAltroSync();
+        }
+
+        async function _gasFetch(params) {
+            const url = getScriptUrl();
+            if (!url) throw new Error('URL del Google Script non configurato');
+            const res = await fetch(url + '?' + new URLSearchParams(params).toString(), { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }
+
+        // Scrive sul foglio; se non c'è rete mette la modifica in coda e risponde {ok, queued}
+        async function gasWrite(params, label) {
+            if (navigator.onLine) {
+                await syncCoda(false);
+                if (_coda().length === 0) {
+                    try { return await _gasFetch(params); }
+                    catch (err) { if (!(err instanceof TypeError)) throw err; } // TypeError = rete assente
+                }
+            }
+            const q = _coda();
+            q.push({ id: _uid(), ts: Date.now(), label: label || params.action, params: params });
+            _setCoda(q);
+            setSyncStatus('offline');
+            return { ok: true, queued: true };
+        }
+
+        let _syncing = false;
+        async function syncCoda(manual) {
+            if (_syncing) return;
+            const q0 = _coda();
+            if (!q0.length) { if (manual) alert('Nessuna modifica in attesa: è tutto sul foglio ✅'); return; }
+            if (!navigator.onLine || !getScriptUrl()) {
+                if (manual) alert('Sei offline: ' + q0.length + ' modifiche restano salvate sul telefono e partiranno appena torna la rete.');
+                return;
+            }
+            _syncing = true;
+            let inviate = 0;
+            const errori = [];
+            try {
+                while (_coda().length) {
+                    const item = _coda()[0];
+                    try {
+                        const json = await _gasFetch(item.params);
+                        if (!json.ok) {
+                            errori.push(item.label + ': ' + (json.error || 'errore'));
+                            const sc = _lsGet(SCARTATE_KEY, []); sc.push(Object.assign({}, item, { errore: json.error || '' })); _lsSet(SCARTATE_KEY, sc.slice(-50));
+                        }
+                    } catch (err) {
+                        if (err instanceof TypeError) break; // rete caduta di nuovo: riprovo più tardi
+                        errori.push(item.label + ': ' + err.message);
+                    }
+                    const rest = _coda(); rest.shift(); _setCoda(rest); inviate++;
+                }
+            } finally { _syncing = false; }
+            if (errori.length) alert('Alcune modifiche non sono state accettate dal foglio:\n\n' + errori.join('\n'));
+            if (manual && inviate) { alert('✅ Inviate ' + inviate + ' modifiche al foglio.'); caricaDatiDaSheets({ manual: true }); }
+        }
+
+        // Mostra subito una voce salvata offline (verrà sostituita dal dato vero alla prossima sync)
+        function _aggiuntaOttimistica(chiave, row) {
+            if (!_lastFetchedData) _lastFetchedData = {};
+            if (!Array.isArray(_lastFetchedData[chiave])) _lastFetchedData[chiave] = [];
+            row._pending = true;
+            _lastFetchedData[chiave].push(row);
+            if (chiave === 'uscite' && row['Ore motore totali']) {
+                _lastFetchedData.ore_motore = Math.max(parseFloat(_lastFetchedData.ore_motore) || 0, row['Ore motore totali']);
+            }
+            _salvaCache(_lastFetchedData);
+            _applicaDati(_lastFetchedData);
+        }
+
+        // ── GPS ──────────────────────────────────────────────────────────
+        let _lastGps = null;
+        function _fmtDM(v, pos, neg) {
+            const a = Math.abs(v), g = Math.floor(a), m = (a - g) * 60;
+            return g + '°' + m.toFixed(3) + "'" + (v >= 0 ? pos : neg);
+        }
+        function _mostraGps() {
+            const g = _lastGps;
+            if (!g) return;
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('gps-lat', _fmtDM(g.lat, 'N', 'S'));
+            set('gps-lon', _fmtDM(g.lon, 'E', 'W'));
+            set('gps-sog', g.sog != null ? g.sog.toFixed(1) + ' kn' : '—');
+            set('gps-cog', g.cog != null ? Math.round(g.cog) + '°' : '—');
+            const d = new Date(g.ts);
+            set('gps-meta', 'Rilevato alle ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) +
+                ' del ' + _fmtData(d) + (g.acc ? ' · precisione ±' + Math.round(g.acc) + ' m' : '') +
+                (g.sog == null ? ' · SOG/COG disponibili solo in movimento' : ''));
+        }
+        function rilevaGPS(perModale) {
+            if (!navigator.geolocation) { alert('Questo dispositivo non fornisce la posizione GPS.'); return; }
+            const meta = document.getElementById('gps-meta');
+            if (meta) meta.textContent = '📡 Rilevamento in corso…';
+            navigator.geolocation.getCurrentPosition(pos => {
+                const c = pos.coords;
+                _lastGps = {
+                    lat: c.latitude, lon: c.longitude,
+                    sog: (c.speed != null && !isNaN(c.speed)) ? c.speed * 1.943844 : null,
+                    cog: (c.heading != null && !isNaN(c.heading)) ? c.heading : null,
+                    acc: c.accuracy, ts: pos.timestamp || Date.now()
+                };
+                _lsSet('cataleya_v3_gps', _lastGps);
+                _mostraGps();
+                if (perModale) {
+                    document.getElementById('uscita-lat').value = _lastGps.lat.toFixed(5);
+                    document.getElementById('uscita-lon').value = _lastGps.lon.toFixed(5);
+                    if (_lastGps.sog != null) document.getElementById('uscita-sog').value = _lastGps.sog.toFixed(1);
+                    if (_lastGps.cog != null) document.getElementById('uscita-cog').value = Math.round(_lastGps.cog);
+                }
+            }, err => {
+                const msg = err.code === 1 ? 'Permesso posizione negato: abilitalo nelle impostazioni del browser.'
+                          : err.code === 3 ? 'Il GPS non ha risposto in tempo: riprova all\'aperto.'
+                          : 'Posizione non disponibile.';
+                if (meta) meta.textContent = '⚠️ ' + msg;
+                if (perModale) alert(msg);
+            }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+        }
+        function apriMappaGPS() {
+            if (!_lastGps) { alert('Prima premi "Rileva da GPS".'); return; }
+            window.open('https://www.openstreetmap.org/?mlat=' + _lastGps.lat + '&mlon=' + _lastGps.lon + '#map=14/' + _lastGps.lat + '/' + _lastGps.lon, '_blank', 'noopener');
+        }
+        function _popolaEquipaggioSuggerimenti() {
+            const dl = document.getElementById('uscita-equip-list');
+            if (!dl || !_lastFetchedData) return;
+            const nomi = new Set();
+            (_lastFetchedData.uscite || []).forEach(r => {
+                String(_ci(r, 'Equipaggio') || '').split(/[,;]+/).map(s => s.trim()).filter(Boolean).forEach(n => nomi.add(n));
+            });
+            dl.innerHTML = [...nomi].map(n => '<option value="' + escapeHtml(n) + '">').join('');
+        }
+
+        // ── Record generici: Cambusa e Documenti ─────────────────────────
+        const SCHEMI = {
+            cambusa: {
+                dataKey: 'cambusa', titolo: 'articolo', icona: '🍞',
+                campi: [
+                    { k: 'Articolo', label: 'Articolo *', type: 'text', req: true, placeholder: 'es. Acqua naturale 1,5 lt' },
+                    { k: 'Categoria', type: 'select', opts: ['Acqua e bevande','Dispensa','Fresco','Frigo','Surgelati','Pulizia','Bagno','Farmacia','Gas e carburante','Ricambi di consumo','Altro'] },
+                    { k: 'Quantità', type: 'number', half: true },
+                    { k: 'Unità', type: 'select', half: true, opts: ['pz','bott.','lt','kg','conf.','lattine','rotoli'] },
+                    { k: 'Soglia minima', type: 'number', half: true, hint: 'Sotto questa quantità va in lista spesa' },
+                    { k: 'Scadenza', type: 'date', half: true },
+                    { k: 'Posizione', type: 'text', placeholder: 'es. gavone dinette, frigo, cala di prua' },
+                    { k: 'Note', type: 'textarea' }
+                ]
+            },
+            documenti: {
+                dataKey: 'scadenze_burocratiche', titolo: 'documento', icona: '📁',
+                campi: [
+                    { k: 'Tipo', label: 'Documento *', type: 'text', req: true, list: ['Licenza di navigazione','Assicurazione RC','Certificato di sicurezza','Patente nautica','Zattera autogonfiabile – revisione','Estintori – revisione','Razzi e fuochi – scadenza','EPIRB – batteria','Contratto ormeggio','Carta d\'identità','Passaporto','Certificato medico'] },
+                    { k: 'Categoria', type: 'select', opts: ['Barca','Equipaggio','Assicurazione'] },
+                    { k: 'Titolare', type: 'text', placeholder: 'Cataleya oppure nome della persona' },
+                    { k: 'Numero documento', type: 'text', half: true },
+                    { k: 'Ente', type: 'text', half: true },
+                    { k: 'Data rilascio', type: 'date', half: true },
+                    { k: 'Data scadenza', type: 'date', half: true },
+                    { k: 'Preavviso giorni', type: 'number', half: true, placeholder: '30', hint: 'Quanto prima avvisarti' },
+                    { k: 'Link', type: 'url', placeholder: 'https://drive.google.com/…', hint: 'Link al PDF su Google Drive' },
+                    { k: 'Note', type: 'textarea' }
+                ]
+            }
+        };
+        let _recCtx = null;
+
+        function _righe(tipo) {
+            const d = _lastFetchedData || {};
+            const arr = d[SCHEMI[tipo].dataKey];
+            return Array.isArray(arr) ? arr : [];
+        }
+        function _chiaveRiga(r) { return _ci(r, 'ID') || ('row:' + r._rowIndex); }
+        function _trovaRiga(tipo, chiave) { return _righe(tipo).find(r => _chiaveRiga(r) === chiave); }
+
+        function apriRecord(tipo, chiave) {
+            const sc = SCHEMI[tipo];
+            const row = chiave ? _trovaRiga(tipo, chiave) : null;
+            _recCtx = { tipo: tipo, row: row };
+            document.getElementById('rec-title').textContent = (row ? '✏️ Modifica ' : sc.icona + ' Nuovo ') + sc.titolo;
+            document.getElementById('rec-delete').style.display = row ? '' : 'none';
+            document.getElementById('rec-error').style.display = 'none';
+            let html = '', half = [];
+            const campoHtml = (c, i) => {
+                const id = 'rec-f-' + i;
+                let v = row ? _ci(row, c.k) : '';
+                if (v == null) v = '';
+                if (c.type === 'date' && v) v = _toISO(parseDateIT(String(v)));
+                if (!row && tipo === 'documenti' && c.k === 'Categoria') v = _docFiltro !== 'all' ? _docFiltro : 'Barca';
+                if (!row && tipo === 'cambusa' && c.k === 'Unità') v = 'pz';
+                const lbl = '<label>' + escapeHtml(c.label || c.k) + '</label>';
+                const hint = c.hint ? '<div class="uscita-hint">' + escapeHtml(c.hint) + '</div>' : '';
+                let input;
+                if (c.type === 'select') {
+                    input = '<select id="' + id + '"><option value="">—</option>' + c.opts.map(o => '<option' + (String(v) === o ? ' selected' : '') + '>' + escapeHtml(o) + '</option>').join('') + '</select>';
+                } else if (c.type === 'textarea') {
+                    input = '<textarea id="' + id + '">' + escapeHtml(String(v)) + '</textarea>';
+                } else {
+                    const listAttr = c.list ? ' list="' + id + '-dl"' : '';
+                    input = '<input type="' + c.type + '" id="' + id + '"' + listAttr + (c.type === 'number' ? ' step="any" inputmode="decimal"' : '') +
+                            ' value="' + escapeHtml(String(v)) + '" placeholder="' + escapeHtml(c.placeholder || '') + '">' +
+                            (c.list ? '<datalist id="' + id + '-dl">' + c.list.map(o => '<option value="' + escapeHtml(o) + '">').join('') + '</datalist>' : '');
+                }
+                return '<div class="uscita-field">' + lbl + input + hint + '</div>';
+            };
+            sc.campi.forEach((c, i) => {
+                if (c.half) {
+                    half.push(campoHtml(c, i));
+                    if (half.length === 2) { html += '<div class="uscita-row">' + half.join('') + '</div>'; half = []; }
+                } else {
+                    if (half.length) { html += '<div class="uscita-row">' + half.join('') + '<div></div></div>'; half = []; }
+                    html += campoHtml(c, i);
+                }
+            });
+            if (half.length) html += '<div class="uscita-row">' + half.join('') + '<div></div></div>';
+            document.getElementById('rec-fields').innerHTML = html;
+            const btn = document.getElementById('rec-save');
+            btn.disabled = false; btn.textContent = '💾 Salva';
+            document.getElementById('rec-overlay').classList.add('open');
+        }
+        function chiudiRecord() { document.getElementById('rec-overlay').classList.remove('open'); _recCtx = null; }
+
+        async function _scriviRecord(tipo, row, valori, label) {
+            // valori: { Header: valore } (date in formato YYYY-MM-DD)
+            const nuovo = !row;
+            const id = (row && _ci(row, 'ID')) || _uid();
+            const params = { action: nuovo ? 'appendRecord' : 'updateRecord', sheet: tipo, id: id };
+            if (row && row._rowIndex && !_ci(row, 'ID')) params.row_index = row._rowIndex;
+            Object.keys(valori).forEach(k => { params['f_' + k] = valori[k] == null ? '' : valori[k]; });
+            // aggiornamento immediato sul telefono
+            if (!_lastFetchedData) _lastFetchedData = {};
+            const dk = SCHEMI[tipo].dataKey;
+            if (!Array.isArray(_lastFetchedData[dk])) _lastFetchedData[dk] = [];
+            const target = row || { _rowIndex: null };
+            Object.keys(valori).forEach(k => {
+                const def = SCHEMI[tipo].campi.find(c => c.k === k);
+                const realKey = Object.keys(target).find(x => x.toLowerCase().trim() === k.toLowerCase()) || k;
+                target[realKey] = (def && def.type === 'date') ? _isoToIT(valori[k]) : valori[k];
+            });
+            target['ID'] = id;
+            if (nuovo) _lastFetchedData[dk].push(target);
+            const json = await gasWrite(params, label);
+            if (json.queued) target._pending = true;
+            _salvaCache(_lastFetchedData);
+            _renderTuttoV3(_lastFetchedData);
+            return json;
+        }
+
+        async function salvaRecord() {
+            if (!_recCtx) return;
+            const sc = SCHEMI[_recCtx.tipo];
+            const valori = {};
+            let manca = null;
+            sc.campi.forEach((c, i) => {
+                const el = document.getElementById('rec-f-' + i);
+                const v = el ? String(el.value).trim() : '';
+                if (c.req && !v) manca = c.label || c.k;
+                valori[c.k] = v;
+            });
+            const errEl = document.getElementById('rec-error');
+            if (manca) { errEl.textContent = 'Compila il campo: ' + manca.replace(' *', ''); errEl.style.display = 'block'; return; }
+            if (!getScriptUrl()) { alert('URL del Google Script non configurato. Apri Altro → Collegamento Google Sheet.'); return; }
+            const btn = document.getElementById('rec-save');
+            btn.disabled = true; btn.textContent = 'Salvataggio...';
+            try {
+                const nome = valori[sc.campi[0].k];
+                const json = await _scriviRecord(_recCtx.tipo, _recCtx.row, valori, (_recCtx.row ? 'Modifica ' : 'Nuovo ') + sc.titolo + ': ' + nome);
+                if (!json.ok) throw new Error(json.error || 'errore dal foglio');
+                chiudiRecord();
+                if (json.queued) alert('📴 Sei offline: salvato sul telefono. Lo invio al foglio appena torna la rete.');
+            } catch (err) {
+                btn.disabled = false; btn.textContent = '💾 Salva';
+                errEl.textContent = 'Errore: ' + err.message; errEl.style.display = 'block';
+            }
+        }
+
+        async function eliminaRecord() {
+            if (!_recCtx || !_recCtx.row) return;
+            const { tipo, row } = _recCtx;
+            const sc = SCHEMI[tipo];
+            const nome = _ci(row, sc.campi[0].k) || '';
+            if (!confirm('Eliminare "' + nome + '" dal foglio? L\'operazione non si può annullare.')) return;
+            const params = { action: 'deleteRecord', sheet: tipo, id: _ci(row, 'ID') || '' };
+            if (row._rowIndex) params.row_index = row._rowIndex;
+            const arr = _lastFetchedData[sc.dataKey] || [];
+            const idx = arr.indexOf(row);
+            if (idx >= 0) arr.splice(idx, 1);
+            try {
+                const json = await gasWrite(params, 'Elimina ' + sc.titolo + ': ' + nome);
+                if (!json.ok) throw new Error(json.error || 'errore dal foglio');
+                chiudiRecord();
+                _salvaCache(_lastFetchedData);
+                _renderTuttoV3(_lastFetchedData);
+            } catch (err) {
+                if (idx >= 0) arr.splice(idx, 0, row);
+                const errEl = document.getElementById('rec-error');
+                errEl.textContent = 'Errore: ' + err.message; errEl.style.display = 'block';
+            }
+        }
+
+        // ── Cambusa ──────────────────────────────────────────────────────
+        let _camVista = 'scorte';
+        function camVista(v) {
+            _camVista = v;
+            document.querySelectorAll('#cam-seg button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+            renderCambusa();
+        }
+        function _statoCambusa(r) {
+            const q = _num(_ci(r, 'Quantità', 'Quantita', 'Qta'));
+            const s = _num(_ci(r, 'Soglia minima', 'Soglia'));
+            const scad = parseDateIT(String(_ci(r, 'Scadenza') || ''));
+            const gg = scad ? _giorniDa(scad) : null;
+            const sotto = s != null && (q == null ? true : q <= s);
+            const scaduto = gg != null && gg < 0;
+            const inScadenza = gg != null && gg >= 0 && gg <= 30;
+            return { q, s, scad, gg, sotto, scaduto, inScadenza,
+                     cls: (sotto || scaduto) ? 'red' : inScadenza ? 'yellow' : 'green' };
+        }
+        async function camQta(chiave, delta) {
+            const row = _trovaRiga('cambusa', chiave);
+            if (!row) return;
+            const q = Math.max(0, (_num(_ci(row, 'Quantità', 'Quantita')) || 0) + delta);
+            try {
+                const json = await _scriviRecord('cambusa', row, { 'Quantità': String(q) }, 'Cambusa: ' + (_ci(row, 'Articolo') || '') + ' → ' + q);
+                if (!json.ok) alert('Errore: ' + (json.error || ''));
+            } catch (err) { alert('Errore: ' + err.message); }
+        }
+        function _listaSpesa() {
+            return _righe('cambusa').map(r => ({ r, st: _statoCambusa(r) })).filter(x => x.st.sotto || x.st.scaduto);
+        }
+        function renderCambusa() {
+            const box = document.getElementById('cambusa-list');
+            if (!box) return;
+            const righe = _righe('cambusa').filter(r => _ci(r, 'Articolo'));
+            const spesa = _listaSpesa();
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('cam-count', righe.length);
+            const cats = new Set(righe.map(r => _ci(r, 'Categoria') || 'Altro'));
+            set('cam-cat', cats.size ? cats.size + ' categorie' : '—');
+            set('cam-sotto', spesa.length);
+            const inScad = righe.filter(r => _statoCambusa(r).inScadenza).length;
+            set('cam-scad', inScad ? inScad + ' in scadenza (30 gg)' : 'nessuna scadenza vicina');
+            document.getElementById('cam-spesa-actions').style.display = _camVista === 'spesa' && spesa.length ? '' : 'none';
+            if (_lastFetchedData && _lastFetchedData.cambusa === undefined) {
+                box.innerHTML = _empty('Il foglio "Cambusa" non esiste ancora: aggiorna lo script (Codice-v3.gs) e verrà creato da solo al primo articolo.');
+                return;
+            }
+            const q = (document.getElementById('cam-search').value || '').toLowerCase().trim();
+            const match = r => !q || [_ci(r,'Articolo'), _ci(r,'Categoria'), _ci(r,'Posizione')].join(' ').toLowerCase().includes(q);
+
+            if (_camVista === 'spesa') {
+                const lista = spesa.filter(x => match(x.r));
+                box.innerHTML = lista.length ? lista.map(x => {
+                    const r = x.r, st = x.st, u = _ci(r, 'Unità') || '';
+                    const serve = st.s != null ? Math.max(1, Math.ceil(st.s * 2 - (st.q || 0))) : 1;
+                    const why = st.scaduto ? 'scaduto il ' + _fmtData(st.scad) : 'hai ' + (st.q || 0) + ' ' + u + ' · minimo ' + st.s;
+                    return '<div class="v3-item red" onclick="apriRecord(\'cambusa\',' + _jsArg(_chiaveRiga(r)) + ')">' +
+                        '<div class="v3-item-body"><div class="v3-item-title">🛒 ' + escapeHtml(String(_ci(r,'Articolo'))) + '</div>' +
+                        '<div class="v3-item-meta">' + escapeHtml(why) + '</div></div>' +
+                        '<div class="v3-item-side space-grotesk">+' + serve + ' ' + escapeHtml(String(u)) + '</div></div>';
+                }).join('') : _empty('Niente da comprare: la cambusa è in ordine ✅');
+                return;
+            }
+            const lista = righe.filter(match);
+            if (!lista.length) { box.innerHTML = _empty(righe.length ? 'Nessun articolo trovato.' : 'La cambusa è vuota: aggiungi il primo articolo con "+ Articolo".'); return; }
+            const gruppi = {};
+            lista.forEach(r => { const c = _ci(r, 'Categoria') || 'Altro'; (gruppi[c] = gruppi[c] || []).push(r); });
+            box.innerHTML = Object.keys(gruppi).sort().map(cat => {
+                return '<div class="area-group"><div class="area-title">' + escapeHtml(cat) + '</div>' + gruppi[cat]
+                    .sort((a, b) => String(_ci(a,'Articolo')).localeCompare(String(_ci(b,'Articolo'))))
+                    .map(r => {
+                        const st = _statoCambusa(r), key = _chiaveRiga(r), u = _ci(r, 'Unità') || '';
+                        const meta = [];
+                        if (st.s != null) meta.push('min ' + st.s);
+                        if (st.scad) meta.push((st.scaduto ? '⚠️ scaduto ' : 'scade ') + _fmtData(st.scad));
+                        const pos = _ci(r, 'Posizione'); if (pos) meta.push('📍 ' + pos);
+                        if (r._pending) meta.push('⏳ da inviare');
+                        return '<div class="v3-item ' + st.cls + '">' +
+                            '<div class="v3-item-body" onclick="apriRecord(\'cambusa\',' + _jsArg(key) + ')">' +
+                            '<div class="v3-item-title">' + escapeHtml(String(_ci(r,'Articolo'))) + '</div>' +
+                            '<div class="v3-item-meta">' + escapeHtml(meta.join(' · ')) + '</div></div>' +
+                            '<div class="qty">' +
+                            '<button onclick="camQta(' + _jsArg(key) + ',-1)">−</button>' +
+                            '<span class="space-grotesk">' + (st.q == null ? '—' : st.q) + ' <small>' + escapeHtml(String(u)) + '</small></span>' +
+                            '<button onclick="camQta(' + _jsArg(key) + ',1)">+</button></div></div>';
+                    }).join('') + '</div>';
+            }).join('');
+        }
+        function _testoListaSpesa() {
+            return '🛒 Lista spesa Cataleya\n' + _listaSpesa().map(x => {
+                const u = _ci(x.r, 'Unità') || '';
+                const serve = x.st.s != null ? Math.max(1, Math.ceil(x.st.s * 2 - (x.st.q || 0))) : 1;
+                return '• ' + _ci(x.r, 'Articolo') + ' — ' + serve + ' ' + u;
+            }).join('\n');
+        }
+        async function copiaListaSpesa() {
+            try { await navigator.clipboard.writeText(_testoListaSpesa()); alert('Lista copiata ✅'); }
+            catch (e) { prompt('Copia la lista:', _testoListaSpesa()); }
+        }
+        async function condividiListaSpesa() {
+            const t = _testoListaSpesa();
+            if (navigator.share) { try { await navigator.share({ title: 'Lista spesa Cataleya', text: t }); } catch (e) {} }
+            else copiaListaSpesa();
+        }
+
+        // ── Documenti ────────────────────────────────────────────────────
+        let _docFiltro = 'all';
+        function docFiltro(v) {
+            _docFiltro = v;
+            document.querySelectorAll('#doc-seg button').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+            renderDocumenti();
+        }
+        function _statoDoc(r) {
+            const scad = parseDateIT(String(_ci(r, 'Data scadenza') || ''));
+            const gg = scad ? _giorniDa(scad) : null;
+            const prev = _num(_ci(r, 'Preavviso giorni')) || 30;
+            let cls = 'green', meta = '';
+            if (gg == null) { cls = 'grey'; meta = 'nessuna scadenza'; }
+            else if (gg < 0) { cls = 'red'; meta = 'scaduto da ' + Math.abs(gg) + ' giorni'; }
+            else if (gg <= prev) { cls = 'red'; meta = 'scade tra ' + gg + ' giorni'; }
+            else if (gg <= Math.max(90, prev * 2)) { cls = 'yellow'; meta = 'scade tra ' + gg + ' giorni'; }
+            else meta = 'scade il ' + _fmtData(scad);
+            return { scad, gg, prev, cls, meta, avviso: gg != null && gg <= prev };
+        }
+        function _catDoc(r) { return _ci(r, 'Categoria') || 'Barca'; }
+        function renderDocumenti() {
+            const box = document.getElementById('docs-list');
+            if (!box) return;
+            const righe = _righe('documenti').filter(r => _ci(r, 'Tipo'));
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('doc-count', righe.length);
+            const perCat = {}; righe.forEach(r => { const c = _catDoc(r); perCat[c] = (perCat[c] || 0) + 1; });
+            set('doc-cat', Object.keys(perCat).map(c => perCat[c] + ' ' + c.toLowerCase()).join(' · ') || '—');
+            set('doc-scad', righe.filter(r => { const s = _statoDoc(r); return s.gg != null && s.gg <= 90; }).length);
+            const q = (document.getElementById('doc-search').value || '').toLowerCase().trim();
+            const lista = righe
+                .filter(r => _docFiltro === 'all' || _catDoc(r) === _docFiltro)
+                .filter(r => !q || [_ci(r,'Tipo'), _ci(r,'Titolare'), _ci(r,'Numero documento'), _ci(r,'Ente')].join(' ').toLowerCase().includes(q))
+                .map(r => ({ r, st: _statoDoc(r) }))
+                .sort((a, b) => (a.st.gg == null ? 1e9 : a.st.gg) - (b.st.gg == null ? 1e9 : b.st.gg));
+            if (!lista.length) { box.innerHTML = _empty(righe.length ? 'Nessun documento in questa categoria.' : 'Nessun documento: aggiungi licenza, assicurazione, patenti… con "+ Documento".'); return; }
+            const ico = { Barca: '⛵', Equipaggio: '👤', Assicurazione: '🛡️' };
+            box.innerHTML = lista.map(x => {
+                const r = x.r, st = x.st, key = _chiaveRiga(r);
+                const sub = [_ci(r,'Titolare'), _ci(r,'Numero documento'), _ci(r,'Ente')].filter(Boolean).join(' · ');
+                const link = _ci(r, 'Link');
+                const linkBtn = link && /^https?:\/\//i.test(String(link))
+                    ? '<a class="v3-btn ghost small" href="' + escapeHtml(String(link)) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 Apri</a>' : '';
+                return '<div class="v3-item ' + st.cls + '" onclick="apriRecord(\'documenti\',' + _jsArg(key) + ')">' +
+                    '<div class="v3-item-ico">' + (ico[_catDoc(r)] || '📄') + '</div>' +
+                    '<div class="v3-item-body"><div class="v3-item-title">' + escapeHtml(String(_ci(r,'Tipo'))) + '</div>' +
+                    '<div class="v3-item-meta"><b class="sem-' + st.cls + '">' + escapeHtml(st.meta) + '</b>' + (sub ? ' · ' + escapeHtml(sub) : '') + (r._pending ? ' · ⏳ da inviare' : '') + '</div></div>' +
+                    linkBtn + '</div>';
+            }).join('');
+        }
+
+        // ── Interventi (storico) ─────────────────────────────────────────
+        function renderInterventiList() {
+            const box = document.getElementById('interventi-list');
+            if (!box) return;
+            const d = _lastFetchedData || {};
+            const usaNuovo = Array.isArray(d.esecuzioni) && d.esecuzioni.length;
+            const fonte = usaNuovo ? 'esecuzioni' : 'storico';
+            const righe = (usaNuovo ? d.esecuzioni : (d.storico_manutenzioni || []))
+                .map(r => ({ r, data: parseDateIT(String(r['Data'] || r['Data di fine'] || r['Data di inizio'] || '')) }))
+                .sort((a, b) => (b.data || 0) - (a.data || 0));
+            const anno = new Date().getFullYear();
+            const costo = r => _num(r['Costo €'] || r['Costo']) || 0;
+            const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+            set('int-count', righe.length);
+            set('int-anno', righe.filter(x => x.data && x.data.getFullYear() === anno).length + ' nel ' + anno);
+            const tot = righe.reduce((s, x) => s + costo(x.r), 0);
+            const totAnno = righe.filter(x => x.data && x.data.getFullYear() === anno).reduce((s, x) => s + costo(x.r), 0);
+            set('int-spesa', tot ? '€ ' + Math.round(tot).toLocaleString('it-IT') : '—');
+            set('int-spesa-anno', '€ ' + Math.round(totAnno).toLocaleString('it-IT') + ' nel ' + anno);
+            const q = (document.getElementById('int-search').value || '').toLowerCase().trim();
+            const lista = righe.filter(x => !q || JSON.stringify(x.r).toLowerCase().includes(q));
+            if (!lista.length) { box.innerHTML = _empty(righe.length ? 'Nessun intervento trovato.' : 'Nessun intervento registrato.'); return; }
+            box.innerHTML = lista.map(x => {
+                const r = x.r;
+                const voce = r['Voce'] || r['Manutenzione'] || r['Attività'] || '—';
+                const meta = [r['Area'], (r['Ore motore'] || r['Ore Motore']) ? (r['Ore motore'] || r['Ore Motore']) + ' h' : '', r['Fornitore'], costo(r) ? '€ ' + costo(r) : '', r['Esito'] && r['Esito'] !== 'OK' ? r['Esito'] : ''].filter(Boolean).join(' · ');
+                const note = r['Note tecniche'] || r['Note'] || '';
+                const edit = r._rowIndex ? '<button class="trip-edit-btn" onclick="event.stopPropagation(); apriModifica(\'esecuzione\', ' + r._rowIndex + ', \'' + fonte + '\');" title="Modifica">✏️</button>' : '';
+                return '<div class="trip-card" onclick="this.classList.toggle(\'expanded\')">' +
+                    '<div class="trip-date-block"><div class="trip-date-day">' + (x.data ? x.data.getDate() : '—') + '</div>' +
+                    '<div class="trip-date-mon">' + (x.data ? MESI_S[x.data.getMonth()] : '') + '</div>' +
+                    '<div class="trip-date-year">' + (x.data ? x.data.getFullYear() : '') + '</div></div>' +
+                    '<div class="trip-body"><div class="trip-title">' + escapeHtml(String(voce)) + '</div>' +
+                    '<div class="v3-item-meta">' + escapeHtml(meta) + (r._pending ? ' · ⏳ da inviare' : '') + '</div>' +
+                    (note ? '<div class="trip-extra">' + escapeHtml(String(note)) + '</div>' : '') + '</div>' + edit + '</div>';
+            }).join('');
+        }
+
+        // ── Calendario scadenze ──────────────────────────────────────────
+        let _calMese = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+        let _calGiorno = null;
+        function calSposta(n) { _calMese = new Date(_calMese.getFullYear(), _calMese.getMonth() + n, 1); _calGiorno = null; renderCalendario(); }
+
+        function _mediaOreGiorno(d) {
+            const fonte = (Array.isArray(d.uscite) && d.uscite.length) ? d.uscite : (d.diario || []);
+            const da = Date.now() - 365 * 86400000;
+            const ore = fonte.reduce((s, r) => {
+                const dt = parseDateIT(r[findDateKey(r)]);
+                return (dt && dt.getTime() >= da) ? s + (_num(r['Ore motore'] || r['ore motore']) || 0) : s;
+            }, 0);
+            return ore / 365;
+        }
+        function _eventiCalendario(d) {
+            d = d || {};
+            const ev = [];
+            _righe('documenti').forEach(r => {
+                const dt = parseDateIT(String(_ci(r, 'Data scadenza') || ''));
+                if (dt) ev.push({ date: dt, tipo: 'doc', titolo: _ci(r, 'Tipo') + (_ci(r, 'Titolare') ? ' · ' + _ci(r, 'Titolare') : ''), click: "apriRecord('documenti'," + _jsArg(_chiaveRiga(r)) + ")" });
+            });
+            _righe('cambusa').forEach(r => {
+                const dt = parseDateIT(String(_ci(r, 'Scadenza') || ''));
+                if (dt) ev.push({ date: dt, tipo: 'cam', titolo: 'Scade: ' + _ci(r, 'Articolo'), click: "apriRecord('cambusa'," + _jsArg(_chiaveRiga(r)) + ")" });
+            });
+            (d.lavori || []).forEach(r => {
+                const dt = parseDateIT(String(r['Data chiusura'] || r['Data di fine'] || ''));
+                if (dt) ev.push({ date: dt, tipo: 'lav', titolo: (r['Attività'] || r['Attivita'] || 'Lavoro') + ' (' + (r['Stato'] || '') + ')', click: r._rowIndex ? "apriModifica('lavoro'," + r._rowIndex + ",'lavori')" : '' });
+            });
+            const fonteU = (Array.isArray(d.uscite) && d.uscite.length) ? d.uscite : (d.diario || []);
+            fonteU.forEach(r => {
+                const dt = parseDateIT(r[findDateKey(r)]);
+                if (dt) ev.push({ date: dt, tipo: 'usc', titolo: 'Uscita' + ((_ci(r, 'Porto', 'Luogo') ? ' · ' + _ci(r, 'Porto', 'Luogo') : '') || (r['Miglia'] ? ' · ' + r['Miglia'] + ' Nm' : '')), click: "switchDrawerPage('trips')" });
+            });
+            // Manutenzioni a tempo (foglio Cicliche, intervallo mesi)
+            const esec = (d.esecuzioni && d.esecuzioni.length) ? d.esecuzioni : (d.storico_manutenzioni || []);
+            (Array.isArray(d.cicliche) ? d.cicliche : []).forEach(c => {
+                const voce = String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim();
+                const mesi = _num(_ci(c, 'Intervallo mesi', 'Mesi'));
+                if (!voce || !mesi) return;
+                const ult = _trovaUltimaEsecuzione(voce, esec);
+                if (!ult || !ult.date) return;
+                const due = new Date(ult.date); due.setMonth(due.getMonth() + mesi);
+                ev.push({ date: due, tipo: 'man', titolo: voce, click: "openIntervento({voce:" + _jsArg(voce) + ",area:" + _jsArg(_ci(c, 'Area') || '') + "})" });
+            });
+            return ev;
+        }
+        function _scadenzeOre(d) {
+            d = d || {};
+            const esec = (d.esecuzioni && d.esecuzioni.length) ? d.esecuzioni : (d.storico_manutenzioni || []);
+            const oreCorr = engineState.currentHours || _num(d.ore_motore) || 0;
+            const media = _mediaOreGiorno(d);
+            return (Array.isArray(d.cicliche) ? d.cicliche : []).map(c => {
+                const voce = String(_ci(c, 'Voce', 'Nome', 'Manutenzione', 'Attività') || '').trim();
+                const intO = _num(_ci(c, 'Intervallo ore', 'Intervallo h', 'Ore'));
+                if (!voce || !intO || intO <= 10) return null;
+                const ult = _trovaUltimaEsecuzione(voce, esec);
+                const rim = (ult && ult.ore != null) ? (ult.ore + intO - oreCorr) : null;
+                const giorni = (rim != null && rim > 0 && media > 0) ? rim / media : null;
+                const stima = (giorni != null && giorni < 3 * 365) ? new Date(Date.now() + giorni * 86400000) : null;
+                return { voce, area: _ci(c, 'Area') || '', rim, stima, intO };
+            }).filter(Boolean).sort((a, b) => (a.rim == null ? -1e9 : a.rim) - (b.rim == null ? -1e9 : b.rim));
+        }
+        function _rigaEvento(e) {
+            const oggi = _oggi0();
+            const gg = Math.round((e.date - oggi) / 86400000);
+            const quando = gg === 0 ? 'oggi' : gg > 0 ? 'tra ' + gg + ' gg' : Math.abs(gg) + ' gg fa';
+            return '<div class="v3-item" ' + (e.click ? 'onclick="' + escapeHtml(e.click) + '"' : '') + '>' +
+                '<i class="cal-dot ' + e.tipo + '"></i>' +
+                '<div class="v3-item-body"><div class="v3-item-title">' + escapeHtml(String(e.titolo)) + '</div>' +
+                '<div class="v3-item-meta">' + _fmtData(e.date) + ' · ' + quando + '</div></div></div>';
+        }
+        function calGiorno(iso) { _calGiorno = (_calGiorno === iso) ? null : iso; renderCalendario(); }
+        function renderCalendario() {
+            const grid = document.getElementById('cal-grid');
+            if (!grid) return;
+            const d = _lastFetchedData || {};
+            const ev = _eventiCalendario(d);
+            const y = _calMese.getFullYear(), m = _calMese.getMonth();
+            document.getElementById('cal-title').textContent = MESI_L[m] + ' ' + y;
+            const primo = new Date(y, m, 1), giorni = new Date(y, m + 1, 0).getDate();
+            const offset = (primo.getDay() + 6) % 7; // lunedì = 0
+            const perGiorno = {};
+            ev.forEach(e => { if (e.date.getFullYear() === y && e.date.getMonth() === m) (perGiorno[e.date.getDate()] = perGiorno[e.date.getDate()] || []).push(e); });
+            const oggiISO = _toISO(new Date());
+            let html = ['L','M','M','G','V','S','D'].map(g => '<div class="cal-dow">' + g + '</div>').join('');
+            for (let i = 0; i < offset; i++) html += '<div></div>';
+            for (let g = 1; g <= giorni; g++) {
+                const iso = _toISO(new Date(y, m, g));
+                const tipi = [...new Set((perGiorno[g] || []).map(e => e.tipo))];
+                html += '<button class="cal-cell' + (iso === oggiISO ? ' today' : '') + (iso === _calGiorno ? ' sel' : '') + '" onclick="calGiorno(\'' + iso + '\')">' +
+                    '<span>' + g + '</span><span class="cal-dots">' + tipi.map(t => '<i class="cal-dot ' + t + '"></i>').join('') + '</span></button>';
+            }
+            grid.innerHTML = html;
+            const lista = ev.filter(e => _calGiorno ? _toISO(e.date) === _calGiorno : (e.date.getFullYear() === y && e.date.getMonth() === m))
+                            .sort((a, b) => a.date - b.date);
+            document.getElementById('cal-day-title').textContent = _calGiorno ? '📌 ' + _fmtData(parseDateIT(_calGiorno)) : '📌 Eventi di ' + MESI_L[m];
+            document.getElementById('cal-list').innerHTML = lista.length ? lista.map(_rigaEvento).join('') : _empty('Nessun evento.');
+            const ore = _scadenzeOre(d);
+            document.getElementById('cal-ore-list').innerHTML = ore.length ? ore.map(o => {
+                const cls = o.rim == null || o.rim <= 0 ? 'red' : o.rim <= o.intO * 0.15 ? 'yellow' : 'green';
+                const txt = o.rim == null ? 'mai registrato · ciclo ' + o.intO + ' h' : o.rim <= 0 ? 'scaduto da ' + Math.abs(o.rim).toFixed(1) + ' h' : o.rim.toFixed(1) + ' h rimanenti' + (o.stima ? ' · circa ' + _fmtData(o.stima) : '');
+                return '<div class="v3-item ' + cls + '" onclick="openIntervento({voce:' + escapeHtml(_jsArg(o.voce)) + ',area:' + escapeHtml(_jsArg(o.area)) + '})">' +
+                    '<div class="v3-item-body"><div class="v3-item-title">' + escapeHtml(o.voce) + '</div><div class="v3-item-meta">' + escapeHtml(txt) + '</div></div></div>';
+            }).join('') : _empty('Nessuna manutenzione a ore nel foglio Cicliche.');
+        }
+
+        // ── Fornitori ────────────────────────────────────────────────────
+        function renderFornitori() {
+            const box = document.getElementById('fornitori-list');
+            if (!box) return;
+            const righe = ((_lastFetchedData || {}).fornitori || []);
+            if (!righe.length) { box.innerHTML = _empty('Nessun fornitore nel foglio "Fornitori".'); return; }
+            box.innerHTML = righe.map(r => {
+                const nome = _ci(r, 'Nome', 'Fornitore', 'Ragione sociale', 'Ditta') || '—';
+                const tel = _ci(r, 'Telefono', 'Tel', 'Cellulare');
+                const mail = _ci(r, 'Email', 'E-mail', 'Mail');
+                const altri = Object.keys(r).filter(k => !k.startsWith('_') && r[k] !== '' && r[k] != null &&
+                    ![nome, tel, mail].includes(r[k])).map(k => escapeHtml(k) + ': ' + escapeHtml(String(r[k]))).join(' · ');
+                return '<div class="v3-item"><div class="v3-item-body"><div class="v3-item-title">🏪 ' + escapeHtml(String(nome)) + '</div>' +
+                    (altri ? '<div class="v3-item-meta">' + altri + '</div>' : '') + '</div>' +
+                    (tel ? '<a class="v3-btn ghost small" href="tel:' + escapeHtml(String(tel).replace(/\s+/g, '')) + '">📞</a>' : '') +
+                    (mail ? '<a class="v3-btn ghost small" href="mailto:' + escapeHtml(String(mail)) + '">✉️</a>' : '') + '</div>';
+            }).join('');
+        }
+
+        // ── Altro: stato sincronizzazione ────────────────────────────────
+        function _renderAltroSync() {
+            const el = document.getElementById('altro-sync-info');
+            if (!el) return;
+            const c = _lsGet(CACHE_KEY, null), q = _coda(), sc = _lsGet(SCARTATE_KEY, []);
+            let h = (navigator.onLine ? '🟢 Online' : '🟠 Offline') + ' · ultimo aggiornamento dal foglio: <strong>' +
+                (c ? new Date(c.ts).toLocaleString('it-IT') : 'mai') + '</strong><br>' +
+                'Modifiche in attesa di invio: <strong>' + q.length + '</strong>';
+            if (q.length) h += '<ul class="v3-ul">' + q.map(i => '<li>' + escapeHtml(i.label) + ' <span class="text-tertiary">(' + new Date(i.ts).toLocaleString('it-IT') + ')</span></li>').join('') + '</ul>';
+            if (sc.length) h += '<br>⚠️ Modifiche rifiutate dal foglio: ' + sc.length + '<ul class="v3-ul">' + sc.slice(-5).map(i => '<li>' + escapeHtml(i.label) + ' — ' + escapeHtml(i.errore || '') + '</li>').join('') + '</ul>';
+            el.innerHTML = h;
+        }
+
+        // ── Backup JSON ──────────────────────────────────────────────────
+        function esportaBackup() {
+            const payload = { app: 'cataleya', versione: 'v3', esportato: new Date().toISOString(), data: _lastFetchedData || null, coda: _coda() };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'cataleya-backup-' + _toISO(new Date()) + '.json';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+        function importaBackup(file) {
+            if (!file) return;
+            const fr = new FileReader();
+            fr.onload = () => {
+                let p;
+                try { p = JSON.parse(fr.result); } catch (e) { alert('File non valido: non è un JSON.'); return; }
+                if (!p || p.app !== 'cataleya' || !p.data) { alert('Questo file non è un backup di Cataleya.'); return; }
+                if (!confirm('Caricare il backup del ' + new Date(p.esportato).toLocaleString('it-IT') + ' sul telefono?\nIl Google Sheet non viene modificato.')) return;
+                _applicaDati(p.data);
+                _salvaCache(p.data);
+                if (Array.isArray(p.coda) && p.coda.length && confirm('Il backup contiene ' + p.coda.length + ' modifiche non inviate. Rimetterle in coda per inviarle al foglio?')) {
+                    const ids = new Set(_coda().map(i => i.id));
+                    _setCoda(_coda().concat(p.coda.filter(i => !ids.has(i.id))));
+                }
+                alert('Backup caricato ✅');
+            };
+            fr.readAsText(file);
+        }
+
+        // ── Dashboard: cambusa + prossimi 30 giorni, badge ───────────────
+        function _renderDashV3(d) {
+            const cam = document.getElementById('dash-cambusa');
+            if (cam) {
+                const spesa = _listaSpesa();
+                if (d.cambusa === undefined) cam.innerHTML = _empty('Aggiorna lo script per attivare la Cambusa.');
+                else if (!_righe('cambusa').length) cam.innerHTML = _empty('Nessun articolo: aggiungili nella sezione Cambusa.');
+                else cam.innerHTML = spesa.length ? spesa.slice(0, 4).map(x =>
+                    '<div class="dash-scadenza red" onclick="switchDrawerPage(\'cambusa\'); camVista(\'spesa\');"><div class="dash-sem-dot red"></div><div class="dash-scadenza-body">' +
+                    '<div class="dash-scadenza-title">' + escapeHtml(String(_ci(x.r, 'Articolo'))) + '</div>' +
+                    '<div class="dash-scadenza-meta">' + (x.st.scaduto ? 'scaduto' : 'rimasti ' + (x.st.q || 0) + ' ' + escapeHtml(String(_ci(x.r, 'Unità') || '')) + ' · minimo ' + x.st.s) + '</div>' +
+                    '</div><span class="dash-scadenza-arrow">›</span></div>').join('') +
+                    (spesa.length > 4 ? '<div class="v3-empty">… e altri ' + (spesa.length - 4) + '</div>' : '')
+                    : _empty('Cambusa in ordine ✅');
+            }
+            const pr = document.getElementById('dash-prossimi');
+            if (pr) {
+                const oggi = _oggi0().getTime(), lim = oggi + 30 * 86400000;
+                const ev = _eventiCalendario(d).filter(e => e.tipo !== 'usc' && e.date.getTime() >= oggi && e.date.getTime() <= lim).sort((a, b) => a.date - b.date);
+                pr.innerHTML = ev.length ? ev.slice(0, 6).map(_rigaEvento).join('') : _empty('Niente in calendario nei prossimi 30 giorni.');
+            }
+            const badge = (id, n) => { const el = document.getElementById(id); if (el) { el.textContent = n > 9 ? '9+' : (n || ''); el.style.display = n ? 'block' : 'none'; } };
+            let rossiManut = 0;
+            try { rossiManut = calcolaScadenzeCicliche(d).filter(it => it.cls === 'red' && !(it.intOre > 0 && it.intOre <= 10)).length; } catch (e) {}
+            badge('tb-badge-manut', rossiManut);
+            badge('tb-badge-cambusa', _listaSpesa().length);
+            badge('tb-badge-docs', _righe('documenti').filter(r => _statoDoc(r).avviso).length);
+        }
+
+        function _renderTuttoV3(d) {
+            d = d || {};
+            const safe = (n, f) => { try { f(); } catch (e) { console.error('[Cataleya v3] ' + n, e); } };
+            safe('dash', () => _renderDashV3(d));
+            safe('cambusa', renderCambusa);
+            safe('documenti', renderDocumenti);
+            safe('interventi', renderInterventiList);
+            safe('calendario', renderCalendario);
+            safe('fornitori', renderFornitori);
+            safe('altro', _renderAltroSync);
+        }
+        function _renderPaginaV3(page) {
+            if (page === 'altro') _renderAltroSync();
+            if (page === 'calendar') renderCalendario();
+            if (page === 'trips') _mostraGps();
+        }
+
+        function initV3() {
+            _lastGps = _lsGet('cataleya_v3_gps', null);
+            _mostraGps();
+            const c = _lsGet(CACHE_KEY, null);
+            if (c && c.data) {
+                try { _applicaDati(c.data); } catch (e) { console.error(e); }
+                if (!navigator.onLine) setSyncStatus('offline');
+            } else {
+                _renderTuttoV3({});
+            }
+            _aggiornaBadgeCoda();
+            window.addEventListener('online', () => { setSyncStatus('syncing'); caricaDatiDaSheets({ manual: true }); });
+            window.addEventListener('offline', () => { setSyncStatus('offline'); _renderAltroSync(); });
+            // App installabile e apribile senza rete (serve che l'app sia pubblicata in https, es. GitHub Pages)
+            if ('serviceWorker' in navigator && location.protocol === 'https:') {
+                navigator.serviceWorker.register('sw.js').catch(err => console.warn('[Cataleya v3] service worker', err));
             }
         }
 
@@ -4470,6 +5657,49 @@ renderTripsList();
                     <label>Velocità max (kn)</label>
                     <input type="number" id="uscita-velocita" min="0" step="0.1" placeholder="es. 6.5">
                 </div>
+            </div>
+
+            <div class="uscita-gps">
+                <div class="uscita-gps-head">
+                    <label>📡 Posizione GPS</label>
+                    <button type="button" class="v3-btn" onclick="rilevaGPS(true)">Rileva da GPS</button>
+                </div>
+                <div class="uscita-row">
+                    <div class="uscita-field"><label>Latitudine</label><input type="text" id="uscita-lat" placeholder="44.40560"></div>
+                    <div class="uscita-field"><label>Longitudine</label><input type="text" id="uscita-lon" placeholder="8.94630"></div>
+                </div>
+                <div class="uscita-row">
+                    <div class="uscita-field"><label>SOG (kn)</label><input type="number" id="uscita-sog" step="0.1" min="0"></div>
+                    <div class="uscita-field"><label>COG (°)</label><input type="number" id="uscita-cog" step="1" min="0" max="359"></div>
+                </div>
+                <div class="uscita-field"><label>Porto / rada</label><input type="text" id="uscita-luogo" placeholder="es. Portofino, Cala dell'Oro"></div>
+            </div>
+
+            <div class="uscita-row">
+                <div class="uscita-field">
+                    <label>Equipaggio</label>
+                    <input type="text" id="uscita-equipaggio" list="uscita-equip-list" placeholder="es. Stefano, Marco">
+                    <datalist id="uscita-equip-list"></datalist>
+                </div>
+                <div class="uscita-field">
+                    <label>Vele</label>
+                    <select id="uscita-vele">
+                        <option value="">—</option>
+                        <option>Randa + Genoa</option>
+                        <option>Randa + Fiocco</option>
+                        <option>Randa 1° mano + Genoa</option>
+                        <option>Randa 2° mano + Fiocco</option>
+                        <option>Solo Genoa</option>
+                        <option>Gennaker</option>
+                        <option>Spi</option>
+                        <option>Solo motore</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="uscita-field">
+                <label>Meteo</label>
+                <input type="text" id="uscita-meteo" placeholder="es. sereno, maestrale in rinforzo">
             </div>
 
             <div class="uscita-field">
